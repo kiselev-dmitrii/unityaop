@@ -1,20 +1,22 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using UnityEditor;
+using UnityEditor.Scripting;
 
 namespace CompilerEvents {
     public static class CompilerEvents {
-        public static event Action<List<string>> OnCompileStarted;
-        public static event Action<List<string>> OnCompileFinished;
+        public delegate void CompileDelegate(string[] files, string output, string[] references, BuildTarget target);
 
-        internal static void NotifyCompileStarted(List<string> args) {
+        public static event CompileDelegate OnCompileStarted;
+        public static event CompileDelegate OnCompileFinished;
+
+        internal static void NotifyCompileStarted(MonoIsland island) {
             if (OnCompileStarted != null) {
-                OnCompileStarted(args);
+                OnCompileStarted(island._files, island._output, island._references, island._target);
             }
         }
 
-        internal static void NotifyCompileFinished(List<string> args) {
+        internal static void NotifyCompileFinished(MonoIsland island) {
             if (OnCompileFinished != null) {
-                OnCompileFinished(args);
+                OnCompileFinished(island._files, island._output, island._references, island._target);
             }
         }
     }
