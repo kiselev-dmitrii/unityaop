@@ -1,0 +1,3 @@
+C:\Users\sol\Coding\Projects\UnityAOP\CompilerEvents\CompilerEvents\bin\Release\Unity.PureCSharpTests.dll
+C:\Users\sol\Coding\Projects\UnityAOP\CompilerEvents\CompilerEvents\obj\Release\CompilerEvents.csprojResolveAssemblyReference.cache
+C:\Users\sol\Coding\Projects\UnityAOP\CompilerEvents\CompilerEvents\obj\Release\Unity.PureCSharpTests.dll
