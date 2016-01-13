@@ -42,5 +42,31 @@ public static class CecilUtils {
         return type.Methods.FirstOrDefault(x => x.Name == method);
     }
 
+    public static TypeDefinition AddInterface<T>(this TypeDefinition type) {
+        var module = type.Module;
+        var interfaceDef = module.FindTypeDefinition<T>();
+        var interfaceRef = module.ImportReference(interfaceDef);
+        type.Interfaces.Add(interfaceRef);
+        return interfaceDef;
+    }
+
+    public static MethodDefinition OverrideMethod(this TypeDefinition targetTypeDef, String baseMethodName) {
+        var module = targetTypeDef.Module;
+        var baseTypeDef = module.Types.FirstOrDefault(x => x.FullName == targetTypeDef.BaseType.FullName);
+        var baseMethodDef = baseTypeDef.Methods.FirstOrDefault(x => x.Name == baseMethodName);
+
+        var newMethodAttributes = baseMethodDef.Attributes & ~MethodAttributes.NewSlot | MethodAttributes.ReuseSlot;
+        var newMethodDef = new MethodDefinition(baseMethodDef.Name, newMethodAttributes, baseMethodDef.ReturnType);
+
+        newMethodDef.ImplAttributes = baseMethodDef.ImplAttributes;
+        newMethodDef.SemanticsAttributes = baseMethodDef.SemanticsAttributes;
+
+        foreach (var arg in baseMethodDef.Parameters) {
+            newMethodDef.Parameters.Add(new ParameterDefinition(arg.Name, arg.Attributes, arg.ParameterType));
+        }
+
+        targetTypeDef.Methods.Add(newMethodDef);
+        return newMethodDef;
+    }
 }
 }

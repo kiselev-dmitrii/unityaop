@@ -65,6 +65,7 @@
     <Compile Include="Assets\Example1\Console.cs" />
     <Compile Include="Assets\Example1\Example1.cs" />
     <Compile Include="Assets\Example1\Warrior.cs" />
+    <Compile Include="Assets\ObservableTest\EmptyClass.cs" />
     <Compile Include="Assets\ObservableTest\ObservablePlayer1.cs" />
     <Compile Include="Assets\ObservableTest\ObservableTest.cs" />
     <Compile Include="Assets\ObservableTest\Player.cs" />

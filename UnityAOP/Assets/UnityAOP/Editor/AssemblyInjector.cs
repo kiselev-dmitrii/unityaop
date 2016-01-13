@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Linq;
+using Assets.ObservableTest;
 using Assets.UnityAOP.Editor.CodeProcessors;
 using Mono.Cecil;
 using UnityEngine;
@@ -15,6 +17,8 @@ public class AssemblyInjector {
 
     public bool Process() {
         try {
+            var targetTypeDef = mainModule.FindTypeDefinition<EmptyClass>();
+            targetTypeDef.OverrideMethod("BaseMethod");
             //var interfaceInjector = new InterfaceInjector(assembly);
             //interfaceInjector.Inject();
         } catch (Exception ex) {
