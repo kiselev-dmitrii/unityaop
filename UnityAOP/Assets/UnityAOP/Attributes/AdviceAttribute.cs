@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Assets.UnityAOP.Attributes.Attributes {
+namespace Assets.UnityAOP.Attributes {
 public enum AdvicePhase {
     Begin,
     End

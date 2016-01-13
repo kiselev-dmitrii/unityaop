@@ -98,11 +98,8 @@
     <Reference Include="Mono.Cecil">
       <HintPath>Assets\UnityAOP\Editor\Cecil\Mono.Cecil.dll</HintPath>
     </Reference>
-    <Reference Include="Mono.Cecil.Mdb">
-      <HintPath>Assets\UnityAOP\Editor\Cecil\Mono.Cecil.Mdb.dll</HintPath>
-    </Reference>
-    <Reference Include="Mono.Cecil.Pdb">
-      <HintPath>Assets\UnityAOP\Editor\Cecil\Mono.Cecil.Pdb.dll</HintPath>
+    <Reference Include="Mono.Cecil.Rocks">
+      <HintPath>Assets\UnityAOP\Editor\Cecil\Mono.Cecil.Rocks.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -114,9 +111,11 @@
   <ItemGroup>
     <Compile Include="Assets\UnityAOP\Editor\AssemblyInjector.cs" />
     <Compile Include="Assets\UnityAOP\Editor\CecilUtils.cs" />
+    <Compile Include="Assets\UnityAOP\Editor\CodeProcessors\IMethodProcessor.cs" />
+    <Compile Include="Assets\UnityAOP\Editor\CodeProcessors\MethodBoundaryInjector.cs" />
+    <Compile Include="Assets\UnityAOP\Editor\CodeProcessors\TryFinallyInjector.cs" />
     <Compile Include="Assets\UnityAOP\Editor\CompilerEventsHandler.cs" />
     <Compile Include="Assets\UnityAOP\Editor\MultiKeyDictionary.cs" />
-    <Compile Include="Assets\UnityAOP\Editor\ReloadAssemblies.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\SyntaxTree\UnityVS\2013\UnityVS.CSharp.targets" />
 </Project>

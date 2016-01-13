@@ -1,24 +1,22 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Reflection;
-using Assets.UnityAOP.Attributes.Attributes;
+using Assets.UnityAOP.Editor.CodeProcessors;
 using Mono.Cecil;
-using Mono.Cecil.Cil;
 using UnityEngine;
 
 namespace Assets.UnityAOP.Editor {
 public class AssemblyInjector {
-    private AssemblyDefinition mAssembly;
-    private ModuleDefinition mMainModule;
+    private AssemblyDefinition assembly;
+    private ModuleDefinition mainModule;
 
     public AssemblyInjector(AssemblyDefinition assembly) {
-        mAssembly = assembly;
-        mMainModule = assembly.MainModule;
+        this.assembly = assembly;
+        mainModule = assembly.MainModule;
     }
 
     public bool Process() {
         try {
-            ProcessAdviceMethods();
+            var methodBoundaryInjector = new MethodBoundaryInjector(assembly);
+            methodBoundaryInjector.Inject();
         } catch (Exception ex) {
             Debug.Log("assembly processing failed: " + ex);
             return false;
@@ -28,6 +26,7 @@ public class AssemblyInjector {
         return true;
     }
 
+    /*
     private class Advice {
         public TypeDefinition AdviceType;
         public MethodDefinition AdviceMethod;
@@ -47,7 +46,7 @@ public class AssemblyInjector {
     private void ProcessAdviceMethods() {
         var advices = new List<Advice>();
 
-        foreach (TypeDefinition type in mMainModule.GetTypes()) {
+        foreach (TypeDefinition type in mainModule.GetTypes()) {
             foreach (MethodDefinition method in type.Methods) {
                 var adviceAttribute = method.FindAttribute<AdviceAttribute>();
                 if (adviceAttribute == null) continue;
@@ -61,7 +60,7 @@ public class AssemblyInjector {
             lookup.Set(advice.TargetType, advice.TargetMethod, advice);
         }
 
-        foreach (TypeDefinition type in mMainModule.GetTypes()) {
+        foreach (TypeDefinition type in mainModule.GetTypes()) {
             var advicedMethods = lookup.GetNested(type);
             if (advicedMethods == null) {
                 continue;
@@ -87,6 +86,6 @@ public class AssemblyInjector {
             }
         }
     }
-    
+    */
 }
 }

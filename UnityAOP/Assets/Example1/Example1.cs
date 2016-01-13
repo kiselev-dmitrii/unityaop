@@ -1,9 +1,12 @@
 ﻿using System;
-using Assets.UnityAOP.Attributes.Attributes;
 using UnityEngine;
 
 namespace Assets.Example1 {
 public class Example1 : MonoBehaviour {
+    public String Good;
+    public String GoodToo;
+    public String Bad;
+
     private Warrior warrior;
 
     public void Awake() {
@@ -12,13 +15,8 @@ public class Example1 : MonoBehaviour {
 
     public void OnGUI() {
         if (GUI.Button(new Rect(10, 10, 100, 30), "Test")) {
-            warrior.Attack();
+            warrior.Say("Hello, world");
         }
-    }
-
-    [Advice(typeof(Warrior), "Attack", AdvicePhase.End)]
-    public static void OnWarriorAttack() {
-        Console.Instance.Add("OnWarriorAttack");
     }
 }
 }

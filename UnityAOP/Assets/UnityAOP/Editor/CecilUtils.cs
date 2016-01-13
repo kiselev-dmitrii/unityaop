@@ -19,6 +19,11 @@ public static class CecilUtils {
         return method.CustomAttributes.FirstOrDefault(x => x.AttributeType.Name == t.Name);
     }
 
+    public static CustomAttribute FindAtributeInheritedFrom<T>(this MethodDefinition method) {
+        Type t = typeof(T);
+        return method.CustomAttributes.FirstOrDefault(x => x.AttributeType.Resolve().BaseType.Name == t.Name);
+    }
+
     public static void AddAttribute<T>(this AssemblyDefinition assemblyDef) {
         var module = assemblyDef.MainModule;
         
