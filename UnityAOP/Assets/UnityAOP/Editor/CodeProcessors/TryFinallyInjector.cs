@@ -4,7 +4,7 @@ using Mono.Cecil.Cil;
 using Mono.Cecil.Rocks;
 
 namespace Assets.UnityAOP.Editor.CodeProcessors {
-public class TryFinallyInjector : IMethodProcessor {
+public class TryFinallyInjector {
     public ModuleDefinition Module { get; private set; }
     public MethodDefinition Method { get; private set; }
 
@@ -13,7 +13,7 @@ public class TryFinallyInjector : IMethodProcessor {
         Method = method;
     }
 
-    public void ProcessMethod() {
+    public void Inject() {
         var body = Method.Body;
         body.SimplifyMacros();
         
