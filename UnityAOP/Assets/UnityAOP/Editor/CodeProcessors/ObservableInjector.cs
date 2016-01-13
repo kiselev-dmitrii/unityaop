@@ -1,14 +1,16 @@
 ﻿using System.Linq;
+using System.Reflection;
 using Assets.UnityAOP.Attributes;
 using Assets.UnityAOP.Observable;
 using Mono.Cecil;
+using MethodAttributes = Mono.Cecil.MethodAttributes;
 
 namespace Assets.UnityAOP.Editor.CodeProcessors {
-public class InterfaceInjector {
+public class ObservableInjector {
     private readonly AssemblyDefinition assembly;
     private readonly ModuleDefinition mainModule;
 
-    public InterfaceInjector(AssemblyDefinition assembly) {
+    public ObservableInjector(AssemblyDefinition assembly) {
         this.assembly = assembly;
         mainModule = assembly.MainModule;
     }

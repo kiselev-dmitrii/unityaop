@@ -4,9 +4,11 @@ using UnityEngine;
 namespace Assets.ObservableTest {
 public class ObservableTest : MonoBehaviour {
     private Player player;
+    private ObservablePlayer1 obplayer1;
 
     public void Awake() {
         player = new Player();
+        obplayer1 = new ObservablePlayer1();
     }
 
     public void OnGUI() {

@@ -111,7 +111,7 @@
   <ItemGroup>
     <Compile Include="Assets\UnityAOP\Editor\AssemblyInjector.cs" />
     <Compile Include="Assets\UnityAOP\Editor\CecilUtils.cs" />
-    <Compile Include="Assets\UnityAOP\Editor\CodeProcessors\InterfaceInjector.cs" />
+    <Compile Include="Assets\UnityAOP\Editor\CodeProcessors\ObservableInjector.cs" />
     <Compile Include="Assets\UnityAOP\Editor\CodeProcessors\MethodBoundaryInjector.cs" />
     <Compile Include="Assets\UnityAOP\Editor\CodeProcessors\TryFinallyInjector.cs" />
     <Compile Include="Assets\UnityAOP\Editor\CompilerEventsHandler.cs" />

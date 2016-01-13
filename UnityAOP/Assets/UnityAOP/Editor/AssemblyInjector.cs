@@ -15,8 +15,8 @@ public class AssemblyInjector {
 
     public bool Process() {
         try {
-            var interfaceInjector = new InterfaceInjector(assembly);
-            interfaceInjector.Inject();
+            //var interfaceInjector = new InterfaceInjector(assembly);
+            //interfaceInjector.Inject();
         } catch (Exception ex) {
             Debug.Log("assembly processing failed: " + ex);
             return false;
