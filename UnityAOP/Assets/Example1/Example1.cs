@@ -3,9 +3,7 @@ using UnityEngine;
 
 namespace Assets.Example1 {
 public class Example1 : MonoBehaviour {
-    public String Good;
-    public String GoodToo;
-    public String Bad;
+    public String IsGood;
 
     private Warrior warrior;
 

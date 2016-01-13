@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using Mono.Cecil;
+using Mono.Cecil.Rocks;
 
 namespace Assets.UnityAOP.Editor {
 public static class CecilUtils {
@@ -32,6 +33,14 @@ public static class CecilUtils {
         assemblyDef.CustomAttributes.Add(attribute);
     }
 
+    public static TypeDefinition FindTypeDefinition<T>(this ModuleDefinition module) {
+        Type t = typeof (T);
+        return module.Types.FirstOrDefault(x => x.Name == t.Name);
+    }
+
+    public static MethodDefinition FindMethodDefinition(this TypeDefinition type, String method) {
+        return type.Methods.FirstOrDefault(x => x.Name == method);
+    }
 
 }
 }

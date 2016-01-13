@@ -33,9 +33,13 @@ public class MethodBoundaryInjector {
         getTypeFromHandleRef = mainModule.ImportReference(typeof(Type).GetMethod("GetTypeFromHandle"));
         methodBaseRef = mainModule.ImportReference(typeof(System.Reflection.MethodBase));
 
-        attributeRef = mainModule.ImportReference(typeof(MethodBoundaryAspectAttribute));
-        attributeOnEnterRef = mainModule.ImportReference(typeof(MethodBoundaryAspectAttribute).GetMethod("OnEnter"));
-        attributeOnExitRef = mainModule.ImportReference(typeof (MethodBoundaryAspectAttribute).GetMethod("OnExit"));
+        var attributeTypeDef = mainModule.FindTypeDefinition<MethodBoundaryAspectAttribute>();
+        var attributeOnEnterDef = attributeTypeDef.FindMethodDefinition("OnEnter");
+        var attributeOnExitDef = attributeTypeDef.FindMethodDefinition("OnExit");
+
+        attributeRef = mainModule.ImportReference(attributeTypeDef);
+        attributeOnEnterRef = mainModule.ImportReference(attributeOnEnterDef);
+        attributeOnExitRef = mainModule.ImportReference(attributeOnExitDef);
 
         var dictionaryType = Type.GetType("System.Collections.Generic.Dictionary`2[System.String,System.Object]");
         dictTypeRef = mainModule.ImportReference(dictionaryType);
