@@ -10,7 +10,7 @@ namespace Assets.UnityAOP.Observable.ChainedObservers {
 public static class ObserverUtils {
     public static ChainedPropertyObserver<TTarget> Observe<TTarget>(this object root, String path, Action onChanged) {
         var props = CalculatePropertyPath(root.GetType(), path);
-        return new ChainedPropertyObserver<TTarget>(root, props, onChanged);
+        return new ChainedPropertyObserver<TTarget>((IObservable)root, props, onChanged);
     }
 
     public static ChainedPropertyObserver<TTarget> Observe<TRoot, TTarget>(this TRoot root,
@@ -18,8 +18,8 @@ public static class ObserverUtils {
 
         String path = expression.ToString().Replace("get_Item(", "").Replace(")", "");
         String[] fieldsName = path.Split('.').Skip(1).ToArray();
-        var fullPath = GetPath(root.GetType(), fieldsName);
-        return new ChainedPropertyObserver<TTarget>(root, fullPath, onChanged);
+        var props = CalculatePropertyPath(root.GetType(), fieldsName);
+        return new ChainedPropertyObserver<TTarget>((IObservable)root, props, onChanged);
     }
 
     private static PropertyMetadata[] CalculatePropertyPath(Type rootType, String path) {
