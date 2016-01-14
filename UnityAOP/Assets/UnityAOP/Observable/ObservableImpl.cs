@@ -3,24 +3,20 @@ using System.Collections.Generic;
 using UnityEngine;
 
 namespace Assets.UnityAOP.Observable {
-public class ObservableImpl<T> {
-    public static Dictionary<String, int> PropertyIndices;
-    public List<IObserver>[] Observers;
+public class ObservableImpl {
+    public List<List<IObserver>> Observers;
 
-    public ObservableImpl(String[] observableProperties) {
-        if (PropertyIndices == null) {
-            Debug.Log("Initializing property indices for " + typeof(T).Name);
-            PropertyIndices = new Dictionary<string, int>();
-            for (int i = 0; i < observableProperties.Length; ++i) {
-                PropertyIndices.Add(observableProperties[i], i);
+    public void SetNumProperties(int value) {
+        if (Observers == null) {
+            Observers = new List<List<IObserver>>();
+        }
+        if (Observers.Count < value) {
+            int diff = value - Observers.Count;
+            for (int i = 0; i < diff; ++i) {
+                Observers.Add(new List<IObserver>());
             }
         }
-
-        Observers = new List<IObserver>[observableProperties.Length];
-        for (int i = 0; i < observableProperties.Length; i++) {
-            Observers[i] = new List<IObserver>();
-        }
-    } 
+    }
 
     public void NotifyPropertyChanged(object targetObject, int index) {
         var observers = Observers[index];
@@ -35,10 +31,6 @@ public class ObservableImpl<T> {
 
     public void RemoveObserver(int index, IObserver observer) {
         Observers[index].Remove(observer);
-    }
-
-    public int GetIndexOfProperty(string property) {
-        return PropertyIndices[property];
     }
 }
 }
