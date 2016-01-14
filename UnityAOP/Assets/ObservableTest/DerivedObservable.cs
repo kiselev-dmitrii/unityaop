@@ -66,5 +66,9 @@ namespace Assets.ObservableTest {
 
             NumFriends = 10;
         }
+
+        public object TestMethod() {
+            return null;
+        }
     }
 }

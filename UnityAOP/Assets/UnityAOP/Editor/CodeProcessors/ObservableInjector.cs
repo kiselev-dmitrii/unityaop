@@ -22,10 +22,6 @@ public class ObservableInjector {
         }
 
         observableType.AddInterface<IObservable>();
-
-        var iObservableTypeDef = mainModule.FindTypeDefinition<IObservable>();
-        var iObservableTypeRef = mainModule.ImportReference(iObservableTypeDef);
-        observableType.Interfaces.Add(iObservableTypeRef);
     }
 }
 }

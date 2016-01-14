@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Linq;
 using Mono.Cecil;
+using Mono.Cecil.Cil;
 using Mono.Cecil.Rocks;
+using NUnit.Framework;
 
 namespace Assets.UnityAOP.Editor {
 public static class CecilUtils {
@@ -62,6 +64,23 @@ public static class CecilUtils {
         newMethodDef.SemanticsAttributes = baseMethodDef.SemanticsAttributes;
 
         foreach (var arg in baseMethodDef.Parameters) {
+            newMethodDef.Parameters.Add(new ParameterDefinition(arg.Name, arg.Attributes, arg.ParameterType));
+        }
+
+        targetTypeDef.Methods.Add(newMethodDef);
+        return newMethodDef;
+    }
+
+    public static MethodDefinition ImplementMethod(this TypeDefinition targetTypeDef, TypeDefinition interfaceTypeDef, String interfaceMethodName) {
+        MethodDefinition interfaceMethodDef = interfaceTypeDef.Methods.First(x => x.Name == interfaceMethodName);
+
+        MethodAttributes newMethodAttributes = MethodAttributes.NewSlot | MethodAttributes.Virtual | MethodAttributes.Public;
+        MethodDefinition newMethodDef = new MethodDefinition(interfaceMethodDef.Name, newMethodAttributes, interfaceMethodDef.ReturnType);
+
+        newMethodDef.ImplAttributes = interfaceMethodDef.ImplAttributes;
+        newMethodDef.SemanticsAttributes = interfaceMethodDef.SemanticsAttributes;
+        
+        foreach (var arg in interfaceMethodDef.Parameters) {
             newMethodDef.Parameters.Add(new ParameterDefinition(arg.Name, arg.Attributes, arg.ParameterType));
         }
 

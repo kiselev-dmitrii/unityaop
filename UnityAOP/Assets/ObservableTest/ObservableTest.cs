@@ -1,4 +1,5 @@
-﻿using Assets.UnityAOP.Observable;
+﻿using System;
+using Assets.UnityAOP.Observable;
 using UnityEngine;
 
 namespace Assets.ObservableTest {
@@ -10,9 +11,13 @@ public class ObservableTest : MonoBehaviour {
     }
 
     public void OnGUI() {
-        object playerObject = (object) player;
         if (GUI.Button(new Rect(10, 10, 100, 30), "Test")) {
-            if (playerObject is IObservable) {
+            if (player is IObservable) {
+                IObservable observable = (IObservable) player;
+                observable.AddObserver(0, null);
+                observable.RemoveObserver(0, null);
+                observable.GetPropertyMetadata("Name");
+
                 Debug.Log("Is Observable");
             } else {
                 Debug.Log("Is not Observable");
