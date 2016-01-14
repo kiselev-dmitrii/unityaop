@@ -65,15 +65,13 @@
     <Compile Include="Assets\Example1\Console.cs" />
     <Compile Include="Assets\Example1\Example1.cs" />
     <Compile Include="Assets\Example1\Warrior.cs" />
-    <Compile Include="Assets\ObservableTest\DerivedObservable.cs" />
-    <Compile Include="Assets\ObservableTest\EmptyClass.cs" />
+    <Compile Include="Assets\ObservableTest\Model\Model.cs" />
     <Compile Include="Assets\ObservableTest\ObservableTest.cs" />
-    <Compile Include="Assets\ObservableTest\Player.cs" />
-    <Compile Include="Assets\Test.cs" />
     <Compile Include="Assets\UnityAOP\Attributes\AdviceAttribute.cs" />
     <Compile Include="Assets\UnityAOP\Attributes\LogAttribute.cs" />
     <Compile Include="Assets\UnityAOP\Attributes\MethodBoundaryAspectAttribute.cs" />
     <Compile Include="Assets\UnityAOP\Attributes\ObservableAttribute.cs" />
+    <Compile Include="Assets\UnityAOP\Observable\ChainedObservers\ChainedPropertyObserver.cs" />
     <Compile Include="Assets\UnityAOP\Observable\IObservable.cs" />
     <Compile Include="Assets\UnityAOP\Observable\IObserver.cs" />
     <Compile Include="Assets\UnityAOP\Observable\ObservableImpl.cs" />

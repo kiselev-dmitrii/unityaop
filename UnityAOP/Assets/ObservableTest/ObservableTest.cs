@@ -1,20 +1,18 @@
 ﻿using System;
-using Assets.UnityAOP.Observable;
 using UnityEngine;
+using Application = Assets.ObservableTest.Model.Application;
 
 namespace Assets.ObservableTest {
 public class ObservableTest : MonoBehaviour {
-    private Player player;
+    public Application Application;
 
     public void Awake() {
-        player = new Player();
+        Application = new Application();
     }
 
     public void OnGUI() {
         if (GUI.Button(new Rect(10, 10, 100, 30), "Test")) {
-            foreach (var type in ObservableMetadata.GetAllTypesMetadata()) {
-                Debug.Log(player.Name);
-            }
+            Application.Player.Group.NumMembers++;
         }
     }
 }
