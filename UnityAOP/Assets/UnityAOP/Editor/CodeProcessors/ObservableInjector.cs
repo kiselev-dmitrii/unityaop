@@ -9,11 +9,9 @@ using Mono.Cecil.Cil;
 using Mono.Cecil.Rocks;
 using UnityEngine.Assertions;
 using FieldAttributes = Mono.Cecil.FieldAttributes;
-using MethodAttributes = Mono.Cecil.MethodAttributes;
 
 namespace Assets.UnityAOP.Editor.CodeProcessors {
 public class ObservableInjector {
-    private readonly AssemblyDefinition assembly;
     private readonly ModuleDefinition module;
 
     #region References
@@ -27,7 +25,6 @@ public class ObservableInjector {
     private readonly TypeReference typeMetadataTypeRef;
     private readonly MethodReference getPropertyMetadataRef;
 
-    private readonly TypeReference observableMetadataTypeRef;
     private readonly MethodReference getTypeMetadataRef;
     #endregion
 
@@ -37,7 +34,6 @@ public class ObservableInjector {
     #endregion
 
     public ObservableInjector(AssemblyDefinition assembly) {
-        this.assembly = assembly;
         module = assembly.MainModule;
 
         TypeDefinition typeDef;
@@ -55,7 +51,6 @@ public class ObservableInjector {
         getPropertyMetadataRef = module.ImportReference(typeDef.FindMethodDefinition("GetPropertyMetadata"));
 
         typeDef = module.FindTypeDefinition(typeof(ObservableMetadata));
-        observableMetadataTypeRef = module.ImportReference(typeDef);
         getTypeMetadataRef = module.ImportReference(typeDef.FindMethodDefinition("GetTypeMetadata"));
     }
 
@@ -90,6 +85,15 @@ public class ObservableInjector {
 
         MethodDefinition removeObserverDef = targetTypeDef.AddInterfaceMethod(interfaceDef, "RemoveObserver");
         ImplementRemoveObserverMethod(removeObserverDef);
+
+        MethodDefinition notifyPropertyChangedDef = targetTypeDef.AddInterfaceMethod(interfaceDef, "NotifyPropertyChanged");
+        ImplementNotifyPropertyChangedMethod(notifyPropertyChangedDef);
+
+        var npcRef = module.ImportReference(notifyPropertyChangedDef);
+        for (int i = 0; i < targetTypeDef.Properties.Count; ++i) {
+            var property = targetTypeDef.Properties[i];
+            InjectPropertySetter(property.SetMethod, i, npcRef);
+        }
     }
 
     private void InjectFieldInitialization(TypeDefinition targetTypeDef, MethodDefinition constructor) {
@@ -163,5 +167,34 @@ public class ObservableInjector {
         ////////////////////
     }
 
+    private void ImplementNotifyPropertyChangedMethod(MethodDefinition method) {
+        var body = method.Body;
+
+        ///////////////////
+        body.Instructions.Add(Instruction.Create(OpCodes.Ldarg_0));
+        body.Instructions.Add(Instruction.Create(OpCodes.Ldfld, observableImplFieldDef));
+        body.Instructions.Add(Instruction.Create(OpCodes.Ldarg_0));
+        body.Instructions.Add(Instruction.Create(OpCodes.Ldarg_1));
+        body.Instructions.Add(Instruction.Create(OpCodes.Callvirt, notifyPropertyChangedRef));
+        body.Instructions.Add(Instruction.Create(OpCodes.Ret));
+        ////////////////////
+    }
+
+    private void InjectPropertySetter(MethodDefinition setter, int propertyIndex, MethodReference notifyPropertyChanged) {
+        var body = setter.Body;
+        body.SimplifyMacros();
+        var proc = body.GetILProcessor();
+
+        //Вставлять будем до последнего ret
+        var target = proc.Body.Instructions.Last();
+
+        //////// Вставляем перед target все инструкции //////
+        proc.InsertBefore(target, Instruction.Create(OpCodes.Ldarg_0));
+        proc.InsertBefore(target, Instruction.Create(OpCodes.Ldc_I4, propertyIndex));
+        proc.InsertBefore(target, Instruction.Create(OpCodes.Callvirt, notifyPropertyChanged));
+        //////////////////////////////////
+
+        body.OptimizeMacros();
+    }
 }
 }

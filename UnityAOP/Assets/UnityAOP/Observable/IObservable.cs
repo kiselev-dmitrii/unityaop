@@ -11,6 +11,7 @@ public interface IObservable {
     PropertyMetadata GetPropertyMetadata(String property);
     void AddObserver(int fieldIndex, IObserver observer);
     void RemoveObserver(int fieldIndex, IObserver observer);
+    void NotifyPropertyChanged(int fieldIndex);
     //GetterDelegate<T> GetGetterDelegate<T>(int propertyIndex);
     //SetterDelegate<T> GetSetterDelegate<T>(int propertyIndex);
 }
