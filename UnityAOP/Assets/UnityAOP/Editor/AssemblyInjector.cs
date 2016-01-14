@@ -20,17 +20,8 @@ public class AssemblyInjector {
 
     public bool Process() {
         try {
-            var targetTypeDef = mainModule.FindTypeDefinition<Player>();
-            var interfaceDef = targetTypeDef.AddInterface<IObservable>();
-
-            MethodDefinition getPropertyMetadataDef = targetTypeDef.ImplementMethod(interfaceDef, "GetPropertyMetadata");
-            CreateDebugLog(getPropertyMetadataDef);
-
-            MethodDefinition addObserverDef = targetTypeDef.ImplementMethod(interfaceDef, "AddObserver");
-            CreateDebugLog(addObserverDef);
-
-            MethodDefinition removeObserverDef = targetTypeDef.ImplementMethod(interfaceDef, "RemoveObserver");
-            CreateDebugLog(removeObserverDef);
+            //var targetTypeDef = mainModule.FindTypeDefinition(typeof (ObservableMetadata));
+            //MethodDefinition targetMethodDef = targetTypeDef.FindMethodDefinition("InitMetadata");
 
             //var targetTypeDef = mainModule.FindTypeDefinition<EmptyClass>();
             //targetTypeDef.OverrideMethod("BaseMethod");
@@ -45,18 +36,55 @@ public class AssemblyInjector {
         return true;
     }
 
-    public void CreateDebugLog(MethodDefinition method) {
-        var module = method.Module;
-        MethodReference debugLogRef = module.ImportReference(typeof(UnityEngine.Debug).GetMethod("Log", new[] { typeof(object) }));
+    private void InjectClassMetadatas(MethodDefinition targetMethodDef, TypeDefinition[] typeDefs) {
+        var module = targetMethodDef.Module;
 
-        var body = method.Body;
-        body.Instructions.Add(Instruction.Create(OpCodes.Ldstr, method.Name));
-        body.Instructions.Add(Instruction.Create(OpCodes.Call, debugLogRef));
-        if (method.ReturnType != module.TypeSystem.Void) {
-            body.Instructions.Add(Instruction.Create(OpCodes.Ldnull));
+        TypeReference typeMetadataTypeRef = module.ImportReference(typeof (TypeMetadata));
+        MethodReference typeMetadataCtorRef = module.ImportReference(typeof (TypeMetadata).GetConstructor(new[] {
+            typeof (String), typeof (PropertyMetadata[])
+        }));
+
+        TypeReference propertyMetadataTypeRef = module.ImportReference(typeof (PropertyMetadata));
+        MethodReference propertyMetadataCtorRef = module.ImportReference(typeof(PropertyMetadata).GetConstructor(new[] {
+            typeof (String), typeof (int), typeof(Type)
+        }));
+
+        MethodReference getTypeMethodRef = mainModule.ImportReference(typeof(Type).GetMethod("GetTypeFromHandle"));
+
+        var body = targetMethodDef.Body;
+        var ilProc = body.GetILProcessor();
+
+        var ret = ilProc.Body.Instructions[ilProc.Body.Instructions.Count-1];
+
+        foreach (var typeDef in typeDefs) {
+            var properties = typeDef.Properties;
+            int numProperties = properties.Count;
+
+            /////////////////////////////
+            ilProc.InsertBefore(ret, Instruction.Create(OpCodes.Ldstr, typeDef.Name));
+
+            // new PropertyMetadata[numProperties]
+            ilProc.InsertBefore(ret, Instruction.Create(OpCodes.Ldc_I4, numProperties));
+            ilProc.InsertBefore(ret, Instruction.Create(OpCodes.Newarr, propertyMetadataTypeRef));
+
+            for (int i = 0; i < numProperties; ++i) {
+                var property = properties[i];
+                var propertyTypeRef = mainModule.ImportReference(property.PropertyType);
+
+                ilProc.InsertBefore(ret, Instruction.Create(OpCodes.Dup));
+                ilProc.InsertBefore(ret, Instruction.Create(OpCodes.Ldc_I4, i));
+
+                ilProc.InsertBefore(ret, Instruction.Create(OpCodes.Ldstr, property.Name));  //PropertyName
+                ilProc.InsertBefore(ret, Instruction.Create(OpCodes.Ldc_I4, i));             //PropertyIndex
+                ilProc.InsertBefore(ret, Instruction.Create(OpCodes.Ldtoken, propertyTypeRef));
+                ilProc.InsertBefore(ret, Instruction.Create(OpCodes.Call, getTypeMethodRef));  //typeof(property.PropertType)
+
+                    
+            }
         }
-        body.Instructions.Add(Instruction.Create(OpCodes.Ret));
     }
+
+
 
     /*
     private class Advice {

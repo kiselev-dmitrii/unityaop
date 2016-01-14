@@ -1,10 +1,12 @@
 ﻿using System;
+using Assets.UnityAOP.Attributes;
 using Assets.UnityAOP.Observable;
 
 namespace Assets.ObservableTest {
+    [Observable]
     public class BaseObservable : IObservable {
         protected ObservableImpl observableImpl;
-        protected ClassMetadata metadata;
+        protected TypeMetadata metadata;
 
         private Int32 id;
         public Int32 Id {
@@ -26,7 +28,7 @@ namespace Assets.ObservableTest {
 
         public BaseObservable() {
             observableImpl = new ObservableImpl();
-            metadata = ObservableMetadata.GetClassMetadata("BaseObservable");
+            metadata = ObservableMetadata.GetTypeMetadata("BaseObservable");
             observableImpl.SetNumProperties(2);
 
             Id = 0;
@@ -62,7 +64,7 @@ namespace Assets.ObservableTest {
 
         public DerivedObservable() {
             observableImpl.SetNumProperties(3);
-            metadata = ObservableMetadata.GetClassMetadata("DerivedObservable");
+            metadata = ObservableMetadata.GetTypeMetadata("DerivedObservable");
 
             NumFriends = 10;
         }

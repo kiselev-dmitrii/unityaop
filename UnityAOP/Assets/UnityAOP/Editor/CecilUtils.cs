@@ -37,7 +37,11 @@ public static class CecilUtils {
 
     public static TypeDefinition FindTypeDefinition<T>(this ModuleDefinition module) {
         Type t = typeof (T);
-        return module.Types.FirstOrDefault(x => x.Name == t.Name);
+        return module.FindTypeDefinition(t);
+    }
+
+    public static TypeDefinition FindTypeDefinition(this ModuleDefinition module, Type type) {
+        return module.Types.FirstOrDefault(x => x.Name == type.Name);
     }
 
     public static MethodDefinition FindMethodDefinition(this TypeDefinition type, String method) {
@@ -86,6 +90,12 @@ public static class CecilUtils {
 
         targetTypeDef.Methods.Add(newMethodDef);
         return newMethodDef;
+    }
+
+    public static void InsertBefore(this ILProcessor ilProc, Instruction target, Instruction[] instructions) {
+        foreach (var instruction in instructions) {
+            ilProc.InsertBefore(target, instruction);
+        }
     }
 }
 }

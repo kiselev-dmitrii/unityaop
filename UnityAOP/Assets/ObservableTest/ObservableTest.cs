@@ -12,15 +12,8 @@ public class ObservableTest : MonoBehaviour {
 
     public void OnGUI() {
         if (GUI.Button(new Rect(10, 10, 100, 30), "Test")) {
-            if (player is IObservable) {
-                IObservable observable = (IObservable) player;
-                observable.AddObserver(0, null);
-                observable.RemoveObserver(0, null);
-                observable.GetPropertyMetadata("Name");
-
-                Debug.Log("Is Observable");
-            } else {
-                Debug.Log("Is not Observable");
+            foreach (var type in ObservableMetadata.GetAllTypesMetadata()) {
+                Debug.Log(type);
             }
         }
     }
