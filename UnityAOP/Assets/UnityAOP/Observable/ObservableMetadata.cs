@@ -12,10 +12,12 @@ using UnityEngine.Assertions;
 namespace Assets.UnityAOP.Observable {
 public class TypeMetadata {
     public String Name;
+    public Type Type;
     public Dictionary<String, PropertyMetadata> Properties;
 
-    public TypeMetadata(String name, Dictionary<String, PropertyMetadata> properties) {
-        Name = name;
+    public TypeMetadata(Type type, Dictionary<String, PropertyMetadata> properties) {
+        Name = type.Name;
+        Type = type;
         Properties = properties;
     }
 
@@ -51,25 +53,32 @@ public class PropertyMetadata {
 
 [InitializeOnLoad]
 public static class ObservableMetadata {
-    private static readonly Dictionary<String, TypeMetadata> types;
+    private static readonly Dictionary<String, TypeMetadata> stringToTypemeta;
+    private static readonly Dictionary<Type, TypeMetadata> typeToTypemeta; 
 
     static ObservableMetadata() {
-        types = new Dictionary<string, TypeMetadata>();
+        stringToTypemeta = new Dictionary<string, TypeMetadata>();
+        typeToTypemeta = new Dictionary<Type, TypeMetadata>();
 
         var assembly = Assembly.GetExecutingAssembly();
         var observableTypes = assembly.GetTypes().Where(x => x.HasAttribute<ObservableAttribute>());
         foreach (var observableType in observableTypes) {
             var meta = CreateTypeMetadata(observableType);
-            types.Add(meta.Name, meta); 
+            stringToTypemeta.Add(meta.Name, meta); 
+            typeToTypemeta.Add(meta.Type, meta);
         }
     }
 
-    public static TypeMetadata GetTypeMetadata(String className) {
-        return types[className];
+    public static TypeMetadata GetTypeMetadata(String typeName) {
+        return stringToTypemeta[typeName];
+    }
+
+    public static TypeMetadata GetTypeMetadata(Type type) {
+        return typeToTypemeta[type];
     }
 
     public static IEnumerable<TypeMetadata> GetAllTypesMetadata() {
-        return types.Values;
+        return stringToTypemeta.Values;
     } 
 
     private static TypeMetadata CreateTypeMetadata(Type type) { 
@@ -97,7 +106,7 @@ public static class ObservableMetadata {
             }
         }
 
-        return new TypeMetadata(type.Name, propertiesMeta);
+        return new TypeMetadata(type, propertiesMeta);
     }
 }
 }
