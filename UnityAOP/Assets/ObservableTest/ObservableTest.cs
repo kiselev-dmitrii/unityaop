@@ -13,7 +13,7 @@ public class ObservableTest : MonoBehaviour {
     public void OnGUI() {
         if (GUI.Button(new Rect(10, 10, 100, 30), "Test")) {
             foreach (var type in ObservableMetadata.GetAllTypesMetadata()) {
-                Debug.Log(type);
+                Debug.Log(player.Name);
             }
         }
     }

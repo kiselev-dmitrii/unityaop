@@ -3,7 +3,6 @@ using Assets.UnityAOP.Attributes;
 using Assets.UnityAOP.Observable;
 
 namespace Assets.ObservableTest {
-    [Observable]
     public class BaseObservable : IObservable {
         protected ObservableImpl observableImpl;
         protected TypeMetadata metadata;
@@ -36,7 +35,7 @@ namespace Assets.ObservableTest {
         }
 
         public virtual PropertyMetadata GetPropertyMetadata(string property) {
-            return metadata.Properties[property];
+            return metadata.GetPropertyMetadata(property);
         }
 
         public virtual void AddObserver(int index, IObserver observer) {

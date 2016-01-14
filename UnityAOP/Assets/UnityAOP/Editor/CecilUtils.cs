@@ -75,10 +75,10 @@ public static class CecilUtils {
         return newMethodDef;
     }
 
-    public static MethodDefinition ImplementMethod(this TypeDefinition targetTypeDef, TypeDefinition interfaceTypeDef, String interfaceMethodName) {
+    public static MethodDefinition AddInterfaceMethod(this TypeDefinition targetTypeDef, TypeDefinition interfaceTypeDef, String interfaceMethodName) {
         MethodDefinition interfaceMethodDef = interfaceTypeDef.Methods.First(x => x.Name == interfaceMethodName);
 
-        MethodAttributes newMethodAttributes = MethodAttributes.NewSlot | MethodAttributes.Virtual | MethodAttributes.Public;
+        MethodAttributes newMethodAttributes = MethodAttributes.NewSlot | MethodAttributes.Virtual | MethodAttributes.Public | MethodAttributes.HideBySig;
         MethodDefinition newMethodDef = new MethodDefinition(interfaceMethodDef.Name, newMethodAttributes, interfaceMethodDef.ReturnType);
 
         newMethodDef.ImplAttributes = interfaceMethodDef.ImplAttributes;

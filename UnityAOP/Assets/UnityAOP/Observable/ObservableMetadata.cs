@@ -19,6 +19,10 @@ public class TypeMetadata {
         Properties = properties;
     }
 
+    public PropertyMetadata GetPropertyMetadata(String name) {
+        return Properties[name];
+    }
+
     public override string ToString() {
         StringBuilder builder = new StringBuilder();
         builder.Append(Name + '\n');
