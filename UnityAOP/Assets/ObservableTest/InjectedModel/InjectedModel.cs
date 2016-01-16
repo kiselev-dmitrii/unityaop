@@ -5,7 +5,7 @@ using Assets.UnityAOP.Observable;
 
 namespace Assets.ObservableTest.InjectedModel {
     /*
-    [Observable]
+    //[Observable]
     public class Application : IObservable {
         public ObservableImpl ObservableImpl;
         public TypeMetadata Metadata;
@@ -61,7 +61,7 @@ namespace Assets.ObservableTest.InjectedModel {
         }
     }
 
-    [Observable]
+    //[Observable]
     public class User : IObservable {
         public ObservableImpl ObservableImpl;
         public TypeMetadata Metadata;
@@ -150,7 +150,7 @@ namespace Assets.ObservableTest.InjectedModel {
         }
     }
 
-    [Observable]
+    //[Observable]
     public class Group : IObservable {
         public ObservableImpl ObservableImpl;
         public TypeMetadata Metadata;

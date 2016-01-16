@@ -7,7 +7,7 @@ using Assets.UnityAOP.Attributes;
 namespace Assets.ObservableTest.Model {
     [Observable]
     public class Application {
-        public User Player { get; private set; }
+        public User Player { get; set; }
 
         public Application() {
             Player = new User(1, "Player", "http://vk.com/id0/avatar.jpg");

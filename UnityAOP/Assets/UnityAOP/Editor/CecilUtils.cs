@@ -44,6 +44,10 @@ public static class CecilUtils {
         return module.Types.FirstOrDefault(x => x.Name == type.Name);
     }
 
+    public static TypeDefinition FindTypeDefinition(this ModuleDefinition module, String typeName) {
+        return module.Types.FirstOrDefault(x => x.Name == typeName);
+    }
+
     public static MethodDefinition FindMethodDefinition(this TypeDefinition type, String method) {
         return type.Methods.FirstOrDefault(x => x.Name == method);
     }

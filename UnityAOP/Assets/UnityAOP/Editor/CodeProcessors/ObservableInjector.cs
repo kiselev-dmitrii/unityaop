@@ -33,6 +33,11 @@ public class ObservableInjector {
     private readonly MethodReference listGetItemRef;
     #endregion
 
+    #region Definitions
+    private readonly TypeDefinition getterDelegateGenericTypeDef;
+    private readonly TypeDefinition setterDelegateGenericTypeDef;
+    #endregion
+
     #region Fields
     private FieldDefinition observableImplFieldDef;
     private FieldDefinition metadataFieldDef;
@@ -65,6 +70,9 @@ public class ObservableInjector {
         listCtorRef = module.ImportReference(listType.GetConstructor(Type.EmptyTypes));
         listAddRef = module.ImportReference(listType.GetMethod("Add"));
         listGetItemRef = module.ImportReference(listType.GetMethod("get_Item"));
+
+        getterDelegateGenericTypeDef = module.FindTypeDefinition("GetterDelegate`1");
+        setterDelegateGenericTypeDef = module.FindTypeDefinition("SetterDelegate`1");
     }
 
     public void Inject() {
@@ -161,7 +169,21 @@ public class ObservableInjector {
         //Добавляем сеттеры и геттеры
         var properties = targetTypeDef.Properties;
         for (int i = 0; i < properties.Count; ++i) {
-            
+            var property = properties[i];
+            MethodDefinition getterMethodDef = property.GetMethod;
+            MethodDefinition setterMethodDef = property.SetMethod;
+            TypeReference propertyTypeRef = module.ImportReference(property.PropertyType);
+           
+            GenericInstanceType getterDelegateTypeRef = getterDelegateGenericTypeDef.MakeGenericInstanceType(propertyTypeRef);
+            MethodReference getterDelegateCtorRef = getterDelegateTypeRef.Resolve().GetConstructors().First();
+            GenericInstanceType setterDelegateTypeRef = setterDelegateGenericTypeDef.MakeGenericInstanceType(propertyTypeRef);
+
+            proc.InsertBefore(target, Instruction.Create(OpCodes.Ldarg_0));
+            proc.InsertBefore(target, Instruction.Create(OpCodes.Ldfld, gettersFieldDef));
+            proc.InsertBefore(target, Instruction.Create(OpCodes.Ldarg_0));
+            proc.InsertBefore(target, Instruction.Create(OpCodes.Ldftn, getterMethodDef));
+            proc.InsertBefore(target, Instruction.Create(OpCodes.Newobj, getterDelegateCtorRef));
+            proc.InsertBefore(target, Instruction.Create(OpCodes.Callvirt, listAddRef));
         }
         //////////////////////////////////
 

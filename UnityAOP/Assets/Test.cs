@@ -16,11 +16,13 @@ namespace Assets {
 public class Test {
     public Implementation X { get; set; }
 
-    public int Y { get; set; }
+    public List<Object> Getters; 
 
     public Test() {
-        object obj = new SetterDelegate<Interface>(Setter);
-        object obj2 = new GetterDelegate<Interface>(Getter);
+        Getters = new List<object>();
+        Getters.Add(new GetterDelegate<Interface>(Getter));
+        Getters.Add(new GetterDelegate<Interface>(Getter));
+        Getters.Add(null);
     }
 
     public void Setter(Interface value) {
