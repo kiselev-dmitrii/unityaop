@@ -4,13 +4,21 @@ using Assets.UnityAOP.Attributes;
 using Assets.UnityAOP.Observable;
 
 namespace Assets.ObservableTest.InjectedModel {
+    [Observable]
     public class Application : IObservable {
         public ObservableImpl ObservableImpl;
         public TypeMetadata Metadata;
         public List<Object> Getters;
         public List<Object> Setters;
+        private User player;
 
-        public User Player { get; private set; }
+        public User Player {
+            get { return player; }
+            set {
+                player = value; 
+                NotifyPropertyChanged(0);
+            }
+        }
 
         public Application() {
             ObservableImpl = new ObservableImpl();
@@ -52,16 +60,45 @@ namespace Assets.ObservableTest.InjectedModel {
         }
     }
 
+    [Observable]
     public class User : IObservable {
         public ObservableImpl ObservableImpl;
         public TypeMetadata Metadata;
         public List<Object> Getters;
         public List<Object> Setters;
+        private int id;
+        private string name;
+        private string avatar;
+        private Group group;
 
-        public Int32 Id { get; set; }
-        public String Name { get; set; }
-        public String Avatar { get; set; }
-        public Group Group { get; set; }
+        public Int32 Id {
+            get { return id; }
+            set {
+                id = value; 
+                NotifyPropertyChanged(0);
+            }
+        }
+        public String Name {
+            get { return name; }
+            set {
+                name = value; 
+                NotifyPropertyChanged(1);
+            }
+        }
+        public String Avatar {
+            get { return avatar; }
+            set {
+                avatar = value; 
+                NotifyPropertyChanged(2);
+            }
+        }
+        public Group Group {
+            get { return group; }
+            set {
+                group = value; 
+                NotifyPropertyChanged(3);
+            }
+        }
 
         public User(int id, string name, string avatar) {
             ObservableImpl = new ObservableImpl();
@@ -112,19 +149,43 @@ namespace Assets.ObservableTest.InjectedModel {
         }
     }
 
+    [Observable]
     public class Group : IObservable {
         public ObservableImpl ObservableImpl;
         public TypeMetadata Metadata;
         public List<Object> Getters;
         public List<Object> Setters;
+        private int id;
+        private int numMembers;
+        private int numReadyMembers;
 
-        public Int32 Id { get; set; }
-        public Int32 NumMembers { get; set; }
-        public Int32 NumReadyMembers { get; set; }
+        public Int32 Id {
+            get { return id; }
+            set {
+                id = value; 
+                NotifyPropertyChanged(0);
+            }
+        }
+        public Int32 NumMembers {
+            get { return numMembers; }
+            set {
+                numMembers = value; 
+                NotifyPropertyChanged(1);
+            }
+        }
+        public Int32 NumReadyMembers {
+            get { return numReadyMembers; }
+            set {
+                numReadyMembers = value; 
+                NotifyPropertyChanged(2);
+            }
+        }
 
         public Group(int id) {
             ObservableImpl = new ObservableImpl();
             Metadata = ObservableMetadata.GetTypeMetadata("Group");
+            Getters = new List<object>();
+            Setters = new List<object>();
 
             ObservableImpl.SetNumProperties(3);
 
