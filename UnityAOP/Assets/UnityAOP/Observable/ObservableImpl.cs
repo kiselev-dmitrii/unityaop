@@ -18,7 +18,7 @@ public class ObservableImpl {
         }
     }
 
-    public void NotifyPropertyChanged(object targetObject, int index) {
+    public void NotifyPropertyChanged(IObservable targetObject, int index) {
         var observers = Observers[index];
         for (var i = 0; i < observers.Count; ++i) {
             observers[i].OnNodeChanged(targetObject, index);

@@ -5,6 +5,6 @@ using System.Text;
 
 namespace Assets.UnityAOP.Observable {
 public interface IObserver {
-    void OnNodeChanged(object parent, int index);
+    void OnNodeChanged(IObservable parent, int index);
 }
 }
