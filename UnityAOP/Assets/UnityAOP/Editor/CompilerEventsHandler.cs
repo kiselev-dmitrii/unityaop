@@ -2,8 +2,10 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Reflection;
 using System.Threading;
 using Mono.Cecil;
+using SyntaxTree.VisualStudio.Unity.Bridge;
 using UnityEditor;
 using UnityEngine;
 using Debug = UnityEngine.Debug;
@@ -21,11 +23,11 @@ public static class CompilerEventsHandler {
         if (output.Contains("Editor")) {
             return;
         }
-        String fullPath = Application.dataPath.Replace("/Assets", "/" + output);
+        String dllPath = Application.dataPath.Replace("/Assets", "/" + output);
 
         var stopwatch = new Stopwatch();
         stopwatch.Start();
-        while (!File.Exists(fullPath)) {
+        while (!File.Exists(dllPath)) {
             Thread.Sleep(10);
             if (stopwatch.ElapsedMilliseconds > MaxWaitTime) {
                 Debug.LogError("Assembly file not found");
@@ -33,15 +35,44 @@ public static class CompilerEventsHandler {
             }
         }
 
-        if (!File.Exists(fullPath)) {
+        if (!File.Exists(dllPath)) {
             Debug.LogError("Assembly file not found");
             return;
         }
 
-        var assemblyDefinition = AssemblyDefinition.ReadAssembly(fullPath);
+        String mdbPath = dllPath + ".mdb";
+
+        ProcessAssembly(dllPath, mdbPath);
+    }
+
+    public static void ProcessAssembly(String dllPath, String mdbPath) {
+        String directory = dllPath.Substring(0, dllPath.LastIndexOf('/'));
+
+        HashSet<string> searchDirs = new HashSet<string>();
+        foreach (Assembly assembly in AppDomain.CurrentDomain.GetAssemblies()) {
+            searchDirs.Add(Path.GetDirectoryName(assembly.Location));
+        }
+        searchDirs.Add(directory);
+
+        // Assembly resolver
+        DefaultAssemblyResolver assemblyResolver = new DefaultAssemblyResolver();
+        foreach (String dir in searchDirs) {
+            assemblyResolver.AddSearchDirectory(dir);
+        }
+
+        // Read-Write params
+        ReaderParameters readerParameters = new ReaderParameters() {
+            AssemblyResolver = assemblyResolver
+        };
+        WriterParameters writerParameters = new WriterParameters();
+
+        readerParameters.ReadSymbols = true;
+        writerParameters.WriteSymbols = true;
+
+        var assemblyDefinition = AssemblyDefinition.ReadAssembly(dllPath, readerParameters);
         var assemblyInjector = new AssemblyInjector(assemblyDefinition);
         if (assemblyInjector.Process()) {
-            assemblyDefinition.Write(fullPath);
+            assemblyDefinition.Write(dllPath, writerParameters);
         }
     }
 }
