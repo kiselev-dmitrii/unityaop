@@ -26,11 +26,18 @@ public class ObservableInjector {
     private readonly MethodReference getPropertyMetadataRef;
 
     private readonly MethodReference getTypeMetadataRef;
+
+    private readonly TypeReference listTypeRef;
+    private readonly MethodReference listCtorRef;
+    private readonly MethodReference listAddRef;
+    private readonly MethodReference listGetItemRef;
     #endregion
 
     #region Fields
     private FieldDefinition observableImplFieldDef;
     private FieldDefinition metadataFieldDef;
+    private FieldDefinition gettersFieldDef;
+    private FieldDefinition settersFieldDef;
     #endregion
 
     public ObservableInjector(AssemblyDefinition assembly) {
@@ -52,6 +59,12 @@ public class ObservableInjector {
 
         typeDef = module.FindTypeDefinition(typeof(ObservableMetadata));
         getTypeMetadataRef = module.ImportReference(typeDef.FindMethodDefinition("GetTypeMetadata"));
+
+        var listType = Type.GetType("System.Collections.Generic.List`1[System.Object]");
+        listTypeRef = module.ImportReference(listType);
+        listCtorRef = module.ImportReference(listType.GetConstructor(Type.EmptyTypes));
+        listAddRef = module.ImportReference(listType.GetMethod("Add"));
+        listGetItemRef = module.ImportReference(listType.GetMethod("get_Item"));
     }
 
     public void Inject() {
@@ -69,8 +82,12 @@ public class ObservableInjector {
         // Создаем и добавляем новые поля
         observableImplFieldDef = new FieldDefinition("ObservableImpl", FieldAttributes.Public, observableImplTypeRef);
         metadataFieldDef = new FieldDefinition("Metadata", FieldAttributes.Public, typeMetadataTypeRef);
+        gettersFieldDef = new FieldDefinition("Getters", FieldAttributes.Public, listTypeRef);
+        settersFieldDef = new FieldDefinition("Setters", FieldAttributes.Public, listTypeRef);
         targetTypeDef.Fields.Add(observableImplFieldDef);
         targetTypeDef.Fields.Add(metadataFieldDef);
+        targetTypeDef.Fields.Add(gettersFieldDef);
+        targetTypeDef.Fields.Add(settersFieldDef);
 
         // Инжектим инициализацию полей в конструктор
         foreach (var constructor in targetTypeDef.GetConstructors()) {
@@ -88,6 +105,12 @@ public class ObservableInjector {
 
         MethodDefinition notifyPropertyChangedDef = targetTypeDef.AddInterfaceMethod(interfaceDef, "NotifyPropertyChanged");
         ImplementNotifyPropertyChangedMethod(notifyPropertyChangedDef);
+
+        MethodDefinition getGetterDelegateDef = targetTypeDef.AddInterfaceMethod(interfaceDef, "GetGetterDelegate");
+        ImplementGetGetterDelegatedMethod(getGetterDelegateDef);
+
+        MethodDefinition getSetterDelegateDef = targetTypeDef.AddInterfaceMethod(interfaceDef, "GetSetterDelegate");
+        ImplementGetSetterDelegatedMethod(getSetterDelegateDef);
 
         var npcRef = module.ImportReference(notifyPropertyChangedDef);
         for (int i = 0; i < targetTypeDef.Properties.Count; ++i) {
@@ -119,11 +142,27 @@ public class ObservableInjector {
         proc.InsertBefore(target, Instruction.Create(OpCodes.Call, getTypeMetadataRef));
         proc.InsertBefore(target, Instruction.Create(OpCodes.Stfld, metadataFieldDef));
 
+        //Getters = new List<object>();
+        proc.InsertBefore(target, Instruction.Create(OpCodes.Ldarg_0));
+        proc.InsertBefore(target, Instruction.Create(OpCodes.Newobj, listCtorRef));
+        proc.InsertBefore(target, Instruction.Create(OpCodes.Stfld, gettersFieldDef));
+
+        //Setters = new List<object>();
+        proc.InsertBefore(target, Instruction.Create(OpCodes.Ldarg_0));
+        proc.InsertBefore(target, Instruction.Create(OpCodes.Newobj, listCtorRef));
+        proc.InsertBefore(target, Instruction.Create(OpCodes.Stfld, settersFieldDef));
+
         //observableImpl.SetNumProperties(targetTypeDef.Properties.Count);
         proc.InsertBefore(target, Instruction.Create(OpCodes.Ldarg_0));
         proc.InsertBefore(target, Instruction.Create(OpCodes.Ldfld, observableImplFieldDef));
         proc.InsertBefore(target, Instruction.Create(OpCodes.Ldc_I4, targetTypeDef.Properties.Count));
         proc.InsertBefore(target, Instruction.Create(OpCodes.Callvirt, setNumPropertiesRef));
+
+        //Добавляем сеттеры и геттеры
+        var properties = targetTypeDef.Properties;
+        for (int i = 0; i < properties.Count; ++i) {
+            
+        }
         //////////////////////////////////
 
         body.OptimizeMacros();
@@ -176,6 +215,30 @@ public class ObservableInjector {
         body.Instructions.Add(Instruction.Create(OpCodes.Ldarg_0));
         body.Instructions.Add(Instruction.Create(OpCodes.Ldarg_1));
         body.Instructions.Add(Instruction.Create(OpCodes.Callvirt, notifyPropertyChangedRef));
+        body.Instructions.Add(Instruction.Create(OpCodes.Ret));
+        ////////////////////
+    }
+
+    private void ImplementGetGetterDelegatedMethod(MethodDefinition method) {
+        var body = method.Body;
+
+        ///////////////////
+        body.Instructions.Add(Instruction.Create(OpCodes.Ldarg_0));
+        body.Instructions.Add(Instruction.Create(OpCodes.Ldfld, gettersFieldDef));
+        body.Instructions.Add(Instruction.Create(OpCodes.Ldarg_1));
+        body.Instructions.Add(Instruction.Create(OpCodes.Callvirt, listGetItemRef));
+        body.Instructions.Add(Instruction.Create(OpCodes.Ret));
+        ////////////////////
+    }
+
+    private void ImplementGetSetterDelegatedMethod(MethodDefinition method) {
+        var body = method.Body;
+
+        ///////////////////
+        body.Instructions.Add(Instruction.Create(OpCodes.Ldarg_0));
+        body.Instructions.Add(Instruction.Create(OpCodes.Ldfld, settersFieldDef));
+        body.Instructions.Add(Instruction.Create(OpCodes.Ldarg_1));
+        body.Instructions.Add(Instruction.Create(OpCodes.Callvirt, listGetItemRef));
         body.Instructions.Add(Instruction.Create(OpCodes.Ret));
         ////////////////////
     }

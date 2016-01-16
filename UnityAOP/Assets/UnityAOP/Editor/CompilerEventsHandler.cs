@@ -38,13 +38,11 @@ public static class CompilerEventsHandler {
             return;
         }
 
-        /*
         var assemblyDefinition = AssemblyDefinition.ReadAssembly(fullPath);
         var assemblyInjector = new AssemblyInjector(assemblyDefinition);
         if (assemblyInjector.Process()) {
             assemblyDefinition.Write(fullPath);
         }
-         */
     }
 }
 }

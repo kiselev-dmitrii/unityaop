@@ -16,8 +16,19 @@ namespace Assets {
 public class Test {
     public Implementation X { get; set; }
 
+    public int Y { get; set; }
+
     public Test() {
-        object obj = new SetterDelegate<Interface>(delegate(Interface value) { X = (Implementation)value; });
+        object obj = new SetterDelegate<Interface>(Setter);
+        object obj2 = new GetterDelegate<Interface>(Getter);
+    }
+
+    public void Setter(Interface value) {
+        X = (Implementation) value;
+    }
+
+    public Interface Getter() {
+        return X;
     }
 }
 }

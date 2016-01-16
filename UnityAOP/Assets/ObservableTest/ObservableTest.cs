@@ -3,13 +3,14 @@ using Assets.ObservableTest.InjectedModel;
 using Assets.UnityAOP.Observable;
 using Assets.UnityAOP.Observable.ChainedObservers;
 using UnityEngine;
-using Application = Assets.ObservableTest.InjectedModel.Application;
+using Application = Assets.ObservableTest.Model.Application;
 
 namespace Assets.ObservableTest {
 public class ObservableTest : MonoBehaviour {
     private Application application;
     private ChainedPropertyObserver<int> observer; 
 
+    /*
     public void Awake() {
         application = new Application();
 
@@ -35,5 +36,6 @@ public class ObservableTest : MonoBehaviour {
     private void OnValueChanged() {
         //Debug.Log(observer.GetValue());
     }
+     */
 }
 }

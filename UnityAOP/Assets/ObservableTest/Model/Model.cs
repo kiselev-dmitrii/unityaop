@@ -5,7 +5,7 @@ using System.Text;
 using Assets.UnityAOP.Attributes;
 
 namespace Assets.ObservableTest.Model {
-    //[Observable]
+    [Observable]
     public class Application {
         public User Player { get; private set; }
 
@@ -14,7 +14,7 @@ namespace Assets.ObservableTest.Model {
         }
     }
 
-    //[Observable]
+    [Observable]
     public class User {
         public Int32 Id { get; set; }
         public String Name { get; set; }
@@ -29,7 +29,7 @@ namespace Assets.ObservableTest.Model {
         }
     }
 
-    //[Observable]
+    [Observable]
     public class Group {
         public Int32 Id { get; set; }
         public Int32 NumMembers { get; set; }

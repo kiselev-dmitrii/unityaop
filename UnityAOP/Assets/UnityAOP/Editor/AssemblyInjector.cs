@@ -20,8 +20,8 @@ public class AssemblyInjector {
 
     public bool Process() {
         try {
-            //var injector = new ObservableInjector(assembly);
-            //injector.Inject();
+            var injector = new ObservableInjector(assembly);
+            injector.Inject();
             //var targetTypeDef = mainModule.FindTypeDefinition(typeof (ObservableMetadata));
             //MethodDefinition targetMethodDef = targetTypeDef.FindMethodDefinition("InitMetadata");
 

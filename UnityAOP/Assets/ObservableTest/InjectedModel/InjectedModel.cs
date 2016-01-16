@@ -4,6 +4,7 @@ using Assets.UnityAOP.Attributes;
 using Assets.UnityAOP.Observable;
 
 namespace Assets.ObservableTest.InjectedModel {
+    /*
     [Observable]
     public class Application : IObservable {
         public ObservableImpl ObservableImpl;
@@ -234,4 +235,5 @@ namespace Assets.ObservableTest.InjectedModel {
             return Setters[propertyIndex];
         }
     }
+     */
 }
