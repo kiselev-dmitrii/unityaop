@@ -70,11 +70,9 @@
     <Compile Include="Assets\NewBehaviourScript2.cs" />
     <Compile Include="Assets\NewBehaviourScript3.cs" />
     <Compile Include="Assets\NewBehaviourScript4.cs" />
-    <Compile Include="Assets\NewBehaviourScript5.cs" />
     <Compile Include="Assets\ObservableTest\InjectedModel\InjectedModel.cs" />
     <Compile Include="Assets\ObservableTest\Model\Model.cs" />
     <Compile Include="Assets\ObservableTest\ObservableTest.cs" />
-    <Compile Include="Assets\Test.cs" />
     <Compile Include="Assets\UnityAOP\Attributes\AdviceAttribute.cs" />
     <Compile Include="Assets\UnityAOP\Attributes\LogAttribute.cs" />
     <Compile Include="Assets\UnityAOP\Attributes\MethodBoundaryAspectAttribute.cs" />

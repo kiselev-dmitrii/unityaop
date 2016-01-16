@@ -34,7 +34,7 @@ public class ObservableTest : MonoBehaviour {
     }
 
     private void OnValueChanged() {
-        //Debug.Log(observer.GetValue());
+        Debug.Log(observer.GetValue());
     }
 }
 }

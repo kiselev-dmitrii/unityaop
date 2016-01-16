@@ -67,7 +67,9 @@ public static class CompilerEventsHandler {
         WriterParameters writerParameters = new WriterParameters();
 
         readerParameters.ReadSymbols = true;
+        readerParameters.SymbolReaderProvider = new Mono.Cecil.Mdb.MdbReaderProvider();
         writerParameters.WriteSymbols = true;
+        writerParameters.SymbolWriterProvider = new Mono.Cecil.Mdb.MdbWriterProvider();
 
         var assemblyDefinition = AssemblyDefinition.ReadAssembly(dllPath, readerParameters);
         var assemblyInjector = new AssemblyInjector(assemblyDefinition);

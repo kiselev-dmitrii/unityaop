@@ -27,6 +27,8 @@ public class ObservableInjector {
 
     private readonly MethodReference getTypeMetadataRef;
 
+    private readonly TypeReference iObservableTypeRef;
+
     private readonly TypeReference listTypeRef;
     private readonly MethodReference listCtorRef;
     private readonly MethodReference listAddRef;
@@ -64,6 +66,9 @@ public class ObservableInjector {
 
         typeDef = module.FindTypeDefinition(typeof(ObservableMetadata));
         getTypeMetadataRef = module.ImportReference(typeDef.FindMethodDefinition("GetTypeMetadata"));
+
+        typeDef = module.FindTypeDefinition(typeof (IObservable));
+        iObservableTypeRef = module.ImportReference(typeDef);
 
         var listType = Type.GetType("System.Collections.Generic.List`1[System.Object]");
         listTypeRef = module.ImportReference(listType);
@@ -171,12 +176,18 @@ public class ObservableInjector {
         for (int i = 0; i < properties.Count; ++i) {
             var property = properties[i];
             MethodDefinition getterMethodDef = property.GetMethod;
-            MethodDefinition setterMethodDef = property.SetMethod;
-            TypeReference propertyTypeRef = module.ImportReference(property.PropertyType);
-           
-            GenericInstanceType getterDelegateTypeRef = getterDelegateGenericTypeDef.MakeGenericInstanceType(propertyTypeRef);
-            MethodReference getterDelegateCtorRef = getterDelegateTypeRef.Resolve().GetConstructors().First();
-            GenericInstanceType setterDelegateTypeRef = setterDelegateGenericTypeDef.MakeGenericInstanceType(propertyTypeRef);
+            TypeDefinition propertyTypeDef = property.PropertyType.Resolve();
+
+            TypeReference genericArg = null; 
+            if (propertyTypeDef.HasAttributeOfType<ObservableAttribute>()) {
+                genericArg = iObservableTypeRef;
+            } else {
+                genericArg = property.PropertyType;
+            }
+
+            GenericInstanceType getterDelegateTypeRef = getterDelegateGenericTypeDef.MakeGenericInstanceType(genericArg);
+            MethodReference getterDelegateCtorRef =
+                getterDelegateTypeRef.Resolve().GetConstructors().First().MakeHostInstanceGeneric(genericArg);
 
             proc.InsertBefore(target, Instruction.Create(OpCodes.Ldarg_0));
             proc.InsertBefore(target, Instruction.Create(OpCodes.Ldfld, gettersFieldDef));

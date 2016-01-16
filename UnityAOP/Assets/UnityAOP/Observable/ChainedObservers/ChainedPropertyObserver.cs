@@ -49,7 +49,7 @@ public class ChainedPropertyObserver<T> : IObserver, IDisposable {
                 refs[i + 1] = getter();
             } else {
                 valueGetter = (GetterDelegate<T>) cur.GetGetterDelegate(prop.Index);
-                valueSetter = (SetterDelegate<T>) cur.GetSetterDelegate(prop.Index);
+                //valueSetter = (SetterDelegate<T>) cur.GetSetterDelegate(prop.Index);
             }
         }
     }
