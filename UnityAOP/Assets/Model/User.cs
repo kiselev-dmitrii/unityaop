@@ -13,7 +13,6 @@ namespace Assets.Model {
             Id = id;
             Name = name;
             Avatar = avatar;
-            Group = new Group(id);
         }
     }
 }
