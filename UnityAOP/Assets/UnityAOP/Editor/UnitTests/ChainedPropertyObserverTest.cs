@@ -1,4 +1,5 @@
-﻿using Assets.Model;
+﻿using System;
+using Assets.Model;
 using Assets.UnityAOP.Observable.ChainedObservers;
 using NUnit.Framework;
 
@@ -6,13 +7,10 @@ namespace Assets.UnityAOP.Editor.UnitTests {
     public class ChainedPropertyObserverTest {
         public Application Application;
 
-
-        public ChainedPropertyObserverTest() {
-            Application = new Application();
-        }
-
         [Test]
         public void ObserveBrokenField() {
+            Application = new Application();
+
             int numMembers = 0;
 
             ChainedPropertyObserver<int> observer = null;
@@ -39,6 +37,78 @@ namespace Assets.UnityAOP.Editor.UnitTests {
 
             Application.Player = null;
             Assert.IsTrue(numMembers == 0);
+        }
+
+        [Test]
+        public void ObserveCollectionItem() {
+            var group = new Group(1);
+
+            String secondMemberName = null;
+
+            ChainedPropertyObserver<String> observer = null;
+            observer = group.Observe(x => x.Members[2].Name, () => secondMemberName = observer.GetValue());
+            Assert.IsTrue(secondMemberName == null);
+
+            group.Members.Add(new User(1, "First user", ""));
+            Assert.IsTrue(secondMemberName == null);
+
+            group.Members.Add(new User(2, "Second user", ""));
+            Assert.IsTrue(secondMemberName == null);
+            
+            group.Members.Add(new User(3, "Third user", ""));
+            Assert.IsTrue(secondMemberName == "Third user");
+
+            group.Members.Insert(0, new User(0, "Zero user", ""));
+            Assert.IsTrue(secondMemberName == "Second user");
+
+            group.Members.RemoveAt(0);
+            Assert.IsTrue(secondMemberName == "Third user");
+
+            group.Members.RemoveAt(0);
+            Assert.IsTrue(secondMemberName == null);
+
+            group.Members.RemoveAt(0);
+            Assert.IsTrue(secondMemberName == null);
+
+            group.Members.RemoveAt(0);
+            Assert.IsTrue(secondMemberName == null);
+        }
+
+        [Test]
+        public void ReplaceCollection() {
+            Application = new Application();
+
+            var group1 = new Group(1, new User[] {
+                new User(1, "John Nash"),
+                new User(2, "Jack London"),
+                new User(3, "Johnny Cash"), 
+            });
+
+            var group2 = new Group(2, new User[] {
+                new User(4, "Kate Ostin"),
+                new User(5, "Evangeline Lili"),
+                new User(6, "Cassie Cage"), 
+            });
+
+            var group3 = new Group(2, new User[] {
+                new User(7, "Lisa Simpson"),
+                new User(8, "Turanga Lila") 
+            });
+
+            String secondMemberName = null;
+            ChainedPropertyObserver<String> observer = null;
+            observer = Application.Observe(x => x.Player.Group.Members[2].Name, () => secondMemberName = observer.GetValue());
+
+            Assert.IsTrue(secondMemberName == null);
+
+            Application.Player.Group = group1;
+            Assert.IsTrue(secondMemberName == "Johnny Cash");
+
+            Application.Player.Group = group2;
+            Assert.IsTrue(secondMemberName == "Cassie Cage");
+
+            Application.Player.Group = group3;
+            Assert.IsTrue(secondMemberName == null);
         }
     }
 }

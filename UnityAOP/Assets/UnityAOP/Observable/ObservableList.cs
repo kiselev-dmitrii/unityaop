@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Assets.UnityAOP.Attributes;
 using Assets.UnityAOP.Utils;
 
@@ -19,130 +20,136 @@ namespace Assets.UnityAOP.Observable {
         }
     
         #region IObservable
-    public void AddObserver(int fieldIndex, IObserver observer) {
-        if (fieldIndex >= indexToObservers.Count) {
-            int delta = fieldIndex - indexToObservers.Count + 1;
-            for (int i = 0; i < delta; ++i) {
-                indexToObservers.Add(new List<IObserver>());
+        public void AddObserver(int fieldIndex, IObserver observer) {
+            if (fieldIndex >= indexToObservers.Count) {
+                int delta = fieldIndex - indexToObservers.Count + 1;
+                for (int i = 0; i < delta; ++i) {
+                    indexToObservers.Add(new List<IObserver>());
+                }
+            }
+            indexToObservers[fieldIndex].Add(observer);
+        }
+
+        public void RemoveObserver(int fieldIndex, IObserver observer) {
+            if (fieldIndex >= indexToObservers.Count) {
+                return;
+            }
+            indexToObservers[fieldIndex].Remove(observer);
+        }
+
+        public void NotifyPropertyChanged(int fieldIndex) {
+            if (fieldIndex >= indexToObservers.Count) {
+                return;
+            }
+            var observers = indexToObservers[fieldIndex];
+            foreach (var observer in observers) {
+                observer.OnNodeChanged(this, fieldIndex);
             }
         }
-        indexToObservers[fieldIndex].Add(observer);
-    }
 
-    public void RemoveObserver(int fieldIndex, IObserver observer) {
-        if (fieldIndex >= indexToObservers.Count) {
-            return;
+        public object GetGetterDelegate(int propertyIndex) {
+            if (hasObservableItems) {
+                return new GetterDelegate<IObservable>(delegate { return (IObservable) TryGet(propertyIndex); });
+            } else {
+                return new GetterDelegate<T>(delegate { return TryGet(propertyIndex); });
+            }
         }
-        indexToObservers[fieldIndex].Remove(observer);
-    }
 
-    public void NotifyPropertyChanged(int fieldIndex) {
-        if (fieldIndex >= indexToObservers.Count) {
-            return;
+        public object GetSetterDelegate(int propertyIndex) {
+            if (hasObservableItems) {
+                return new SetterDelegate<IObservable>(delegate(IObservable value) { list[propertyIndex] = (T)value; });
+            } else {
+                return new SetterDelegate<T>(delegate(T value) { list[propertyIndex] = value; });
+            }
         }
-        var observers = indexToObservers[fieldIndex];
-        foreach (var observer in observers) {
-            observer.OnNodeChanged(this, fieldIndex);
-        }
-    }
-
-    public object GetGetterDelegate(int propertyIndex) {
-        if (hasObservableItems) {
-            return new GetterDelegate<IObservable>(delegate { return (IObservable) TryGet(propertyIndex); });
-        } else {
-            return new GetterDelegate<T>(delegate { return TryGet(propertyIndex); });
-        }
-    }
-
-    public object GetSetterDelegate(int propertyIndex) {
-        if (hasObservableItems) {
-            return new SetterDelegate<IObservable>(delegate(IObservable value) { list[propertyIndex] = (T)value; });
-        } else {
-            return new SetterDelegate<T>(delegate(T value) { list[propertyIndex] = value; });
-        }
-    }
-    #endregion
+        #endregion
     
         #region IList
-    public IEnumerator<T> GetEnumerator() {
-        return list.GetEnumerator();
-    }
-
-    IEnumerator IEnumerable.GetEnumerator() {
-        return GetEnumerator();
-    }
-
-    public void Add(T item) {
-        int index = list.Count;
-        list.Add(item);
-
-        NotifyPropertyChanged(index);
-        NotifyItemInserted(index, item);
-    }
-
-    public void Clear() {
-        list.Clear();
-
-        for (int i = 0; i < indexToObservers.Count; ++i) {
-            NotifyPropertyChanged(i);
+        public IEnumerator<T> GetEnumerator() {
+            return list.GetEnumerator();
         }
-        NotifyListCleared();
-    }
 
-    public bool Contains(T item) {
-        return list.Contains(item);
-    }
-
-    public void CopyTo(T[] array, int arrayIndex) {
-        list.CopyTo(array, arrayIndex);
-    }
-
-    public bool Remove(T item) {
-        int index = IndexOf(item);
-        if (index < 0) return false;
-        RemoveAt(index);
-        return true;
-    }
-
-    public int Count {
-        get { return list.Count; }
-    }
-
-    public bool IsReadOnly {
-        get { return ((IList<T>) list).IsReadOnly; }
-    }
-
-    public int IndexOf(T item) {
-        return list.IndexOf(item);
-    }
-
-    public void Insert(int index, T item) {
-        list.Insert(index, item);
-
-        for (int i = index; i < list.Count; ++i) {
-            NotifyPropertyChanged(i);
+        IEnumerator IEnumerable.GetEnumerator() {
+            return GetEnumerator();
         }
-        NotifyItemInserted(index, item);
-    }
 
-    public void RemoveAt(int index) {
-        var item = list[index];
-        list.RemoveAt(index);
+        public void Add(T item) {
+            int index = list.Count;
+            list.Add(item);
 
-        for (int i = index; i < list.Count+1; ++i) {
-            NotifyPropertyChanged(i);
-        }
-        NotifyItemRemoved(index, item);
-    }
-
-    public T this[int index] {
-        get { return list[index]; }
-        set {
-            list[index] = value;
             NotifyPropertyChanged(index);
+            NotifyItemInserted(index, item);
         }
-    }
-    #endregion
+
+        public void AddRange(IEnumerable<T> collection) {
+            foreach (var item in collection) {
+                Add(item);
+            }
+        }
+
+        public void Clear() {
+            list.Clear();
+
+            for (int i = 0; i < indexToObservers.Count; ++i) {
+                NotifyPropertyChanged(i);
+            }
+            NotifyListCleared();
+        }
+
+        public bool Contains(T item) {
+            return list.Contains(item);
+        }
+
+        public void CopyTo(T[] array, int arrayIndex) {
+            list.CopyTo(array, arrayIndex);
+        }
+
+        public bool Remove(T item) {
+            int index = IndexOf(item);
+            if (index < 0) return false;
+            RemoveAt(index);
+            return true;
+        }
+
+        public int Count {
+            get { return list.Count; }
+        }
+
+        public bool IsReadOnly {
+            get { return ((IList<T>) list).IsReadOnly; }
+        }
+
+        public int IndexOf(T item) {
+            return list.IndexOf(item);
+        }
+
+        public void Insert(int index, T item) {
+            list.Insert(index, item);
+
+            for (int i = index; i < list.Count; ++i) {
+                NotifyPropertyChanged(i);
+            }
+            NotifyItemInserted(index, item);
+        }
+
+        public void RemoveAt(int index) {
+            var item = list[index];
+            list.RemoveAt(index);
+
+            for (int i = index; i < list.Count+1; ++i) {
+                NotifyPropertyChanged(i);
+            }
+            NotifyItemRemoved(index, item);
+        }
+
+        public T this[int index] {
+            get { return list[index]; }
+            set {
+                list[index] = value;
+                NotifyPropertyChanged(index);
+            }
+        }
+        #endregion
     
         #region Utils
         private void NotifyItemInserted(int index, T item) {
