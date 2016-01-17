@@ -16,13 +16,9 @@ public class ObservableList<T> : IObservableCollection, IObservable,  IList<T> {
         indexToObservers = new List<List<IObserver>>();
         listObservers = new List<IListObserver<T>>();
         hasObservableItems = typeof (T).HasAttribute<ObservableAttribute>();
-    } 
-
-    public PropertyMetadata GetPropertyMetadata(string property) {
-        throw new NotImplementedException();
-        //NOTUSED
     }
 
+    #region IObservable
     public void AddObserver(int fieldIndex, IObserver observer) {
         if (fieldIndex >= indexToObservers.Count) {
             int delta = fieldIndex - indexToObservers.Count + 1;
@@ -65,7 +61,9 @@ public class ObservableList<T> : IObservableCollection, IObservable,  IList<T> {
             return new SetterDelegate<T>(delegate(T value) { list[propertyIndex] = value; });
         }
     }
+    #endregion
 
+    #region IList
     public IEnumerator<T> GetEnumerator() {
         return list.GetEnumerator();
     }
@@ -134,7 +132,7 @@ public class ObservableList<T> : IObservableCollection, IObservable,  IList<T> {
         for (int i = index; i < list.Count+1; ++i) {
             NotifyPropertyChanged(i);
         }
-        NotifyItemInserted(index, item);
+        NotifyItemRemoved(index, item);
     }
 
     public T this[int index] {
@@ -144,31 +142,32 @@ public class ObservableList<T> : IObservableCollection, IObservable,  IList<T> {
             NotifyPropertyChanged(index);
         }
     }
+    #endregion
 
-    public T TryGet(int index) {
-        if (index < list.Count) {
-            return list[index];
-        } else {
-            return default(T);
-        }
-    }
-
-    #region Notify methods
-    public void NotifyItemInserted(int index, T item) {
+    #region Utils
+    private void NotifyItemInserted(int index, T item) {
         foreach (var observer in listObservers) {
             observer.OnItemInserted(index, item);
         }
     }
 
-    public void NotifyItemRemoved(int index, T item) {
+    private void NotifyItemRemoved(int index, T item) {
         foreach (var observer in listObservers) {
             observer.OnItemRemoved(index, item);
         }
     }
 
-    public void NotifyListCleared() {
+    private void NotifyListCleared() {
         foreach (var observer in listObservers) {
             observer.OnListCleared();
+        }
+    }
+
+    private T TryGet(int index) {
+        if (index < list.Count) {
+            return list[index];
+        } else {
+            return default(T);
         }
     }
     #endregion
