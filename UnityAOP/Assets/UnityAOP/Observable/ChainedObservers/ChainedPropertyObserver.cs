@@ -1,24 +1,14 @@
 ﻿using System;
-using UnityEngine.Assertions;
 
 namespace Assets.UnityAOP.Observable.ChainedObservers {
-    public class ChainedPropertyObserver<T> : IObserver, IDisposable {
-        private readonly PropertyMetadata[] props;
-        private readonly IObservable[] refs;
-    
+    public class ChainedPropertyObserver<T> : BaseChainedObserver {
         private GetterDelegate<T> valueGetter;
         private SetterDelegate<T> valueSetter;
-    
         private Action callback;
-    
-        public ChainedPropertyObserver(IObservable root, PropertyMetadata[] propertyPath, Action onValueChanged) {
-            props = propertyPath;
-    
-            refs = new IObservable[propertyPath.Length];
-            refs[0] = root;
-    
+        private T lastValue;
+
+        public ChainedPropertyObserver(IObservable root, PropertyMetadata[] propertyPath, Action onValueChanged) : base(root, propertyPath) {
             callback = onValueChanged;
-    
             Bind(0);
         }
     
@@ -35,71 +25,36 @@ namespace Assets.UnityAOP.Observable.ChainedObservers {
                 valueSetter(value);
             }   
         }
-    
-        private void Bind(int position) {
-            for (int i = position; i < refs.Length; ++i) {
-                IObservable cur = refs[i];
-                if (cur == null) break;
-    
-                PropertyMetadata prop = props[i];
-                cur.AddObserver(prop.Index, this);
-    
-                if (i != props.Length - 1) {
-                    var getter = (GetterDelegate<IObservable>) cur.GetGetterDelegate(prop.Index);
-                    refs[i + 1] = getter();
-                } else {
-                    valueGetter = (GetterDelegate<T>) cur.GetGetterDelegate(prop.Index);
-                    //valueSetter = (SetterDelegate<T>) cur.GetSetterDelegate(prop.Index);
-                }
-            }
+
+        protected override void BindTarget(IObservable parent, PropertyMetadata targetMeta) {
+            valueGetter = (GetterDelegate<T>) parent.GetGetterDelegate(targetMeta.Index);
+            //valueSetter = (SetterDelegate<T>) parent.GetSetterDelegate(targetMeta.Index);
         }
-    
-        private void Unbind(int position) {
-            for (int i = position; i < refs.Length; ++i) {
-                IObservable cur = refs[i];
-                if (cur != null) {
-                    PropertyMetadata prop = props[i];
-                    cur.RemoveObserver(prop.Index, this);
-    
-                    refs[i] = null;
-                }
-            }
-            
+
+        protected override void UnbindTarget() {
             valueGetter = null;
             valueSetter = null;
         }
-    
-        public void OnNodeChanged(IObservable parent, int index) {
-            if (parent == refs[refs.Length - 1]) {
-                OnValueChanged();
-            } else {
-                int parentIndex = Array.IndexOf(refs, parent);
-                Assert.IsTrue(parentIndex >= 0, "Не найдена ссылка родителя");
-    
-                //Отписываемся от старого объекта
-                Unbind(parentIndex + 1);
-    
-                //Обновляем следущую ссылку
-                var prop = props[parentIndex];
-                var getter = (GetterDelegate<IObservable>) parent.GetGetterDelegate(prop.Index);
-                refs[parentIndex + 1] = getter();
-    
-                //Подписываемся
-                Bind(parentIndex + 1);
-    
-                OnValueChanged();
+
+        protected override void OnParentNodeChanged() {
+            T newValue = GetValue();
+            if (!Equals(newValue, lastValue)) {
+                callback();
+                lastValue = newValue;
             }
         }
     
-        private void OnValueChanged() {
-            callback();
-        }
-    
-        public void Dispose() {
-            Unbind(0);
+        public override void Dispose() {
+            base.Dispose();
             callback = null;
         }
-    
-    
+
+        private static bool Equals(T obj1, T obj2) {
+            if (obj1 == null && obj2 == null) return true;
+            if (obj1 == null) return false;
+            if (obj2 == null) return false;
+            return obj1.Equals(obj2);
+
+        }
     }
 }
