@@ -47,7 +47,7 @@ namespace Assets.UnityAOP.Observable {
             Name = name;
             Index = index;
             Type = type;
-            IsCollection = type.ImplementInterface<IObservableCollection>();
+            IsCollection = type.GetInterface("IObservableCollection`1") != null;
             if (IsCollection) {
                 ItemType = type.GetGenericArguments()[0];
             }

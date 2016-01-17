@@ -11,7 +11,11 @@ namespace Assets.UnityAOP.Observable {
         object GetSetterDelegate(int propertyIndex);
     }
     
-    public interface IObservableCollection {
-        
+    public interface IObservableCollection<T> {
+        void AddCollectionObserver(IListObserver<T> observer);
+        void RemoveCollectionObserver(IListObserver<T> observer);
+        void NotifyItemInserted(int index, T item);
+        void NotifyItemRemoved(int index, T item);
+        void NotifyListCleared();
     }
 }

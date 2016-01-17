@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using UnityEngine.Assertions;
@@ -18,7 +19,19 @@ namespace Assets.UnityAOP.Observable.ChainedObservers {
             var props = CalculatePropertyPath(root.GetType(), fieldsName);
             return new ChainedPropertyObserver<TTarget>((IObservable)root, props, onChanged);
         }
-    
+
+        public static SyncListObserver<TSource, TDestination> SyncList<TRoot, TSource, TDestination>(
+            this TRoot root,
+            Expression<Func<TRoot, IList<TSource>>> expression,
+            IList<TDestination> destination,
+            SyncListObserver<TSource, TDestination>.ConstructorFunc constructor) where TSource : class 
+        {
+            var path = expression.ToString().Replace("get_Item(", "").Replace(")", "");
+            var fieldsName = path.Split('.').Skip(1).ToArray();
+            var fullPath = CalculatePropertyPath(root.GetType(), fieldsName);
+            return new SyncListObserver<TSource, TDestination>((IObservable)root, fullPath, destination, constructor);
+        }
+
         private static PropertyMetadata[] CalculatePropertyPath(Type rootType, String path) {
             String[] fieldsName = path.Split('.');
             return CalculatePropertyPath(rootType, fieldsName);

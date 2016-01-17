@@ -77,8 +77,10 @@
     <Compile Include="Assets\UnityAOP\Binding\BindingNode.cs" />
     <Compile Include="Assets\UnityAOP\Documentation\InjectedModel.cs" />
     <Compile Include="Assets\UnityAOP\Observable\ChainedObservers\BaseChainedObserver.cs" />
+    <Compile Include="Assets\UnityAOP\Observable\ChainedObservers\BaseListObserver.cs" />
     <Compile Include="Assets\UnityAOP\Observable\ChainedObservers\ChainedPropertyObserver.cs" />
     <Compile Include="Assets\UnityAOP\Observable\ChainedObservers\ObserveExtensions.cs" />
+    <Compile Include="Assets\UnityAOP\Observable\ChainedObservers\SyncListObserver.cs" />
     <Compile Include="Assets\UnityAOP\Observable\IListObserver.cs" />
     <Compile Include="Assets\UnityAOP\Observable\IObservable.cs" />
     <Compile Include="Assets\UnityAOP\Observable\IObserver.cs" />

@@ -19,5 +19,17 @@ namespace Assets.UnityAOP.Utils {
             dictionary.TryGetValue(key, out result);
             return result;
         }
+
+        public static String ToString<T>(this IEnumerable<T> collection, String separator) {
+            if (collection.Count() == 0) return "";
+
+            StringBuilder builder = new StringBuilder();
+            builder.Append(collection.First().ToString());
+            foreach (var item in collection.Skip(1)) {
+                builder.Append(", " + item.ToString());
+            }
+
+            return builder.ToString();
+        }
     }    
 }

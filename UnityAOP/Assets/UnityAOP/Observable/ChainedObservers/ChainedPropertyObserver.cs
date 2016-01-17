@@ -54,7 +54,6 @@ namespace Assets.UnityAOP.Observable.ChainedObservers {
             if (obj1 == null) return false;
             if (obj2 == null) return false;
             return obj1.Equals(obj2);
-
         }
     }
 }
