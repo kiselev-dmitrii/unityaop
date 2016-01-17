@@ -1,13 +1,13 @@
 using System;
 using Assets.UnityAOP.Attributes;
-using Assets.UnityAOP.Observable;
 using Assets.UnityAOP.Utils;
 using UnityEngine;
 
 namespace Assets.UnityAOP.Binding {
     public class BindingNode : MonoBehaviour {
-        [ClassImplements(typeof(IObservable))]
+        [ClassHasAttribute(typeof(ObservableAttribute))]
         public SerializableType Type;
+
         public String Path;
     }
 }

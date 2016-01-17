@@ -14,7 +14,11 @@ namespace Assets.UnityAOP.Utils {
         }
     
         public static bool HasAttribute<T>(this Type type) {
-            return type.GetCustomAttributes(typeof (T), true).Length > 0;
+            return type.HasAttribute(typeof (T));
+        }
+
+        public static bool HasAttribute(this Type type, Type attributeType) {
+            return type.GetCustomAttributes(attributeType, true).Length > 0;
         }
     
         public static bool ImplementInterface<T>(this Type type) {
