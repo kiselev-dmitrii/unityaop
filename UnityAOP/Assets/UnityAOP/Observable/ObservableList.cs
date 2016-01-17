@@ -5,20 +5,20 @@ using Assets.UnityAOP.Attributes;
 using Assets.UnityAOP.Utils;
 
 namespace Assets.UnityAOP.Observable {
-public class ObservableList<T> : IObservableCollection, IObservable,  IList<T> {
-    private readonly List<T> list;
-    private readonly List<List<IObserver>> indexToObservers;
-    private readonly List<IListObserver<T>> listObservers; 
-    private readonly bool hasObservableItems;
-
-    public ObservableList() {
-        list = new List<T>();
-        indexToObservers = new List<List<IObserver>>();
-        listObservers = new List<IListObserver<T>>();
-        hasObservableItems = typeof (T).HasAttribute<ObservableAttribute>();
-    }
-
-    #region IObservable
+    public class ObservableList<T> : IObservableCollection, IObservable,  IList<T> {
+        private readonly List<T> list;
+        private readonly List<List<IObserver>> indexToObservers;
+        private readonly List<IListObserver<T>> listObservers; 
+        private readonly bool hasObservableItems;
+    
+        public ObservableList() {
+            list = new List<T>();
+            indexToObservers = new List<List<IObserver>>();
+            listObservers = new List<IListObserver<T>>();
+            hasObservableItems = typeof (T).HasAttribute<ObservableAttribute>();
+        }
+    
+        #region IObservable
     public void AddObserver(int fieldIndex, IObserver observer) {
         if (fieldIndex >= indexToObservers.Count) {
             int delta = fieldIndex - indexToObservers.Count + 1;
@@ -62,8 +62,8 @@ public class ObservableList<T> : IObservableCollection, IObservable,  IList<T> {
         }
     }
     #endregion
-
-    #region IList
+    
+        #region IList
     public IEnumerator<T> GetEnumerator() {
         return list.GetEnumerator();
     }
@@ -143,33 +143,33 @@ public class ObservableList<T> : IObservableCollection, IObservable,  IList<T> {
         }
     }
     #endregion
-
-    #region Utils
-    private void NotifyItemInserted(int index, T item) {
-        foreach (var observer in listObservers) {
-            observer.OnItemInserted(index, item);
+    
+        #region Utils
+        private void NotifyItemInserted(int index, T item) {
+            foreach (var observer in listObservers) {
+                observer.OnItemInserted(index, item);
+            }
         }
-    }
-
-    private void NotifyItemRemoved(int index, T item) {
-        foreach (var observer in listObservers) {
-            observer.OnItemRemoved(index, item);
+    
+        private void NotifyItemRemoved(int index, T item) {
+            foreach (var observer in listObservers) {
+                observer.OnItemRemoved(index, item);
+            }
         }
-    }
-
-    private void NotifyListCleared() {
-        foreach (var observer in listObservers) {
-            observer.OnListCleared();
+    
+        private void NotifyListCleared() {
+            foreach (var observer in listObservers) {
+                observer.OnListCleared();
+            }
         }
-    }
-
-    private T TryGet(int index) {
-        if (index < list.Count) {
-            return list[index];
-        } else {
-            return default(T);
+    
+        private T TryGet(int index) {
+            if (index < list.Count) {
+                return list[index];
+            } else {
+                return default(T);
+            }
         }
+        #endregion
     }
-    #endregion
-}
 }

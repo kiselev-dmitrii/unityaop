@@ -62,18 +62,18 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Assets\Example1\Console.cs" />
-    <Compile Include="Assets\Example1\Example1.cs" />
-    <Compile Include="Assets\Example1\Warrior.cs" />
-    <Compile Include="Assets\ObservableTest\InjectedModel\InjectedModel.cs" />
-    <Compile Include="Assets\ObservableTest\Model\Model.cs" />
-    <Compile Include="Assets\ObservableTest\ObservableTest.cs" />
+    <Compile Include="Assets\Model\Application.cs" />
+    <Compile Include="Assets\Model\Group.cs" />
+    <Compile Include="Assets\Model\User.cs" />
+    <Compile Include="Assets\Samples\LogSample\Sample1.cs" />
+    <Compile Include="Assets\Samples\ObservableSample\Sample1.cs" />
     <Compile Include="Assets\UnityAOP\Attributes\AdviceAttribute.cs" />
     <Compile Include="Assets\UnityAOP\Attributes\ClassConstraintAttribute.cs" />
     <Compile Include="Assets\UnityAOP\Attributes\LogAttribute.cs" />
     <Compile Include="Assets\UnityAOP\Attributes\MethodBoundaryAspectAttribute.cs" />
     <Compile Include="Assets\UnityAOP\Attributes\ObservableAttribute.cs" />
     <Compile Include="Assets\UnityAOP\Binding\BindingNode.cs" />
+    <Compile Include="Assets\UnityAOP\Documentation\InjectedModel.cs" />
     <Compile Include="Assets\UnityAOP\Observable\ChainedObservers\ChainedPropertyObserver.cs" />
     <Compile Include="Assets\UnityAOP\Observable\ChainedObservers\ObserveExtensions.cs" />
     <Compile Include="Assets\UnityAOP\Observable\IListObserver.cs" />
@@ -83,6 +83,7 @@
     <Compile Include="Assets\UnityAOP\Observable\ObservableList.cs" />
     <Compile Include="Assets\UnityAOP\Observable\ObservableMetadata.cs" />
     <Compile Include="Assets\UnityAOP\Utils\CollectionUtils.cs" />
+    <Compile Include="Assets\UnityAOP\Utils\MultiKeyDictionary.cs" />
     <Compile Include="Assets\UnityAOP\Utils\ReflectionUtils.cs" />
     <Compile Include="Assets\UnityAOP\Utils\SerializableType.cs" />
   </ItemGroup>

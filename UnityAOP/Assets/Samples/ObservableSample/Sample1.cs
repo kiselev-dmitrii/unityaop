@@ -1,13 +1,10 @@
-﻿using System;
-using Assets.ObservableTest.InjectedModel;
-using Assets.ObservableTest.Model;
-using Assets.UnityAOP.Observable;
+﻿using Assets.Model;
 using Assets.UnityAOP.Observable.ChainedObservers;
 using UnityEngine;
-using Application = Assets.ObservableTest.Model.Application;
+using Application = Assets.Model.Application;
 
-namespace Assets.ObservableTest {
-public class ObservableTest : MonoBehaviour {
+namespace Assets.Samples.ObservableSample {
+public class Sample1 : MonoBehaviour {
     private Application application;
     private ChainedPropertyObserver<int> observer; 
 

@@ -13,11 +13,13 @@
     <TargetFrameworkIdentifier>.NETFramework</TargetFrameworkIdentifier>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <TargetFrameworkProfile>Unity Full v3.5</TargetFrameworkProfile>
-    <CompilerResponseFile></CompilerResponseFile>
+    <CompilerResponseFile>
+    </CompilerResponseFile>
     <UnityProjectType>Editor:5</UnityProjectType>
     <UnityBuildTarget>WebGL:20</UnityBuildTarget>
     <UnityVersion>5.3.1f1</UnityVersion>
-    <RootNamespace></RootNamespace>
+    <RootNamespace>
+    </RootNamespace>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -114,10 +116,8 @@
     <Compile Include="Assets\UnityAOP\Editor\CecilUtils.cs" />
     <Compile Include="Assets\UnityAOP\Editor\CodeProcessors\MethodBoundaryInjector.cs" />
     <Compile Include="Assets\UnityAOP\Editor\CodeProcessors\ObservableInjector.cs" />
-    <Compile Include="Assets\UnityAOP\Editor\CodeProcessors\TryFinallyInjector.cs" />
     <Compile Include="Assets\UnityAOP\Editor\CompilerEventsHandler.cs" />
     <Compile Include="Assets\UnityAOP\Editor\Inspector\SerializableTypePropertyDrawer.cs" />
-    <Compile Include="Assets\UnityAOP\Editor\MultiKeyDictionary.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\SyntaxTree\UnityVS\2013\UnityVS.CSharp.targets" />
 </Project>
