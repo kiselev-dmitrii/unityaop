@@ -179,7 +179,7 @@ public class ObservableInjector {
             TypeDefinition propertyTypeDef = property.PropertyType.Resolve();
 
             TypeReference genericArg = null; 
-            if (propertyTypeDef.HasAttributeOfType<ObservableAttribute>()) {
+            if (propertyTypeDef.HasAttributeOfType<ObservableAttribute>() || propertyTypeDef.HasInterface<IObservable>()) {
                 genericArg = iObservableTypeRef;
             } else {
                 genericArg = property.PropertyType;

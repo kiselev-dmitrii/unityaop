@@ -35,11 +35,17 @@ public static class ObserverUtils {
             var propName = path[i];
             var propMeta = typeMeta.GetPropertyMetadata(propName);
 
-            Assert.IsTrue(propMeta != null, "Неправильный путь, возможно");
+            Assert.IsTrue(propMeta != null, "Property not found");
 
             props[i] = propMeta;
 
             if (i != path.Length - 1) {
+                if (propMeta.IsCollection) {
+                    ++i;
+                    propName = path[i];
+                    propMeta = new PropertyMetadata(propName, int.Parse(propName), propMeta.ItemType);
+                    props[i] = propMeta;  
+                }
                 typeMeta = ObservableMetadata.GetTypeMetadata(propMeta.Type);
             }
         }

@@ -17,5 +17,10 @@ public static class ReflectionUtils {
     public static bool HasAttribute<T>(this Type type) {
         return type.GetCustomAttributes(typeof (T), true).Length > 0;
     }
+
+    public static bool ImplementInterface<T>(this Type type) {
+        Type t = typeof (T);
+        return type.GetInterfaces().Contains(t);
+    }
 }
 }

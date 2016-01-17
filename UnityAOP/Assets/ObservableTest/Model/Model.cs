@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Assets.UnityAOP.Attributes;
+using Assets.UnityAOP.Observable;
 
 namespace Assets.ObservableTest.Model {
     [Observable]
@@ -34,11 +35,13 @@ namespace Assets.ObservableTest.Model {
         public Int32 Id { get; set; }
         public Int32 NumMembers { get; set; }
         public Int32 NumReadyMembers { get; set; }
+        public ObservableList<User> Members { get; private set; }
 
         public Group(int id) {
             Id = id;
             NumMembers = 0;
             NumReadyMembers = 0;
+            Members = new ObservableList<User>();
         }
 
         public void AddMember(User member) {

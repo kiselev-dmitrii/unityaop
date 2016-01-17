@@ -18,14 +18,14 @@ public class ObservableTest : MonoBehaviour {
 
     public void OnGUI() {
         if (GUI.Button(new Rect(10, 10, 100, 30), "Bind")) {
-            observer = application.Observe(x => x.Player.Group.NumMembers, OnValueChanged);
+            observer = application.Observe(x => x.Player.Group.Members[0].Id, OnValueChanged);
         }
         if (GUI.Button(new Rect(10, 40, 100, 30), "Unbind")) {
             observer.Dispose();
             observer = null;
         }
         if (GUI.Button(new Rect(10, 70, 100, 30), "Change NumMembers")) {
-            application.Player.Group.NumMembers++;
+            application.Player.Group.Members.Add(new User(10, "TEst", ""));
         }
         if (GUI.Button(new Rect(10, 100, 100, 30), "ChangePlayer")) {
             application.Player = new User(2, "New user", "New avatar");

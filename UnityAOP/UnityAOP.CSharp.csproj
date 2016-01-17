@@ -75,10 +75,12 @@
     <Compile Include="Assets\UnityAOP\Attributes\ObservableAttribute.cs" />
     <Compile Include="Assets\UnityAOP\Binding\BindingNode.cs" />
     <Compile Include="Assets\UnityAOP\Observable\ChainedObservers\ChainedPropertyObserver.cs" />
-    <Compile Include="Assets\UnityAOP\Observable\ChainedObservers\ObserversUtils.cs" />
+    <Compile Include="Assets\UnityAOP\Observable\ChainedObservers\ObserveExtensions.cs" />
+    <Compile Include="Assets\UnityAOP\Observable\IListObserver.cs" />
     <Compile Include="Assets\UnityAOP\Observable\IObservable.cs" />
     <Compile Include="Assets\UnityAOP\Observable\IObserver.cs" />
     <Compile Include="Assets\UnityAOP\Observable\ObservableImpl.cs" />
+    <Compile Include="Assets\UnityAOP\Observable\ObservableList.cs" />
     <Compile Include="Assets\UnityAOP\Observable\ObservableMetadata.cs" />
     <Compile Include="Assets\UnityAOP\Utils\CollectionUtils.cs" />
     <Compile Include="Assets\UnityAOP\Utils\ReflectionUtils.cs" />

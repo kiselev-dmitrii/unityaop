@@ -40,10 +40,17 @@ public class PropertyMetadata {
     public Int32 Index;
     public Type Type;
 
+    public bool IsCollection;
+    public Type ItemType;
+
     public PropertyMetadata(String name, int index, Type type) {
         Name = name;
         Index = index;
         Type = type;
+        IsCollection = type.ImplementInterface<IObservableCollection>();
+        if (IsCollection) {
+            ItemType = type.GetGenericArguments()[0];
+        }
     }
 
     public override string ToString() {
