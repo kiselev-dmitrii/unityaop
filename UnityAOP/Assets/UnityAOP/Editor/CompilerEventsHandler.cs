@@ -42,7 +42,9 @@ public static class CompilerEventsHandler {
 
         String mdbPath = dllPath + ".mdb";
 
+        EditorApplication.LockReloadAssemblies();
         ProcessAssembly(dllPath, mdbPath);
+        EditorApplication.UnlockReloadAssemblies();
     }
 
     public static void ProcessAssembly(String dllPath, String mdbPath) {
@@ -71,11 +73,29 @@ public static class CompilerEventsHandler {
         writerParameters.WriteSymbols = true;
         writerParameters.SymbolWriterProvider = new Mono.Cecil.Mdb.MdbWriterProvider();
 
+        Debug.Log("Is dll file locked? " + IsFileLocked(dllPath));
+        Debug.Log("Is mdb file locked? " + IsFileLocked(mdbPath));
         var assemblyDefinition = AssemblyDefinition.ReadAssembly(dllPath, readerParameters);
         var assemblyInjector = new AssemblyInjector(assemblyDefinition);
         if (assemblyInjector.Process()) {
             assemblyDefinition.Write(dllPath, writerParameters);
         }
+    }
+
+    private static bool IsFileLocked(String file) {
+        FileStream stream = null;
+
+        try {
+            stream = File.Open(file, FileMode.Open, FileAccess.Read, FileShare.None);
+        } catch (IOException) {
+            return true;
+        } finally {
+            if (stream != null)
+                stream.Close();
+        }
+
+        //file is not locked
+        return false;
     }
 }
 }

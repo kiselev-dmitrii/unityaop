@@ -96,11 +96,11 @@
     <Reference Include="Mono.Cecil">
       <HintPath>Assets\UnityAOP\Editor\Cecil\Mono.Cecil.dll</HintPath>
     </Reference>
-    <Reference Include="Mono.Cecil.Rocks">
-      <HintPath>Assets\UnityAOP\Editor\Cecil\Mono.Cecil.Rocks.dll</HintPath>
-    </Reference>
     <Reference Include="Mono.Cecil.Mdb">
       <HintPath>Assets\UnityAOP\Editor\Cecil\Mono.Cecil.Mdb.dll</HintPath>
+    </Reference>
+    <Reference Include="Mono.Cecil.Rocks">
+      <HintPath>Assets\UnityAOP\Editor\Cecil\Mono.Cecil.Rocks.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -116,6 +116,7 @@
     <Compile Include="Assets\UnityAOP\Editor\CodeProcessors\ObservableInjector.cs" />
     <Compile Include="Assets\UnityAOP\Editor\CodeProcessors\TryFinallyInjector.cs" />
     <Compile Include="Assets\UnityAOP\Editor\CompilerEventsHandler.cs" />
+    <Compile Include="Assets\UnityAOP\Editor\Inspector\SerializableTypePropertyDrawer.cs" />
     <Compile Include="Assets\UnityAOP\Editor\MultiKeyDictionary.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\SyntaxTree\UnityVS\2013\UnityVS.CSharp.targets" />

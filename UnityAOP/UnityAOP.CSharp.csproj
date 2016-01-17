@@ -65,18 +65,15 @@
     <Compile Include="Assets\Example1\Console.cs" />
     <Compile Include="Assets\Example1\Example1.cs" />
     <Compile Include="Assets\Example1\Warrior.cs" />
-    <Compile Include="Assets\NewBehaviourScript.cs" />
-    <Compile Include="Assets\NewBehaviourScript1.cs" />
-    <Compile Include="Assets\NewBehaviourScript2.cs" />
-    <Compile Include="Assets\NewBehaviourScript3.cs" />
-    <Compile Include="Assets\NewBehaviourScript4.cs" />
     <Compile Include="Assets\ObservableTest\InjectedModel\InjectedModel.cs" />
     <Compile Include="Assets\ObservableTest\Model\Model.cs" />
     <Compile Include="Assets\ObservableTest\ObservableTest.cs" />
     <Compile Include="Assets\UnityAOP\Attributes\AdviceAttribute.cs" />
+    <Compile Include="Assets\UnityAOP\Attributes\ClassConstraintAttribute.cs" />
     <Compile Include="Assets\UnityAOP\Attributes\LogAttribute.cs" />
     <Compile Include="Assets\UnityAOP\Attributes\MethodBoundaryAspectAttribute.cs" />
     <Compile Include="Assets\UnityAOP\Attributes\ObservableAttribute.cs" />
+    <Compile Include="Assets\UnityAOP\Binding\BindingNode.cs" />
     <Compile Include="Assets\UnityAOP\Observable\ChainedObservers\ChainedPropertyObserver.cs" />
     <Compile Include="Assets\UnityAOP\Observable\ChainedObservers\ObserversUtils.cs" />
     <Compile Include="Assets\UnityAOP\Observable\IObservable.cs" />
@@ -85,6 +82,7 @@
     <Compile Include="Assets\UnityAOP\Observable\ObservableMetadata.cs" />
     <Compile Include="Assets\UnityAOP\Utils\CollectionUtils.cs" />
     <Compile Include="Assets\UnityAOP\Utils\ReflectionUtils.cs" />
+    <Compile Include="Assets\UnityAOP\Utils\SerializableType.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\SyntaxTree\UnityVS\2013\UnityVS.CSharp.targets" />
 </Project>
