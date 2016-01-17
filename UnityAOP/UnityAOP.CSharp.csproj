@@ -65,8 +65,6 @@
     <Compile Include="Assets\Example1\Console.cs" />
     <Compile Include="Assets\Example1\Example1.cs" />
     <Compile Include="Assets\Example1\Warrior.cs" />
-    <Compile Include="Assets\NewBehaviourScript.cs" />
-    <Compile Include="Assets\NewBehaviourScript1.cs" />
     <Compile Include="Assets\ObservableTest\InjectedModel\InjectedModel.cs" />
     <Compile Include="Assets\ObservableTest\Model\Model.cs" />
     <Compile Include="Assets\ObservableTest\ObservableTest.cs" />

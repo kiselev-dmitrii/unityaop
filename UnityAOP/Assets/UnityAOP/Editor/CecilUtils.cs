@@ -30,7 +30,7 @@ public static class CecilUtils {
     public static void AddAttribute<T>(this AssemblyDefinition assemblyDef) {
         var module = assemblyDef.MainModule;
         
-        MethodReference attributeConstructor = module.Import(typeof(T).GetConstructor(Type.EmptyTypes));
+        MethodReference attributeConstructor = module.ImportReference(typeof(T).GetConstructor(Type.EmptyTypes));
         CustomAttribute attribute = new CustomAttribute(attributeConstructor);
         assemblyDef.CustomAttributes.Add(attribute);
     }
