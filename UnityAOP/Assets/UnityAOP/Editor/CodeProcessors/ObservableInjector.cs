@@ -22,11 +22,6 @@ public class ObservableInjector {
     private readonly MethodReference addObserverRef;
     private readonly MethodReference removeObserverRef;
 
-    private readonly TypeReference typeMetadataTypeRef;
-    private readonly MethodReference getPropertyMetadataRef;
-
-    private readonly MethodReference getTypeMetadataRef;
-
     private readonly TypeReference iObservableTypeRef;
 
     private readonly TypeReference listTypeRef;
@@ -42,7 +37,6 @@ public class ObservableInjector {
 
     #region Fields
     private FieldDefinition observableImplFieldDef;
-    private FieldDefinition metadataFieldDef;
     private FieldDefinition gettersFieldDef;
     private FieldDefinition settersFieldDef;
     #endregion
@@ -59,13 +53,6 @@ public class ObservableInjector {
         notifyPropertyChangedRef = module.ImportReference(typeDef.FindMethodDefinition("NotifyPropertyChanged"));
         addObserverRef = module.ImportReference(typeDef.FindMethodDefinition("AddObserver"));
         removeObserverRef = module.ImportReference(typeDef.FindMethodDefinition("RemoveObserver"));
-
-        typeDef = module.FindTypeDefinition(typeof(TypeMetadata));
-        typeMetadataTypeRef = module.ImportReference(typeDef);
-        getPropertyMetadataRef = module.ImportReference(typeDef.FindMethodDefinition("GetPropertyMetadata"));
-
-        typeDef = module.FindTypeDefinition(typeof(ObservableMetadata));
-        getTypeMetadataRef = module.ImportReference(typeDef.FindMethodDefinition("GetTypeMetadata"));
 
         typeDef = module.FindTypeDefinition(typeof (IObservable));
         iObservableTypeRef = module.ImportReference(typeDef);
@@ -94,11 +81,9 @@ public class ObservableInjector {
 
         // Создаем и добавляем новые поля
         observableImplFieldDef = new FieldDefinition("ObservableImpl", FieldAttributes.Public, observableImplTypeRef);
-        metadataFieldDef = new FieldDefinition("Metadata", FieldAttributes.Public, typeMetadataTypeRef);
         gettersFieldDef = new FieldDefinition("Getters", FieldAttributes.Public, listTypeRef);
         settersFieldDef = new FieldDefinition("Setters", FieldAttributes.Public, listTypeRef);
         targetTypeDef.Fields.Add(observableImplFieldDef);
-        targetTypeDef.Fields.Add(metadataFieldDef);
         targetTypeDef.Fields.Add(gettersFieldDef);
         targetTypeDef.Fields.Add(settersFieldDef);
 
@@ -106,9 +91,6 @@ public class ObservableInjector {
         foreach (var constructor in targetTypeDef.GetConstructors()) {
             InjectFieldInitialization(targetTypeDef, constructor);
         }
-
-        MethodDefinition getPropertyMetadataDef = targetTypeDef.AddInterfaceMethod(interfaceDef, "GetPropertyMetadata");
-        ImplementGetPropertyMetadataMethod(getPropertyMetadataDef);
 
         MethodDefinition addObserverDef = targetTypeDef.AddInterfaceMethod(interfaceDef, "AddObserver");
         ImplementAddObserverMethod(addObserverDef);
@@ -147,13 +129,6 @@ public class ObservableInjector {
         proc.InsertBefore(target, Instruction.Create(OpCodes.Ldarg_0));
         proc.InsertBefore(target, Instruction.Create(OpCodes.Newobj, observableImplCtorRef));
         proc.InsertBefore(target, Instruction.Create(OpCodes.Stfld, observableImplFieldDef));
-
-
-        //Metadata = ObservableMetadata.GetTypeMetadata(targetTypeDef.Name);
-        proc.InsertBefore(target, Instruction.Create(OpCodes.Ldarg_0));
-        proc.InsertBefore(target, Instruction.Create(OpCodes.Ldstr, targetTypeDef.Name));
-        proc.InsertBefore(target, Instruction.Create(OpCodes.Call, getTypeMetadataRef));
-        proc.InsertBefore(target, Instruction.Create(OpCodes.Stfld, metadataFieldDef));
 
         //Getters = new List<object>();
         proc.InsertBefore(target, Instruction.Create(OpCodes.Ldarg_0));
@@ -199,18 +174,6 @@ public class ObservableInjector {
         //////////////////////////////////
 
         body.OptimizeMacros();
-    }
-
-    private void ImplementGetPropertyMetadataMethod(MethodDefinition method) {
-        var body = method.Body;
-        
-        ///////////////////
-        body.Instructions.Add(Instruction.Create(OpCodes.Ldarg_0));
-        body.Instructions.Add(Instruction.Create(OpCodes.Ldfld, metadataFieldDef));
-        body.Instructions.Add(Instruction.Create(OpCodes.Ldarg_1));
-        body.Instructions.Add(Instruction.Create(OpCodes.Callvirt, getPropertyMetadataRef));
-        body.Instructions.Add(Instruction.Create(OpCodes.Ret));
-        ////////////////////
     }
 
     private void ImplementAddObserverMethod(MethodDefinition method) {
