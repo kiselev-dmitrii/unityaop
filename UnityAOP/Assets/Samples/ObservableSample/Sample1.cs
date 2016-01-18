@@ -22,10 +22,10 @@ public class Sample1 : MonoBehaviour {
             observer = null;
         }
         if (GUI.Button(new Rect(10, 70, 100, 30), "Change NumMembers")) {
-            application.Player.Group.Members.Add(new User(10, "TEst", ""));
+            application.Player.Group.Members.Add(new User(10, "TEst"));
         }
         if (GUI.Button(new Rect(10, 100, 100, 30), "ChangePlayer")) {
-            application.Player = new User(2, "New user", "New avatar");
+            application.Player = new User(2, "New user");
         }
 
     }

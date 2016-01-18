@@ -64,12 +64,13 @@
   <ItemGroup>
     <Compile Include="Assets\Model\Application.cs" />
     <Compile Include="Assets\Model\Group.cs" />
+    <Compile Include="Assets\Model\Player.cs" />
     <Compile Include="Assets\Model\User.cs" />
     <Compile Include="Assets\NewBehaviourScript.cs" />
     <Compile Include="Assets\NewBehaviourScript1.cs" />
+    <Compile Include="Assets\NewBehaviourScript2.cs" />
     <Compile Include="Assets\Samples\LogSample\Sample1.cs" />
     <Compile Include="Assets\Samples\ObservableSample\Sample1.cs" />
-    <Compile Include="Assets\Test.cs" />
     <Compile Include="Assets\UnityAOP\Attributes\AdviceAttribute.cs" />
     <Compile Include="Assets\UnityAOP\Attributes\ClassConstraintAttribute.cs" />
     <Compile Include="Assets\UnityAOP\Attributes\LogAttribute.cs" />

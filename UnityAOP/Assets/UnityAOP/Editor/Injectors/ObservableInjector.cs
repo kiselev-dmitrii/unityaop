@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Assets.UnityAOP.Attributes;
 using Assets.UnityAOP.Observable;
@@ -67,17 +68,34 @@ namespace Assets.UnityAOP.Editor.Injectors {
         }
     
         public void Inject() {
-            var typeDefs = module.Types.Where(x => x.HasAttributeOfType<ObservableAttribute>());
-    
-            foreach (var targetTypeDef in typeDefs) {
-                InjectToType(targetTypeDef);
+            List<TypeDefinition> taggedTypes =
+                module.Types.Where(x => x.HasAttributeOfType<ObservableAttribute>()).ToList();
+
+            HashSet<TypeDefinition> baseTypes = new HashSet<TypeDefinition>();
+            HashSet<TypeDefinition> derivedTypes = new HashSet<TypeDefinition>();
+            foreach (var type in taggedTypes) {
+                bool isDerived = type.Parents().Any(x => x.HasAttributeOfType<ObservableAttribute>());
+                if (isDerived) {
+                    derivedTypes.Add(type);
+                } else {
+                    baseTypes.Add(type);
+                }
+            }
+
+
+            foreach (var baseType in baseTypes) {
+                ProcessBaseType(baseType);
+            }
+
+            foreach (var derivedType in derivedTypes) {
+                ProcessDerivedType(derivedType);
             }
         }
-    
-        private void InjectToType(TypeDefinition targetTypeDef) {
+
+        public void ProcessBaseType(TypeDefinition targetTypeDef) {
             // Добавляем интерфей
             var interfaceDef = targetTypeDef.AddInterface<IObservable>();
-    
+
             // Создаем и добавляем новые поля
             observableImplFieldDef = new FieldDefinition("ObservableImpl", FieldAttributes.Public, observableImplTypeRef);
             gettersFieldDef = new FieldDefinition("Getters", FieldAttributes.Public, listTypeRef);
@@ -85,34 +103,38 @@ namespace Assets.UnityAOP.Editor.Injectors {
             targetTypeDef.Fields.Add(observableImplFieldDef);
             targetTypeDef.Fields.Add(gettersFieldDef);
             targetTypeDef.Fields.Add(settersFieldDef);
-    
+
             // Инжектим инициализацию полей в конструктор
             foreach (var constructor in targetTypeDef.GetConstructors()) {
                 InjectFieldInitialization(targetTypeDef, constructor);
             }
-    
+
             MethodDefinition addObserverDef = targetTypeDef.AddInterfaceMethod(interfaceDef, "AddObserver");
             ImplementAddObserverMethod(addObserverDef);
-    
+
             MethodDefinition removeObserverDef = targetTypeDef.AddInterfaceMethod(interfaceDef, "RemoveObserver");
             ImplementRemoveObserverMethod(removeObserverDef);
-    
+
             MethodDefinition notifyPropertyChangedDef = targetTypeDef.AddInterfaceMethod(interfaceDef, "NotifyPropertyChanged");
             ImplementNotifyPropertyChangedMethod(notifyPropertyChangedDef);
-    
+
             MethodDefinition getGetterDelegateDef = targetTypeDef.AddInterfaceMethod(interfaceDef, "GetGetterDelegate");
             ImplementGetGetterDelegatedMethod(getGetterDelegateDef);
-    
+
             MethodDefinition getSetterDelegateDef = targetTypeDef.AddInterfaceMethod(interfaceDef, "GetSetterDelegate");
             ImplementGetSetterDelegatedMethod(getSetterDelegateDef);
-    
+
             var npcRef = module.ImportReference(notifyPropertyChangedDef);
             for (int i = 0; i < targetTypeDef.Properties.Count; ++i) {
                 var property = targetTypeDef.Properties[i];
                 InjectPropertySetter(property.SetMethod, i, npcRef);
             }
         }
-    
+
+        public void ProcessDerivedType(TypeDefinition targetTypeDef) {
+            
+        }
+
         private void InjectFieldInitialization(TypeDefinition targetTypeDef, MethodDefinition constructor) {
             var body = constructor.Body;
             body.SimplifyMacros();

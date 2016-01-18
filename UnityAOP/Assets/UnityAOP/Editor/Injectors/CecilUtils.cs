@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Mono.Cecil;
 using Mono.Cecil.Cil;
@@ -121,6 +122,13 @@ namespace Assets.UnityAOP.Editor.Injectors {
     
             return reference;
         }
-    
+
+        public static IEnumerable<TypeDefinition> Parents(this TypeDefinition self) {
+            TypeDefinition cur = self;
+            while (cur.BaseType != null) {
+                cur = cur.BaseType.Resolve();
+                yield return cur;
+            }
+        }
     }
 }

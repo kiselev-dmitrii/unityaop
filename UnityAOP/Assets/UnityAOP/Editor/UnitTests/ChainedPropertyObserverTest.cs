@@ -85,16 +85,16 @@ namespace Assets.UnityAOP.Editor.UnitTests {
             observer = group.Observe(x => x.Members[2].Name, () => secondMemberName = observer.GetValue());
             Assert.IsTrue(secondMemberName == null);
 
-            group.Members.Add(new User(1, "First user", ""));
+            group.Members.Add(new User(1, "First user"));
             Assert.IsTrue(secondMemberName == null);
 
-            group.Members.Add(new User(2, "Second user", ""));
+            group.Members.Add(new User(2, "Second user"));
             Assert.IsTrue(secondMemberName == null);
             
-            group.Members.Add(new User(3, "Third user", ""));
+            group.Members.Add(new User(3, "Third user"));
             Assert.IsTrue(secondMemberName == "Third user");
 
-            group.Members.Insert(0, new User(0, "Zero user", ""));
+            group.Members.Insert(0, new User(0, "Zero user"));
             Assert.IsTrue(secondMemberName == "Second user");
 
             group.Members.RemoveAt(0);

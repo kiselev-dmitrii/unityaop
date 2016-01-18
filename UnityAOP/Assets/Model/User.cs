@@ -9,10 +9,10 @@ namespace Assets.Model {
         public String Avatar { get; set; }
         public Group Group { get; set; }
 
-        public User(int id, string name, string avatar = "") {
+        public User(int id, String name) {
             Id = id;
             Name = name;
-            Avatar = avatar;
+            Avatar = null;
         }
     }
 }
