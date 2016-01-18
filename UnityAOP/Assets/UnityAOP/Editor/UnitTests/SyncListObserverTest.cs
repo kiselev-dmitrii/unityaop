@@ -76,6 +76,5 @@ namespace Assets.UnityAOP.Editor.UnitTests {
             player.Group.Members.Add(new User(9, "Elvis Presley"));
             Assert.IsTrue(dstList.Count == 1);
         }
-
     }
 }
