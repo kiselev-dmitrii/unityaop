@@ -150,6 +150,7 @@ namespace Assets.UnityAOP.Editor.Injectors {
             for (int i = 0; i < properties.Count; ++i) {
                 var property = properties[i];
                 MethodDefinition getterMethodDef = property.GetMethod;
+                MethodDefinition setterMethodDef = property.SetMethod;
                 TypeDefinition propertyTypeDef = property.PropertyType.Resolve();
     
                 TypeReference genericArg = null; 
@@ -159,9 +160,9 @@ namespace Assets.UnityAOP.Editor.Injectors {
                     genericArg = property.PropertyType;
                 }
     
+                // Добавляем геттер на преперти ////////////////////////
                 GenericInstanceType getterDelegateTypeRef = getterDelegateGenericTypeDef.MakeGenericInstanceType(genericArg);
-                MethodReference getterDelegateCtorRef =
-                    getterDelegateTypeRef.Resolve().GetConstructors().First().MakeHostInstanceGeneric(genericArg);
+                MethodReference getterDelegateCtorRef = getterDelegateTypeRef.Resolve().GetConstructors().First().MakeHostInstanceGeneric(genericArg);
     
                 proc.InsertBefore(target, Instruction.Create(OpCodes.Ldarg_0));
                 proc.InsertBefore(target, Instruction.Create(OpCodes.Ldfld, gettersFieldDef));
@@ -169,6 +170,21 @@ namespace Assets.UnityAOP.Editor.Injectors {
                 proc.InsertBefore(target, Instruction.Create(OpCodes.Ldftn, getterMethodDef));
                 proc.InsertBefore(target, Instruction.Create(OpCodes.Newobj, getterDelegateCtorRef));
                 proc.InsertBefore(target, Instruction.Create(OpCodes.Callvirt, listAddRef));
+                ////////////////////////
+
+                // Добавляем сеттер на проперти /////////////////////
+                GenericInstanceType setterDelegateTypeRef = setterDelegateGenericTypeDef.MakeGenericInstanceType(genericArg);
+                MethodReference setterDelegateCtorRef = setterDelegateTypeRef.Resolve().GetConstructors().First().MakeHostInstanceGeneric(genericArg);
+
+                proc.InsertBefore(target, Instruction.Create(OpCodes.Ldarg_0));
+                proc.InsertBefore(target, Instruction.Create(OpCodes.Ldfld, settersFieldDef));
+                proc.InsertBefore(target, Instruction.Create(OpCodes.Ldarg_0));
+                proc.InsertBefore(target, Instruction.Create(OpCodes.Ldftn, setterMethodDef));
+                proc.InsertBefore(target, Instruction.Create(OpCodes.Newobj, setterDelegateCtorRef));
+                proc.InsertBefore(target, Instruction.Create(OpCodes.Callvirt, listAddRef));
+                //////////////////////////////////
+
+
             }
             //////////////////////////////////
     

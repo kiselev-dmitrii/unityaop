@@ -28,7 +28,7 @@ namespace Assets.UnityAOP.Observable.ChainedObservers {
 
         protected override void BindTarget(IObservable parent, PropertyMetadata targetMeta) {
             valueGetter = (GetterDelegate<T>) parent.GetGetterDelegate(targetMeta.Index);
-            //valueSetter = (SetterDelegate<T>) parent.GetSetterDelegate(targetMeta.Index);
+            valueSetter = (SetterDelegate<T>) parent.GetSetterDelegate(targetMeta.Index);
         }
 
         protected override void UnbindTarget() {

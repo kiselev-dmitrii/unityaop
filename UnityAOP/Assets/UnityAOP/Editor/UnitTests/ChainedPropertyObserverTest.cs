@@ -40,6 +40,30 @@ namespace Assets.UnityAOP.Editor.UnitTests {
         }
 
         [Test]
+        public void SetValueField() {
+            Application = new Application();
+
+            ChainedPropertyObserver<int> idObserver = null;
+            idObserver = Application.Observe(x => x.Player.Id, () => {});
+
+            Application.Player.Id = 10;
+            Assert.IsTrue(idObserver.GetValue() == 10);
+
+            idObserver.SetValue(12);
+            Assert.IsTrue(idObserver.GetValue() == 12);
+        }
+
+        [Test]
+        public void GetObservableField() {
+            Application = new Application();
+
+            ChainedPropertyObserver<User> userObserver = null;
+            userObserver = Application.Observe(x => x.Player, () => { });
+
+            Assert.IsTrue(userObserver.GetValue() == Application.Player);
+        }
+
+        [Test]
         public void ObserveCollectionItem() {
             var group = new Group(1);
 

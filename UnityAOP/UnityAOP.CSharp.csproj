@@ -13,13 +13,11 @@
     <TargetFrameworkIdentifier>.NETFramework</TargetFrameworkIdentifier>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <TargetFrameworkProfile>Unity Subset v3.5</TargetFrameworkProfile>
-    <CompilerResponseFile>
-    </CompilerResponseFile>
+    <CompilerResponseFile></CompilerResponseFile>
     <UnityProjectType>Game:1</UnityProjectType>
     <UnityBuildTarget>WebGL:20</UnityBuildTarget>
     <UnityVersion>5.3.1f1</UnityVersion>
-    <RootNamespace>
-    </RootNamespace>
+    <RootNamespace></RootNamespace>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -67,8 +65,11 @@
     <Compile Include="Assets\Model\Application.cs" />
     <Compile Include="Assets\Model\Group.cs" />
     <Compile Include="Assets\Model\User.cs" />
+    <Compile Include="Assets\NewBehaviourScript.cs" />
+    <Compile Include="Assets\NewBehaviourScript1.cs" />
     <Compile Include="Assets\Samples\LogSample\Sample1.cs" />
     <Compile Include="Assets\Samples\ObservableSample\Sample1.cs" />
+    <Compile Include="Assets\Test.cs" />
     <Compile Include="Assets\UnityAOP\Attributes\AdviceAttribute.cs" />
     <Compile Include="Assets\UnityAOP\Attributes\ClassConstraintAttribute.cs" />
     <Compile Include="Assets\UnityAOP\Attributes\LogAttribute.cs" />
