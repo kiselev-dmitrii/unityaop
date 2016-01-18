@@ -7,6 +7,7 @@ using Assets.UnityAOP.Utils;
 using Mono.Cecil;
 using Mono.Cecil.Cil;
 using Mono.Cecil.Rocks;
+using Mono.Collections.Generic;
 using UnityEngine.Assertions;
 using FieldAttributes = Mono.Cecil.FieldAttributes;
 
@@ -33,12 +34,6 @@ namespace Assets.UnityAOP.Editor.Injectors {
         #region Definitions
         private readonly TypeDefinition getterDelegateGenericTypeDef;
         private readonly TypeDefinition setterDelegateGenericTypeDef;
-        #endregion
-    
-        #region Fields
-        private FieldDefinition observableImplFieldDef;
-        private FieldDefinition gettersFieldDef;
-        private FieldDefinition settersFieldDef;
         #endregion
     
         public ObservableInjector(AssemblyDefinition assembly) {
@@ -74,7 +69,7 @@ namespace Assets.UnityAOP.Editor.Injectors {
             HashSet<TypeDefinition> baseTypes = new HashSet<TypeDefinition>();
             HashSet<TypeDefinition> derivedTypes = new HashSet<TypeDefinition>();
             foreach (var type in taggedTypes) {
-                bool isDerived = type.Parents().Any(x => x.HasAttributeOfType<ObservableAttribute>());
+                bool isDerived = type.BaseType.Resolve().HasAttributeOfType<ObservableAttribute>();
                 if (isDerived) {
                     derivedTypes.Add(type);
                 } else {
@@ -97,33 +92,34 @@ namespace Assets.UnityAOP.Editor.Injectors {
             var interfaceDef = targetTypeDef.AddInterface<IObservable>();
 
             // Создаем и добавляем новые поля
-            observableImplFieldDef = new FieldDefinition("ObservableImpl", FieldAttributes.Public, observableImplTypeRef);
-            gettersFieldDef = new FieldDefinition("Getters", FieldAttributes.Public, listTypeRef);
-            settersFieldDef = new FieldDefinition("Setters", FieldAttributes.Public, listTypeRef);
+            FieldDefinition observableImplFieldDef = new FieldDefinition("ObservableImpl", FieldAttributes.Public, observableImplTypeRef);
+            FieldDefinition gettersFieldDef = new FieldDefinition("Getters", FieldAttributes.Public, listTypeRef);
+            FieldDefinition settersFieldDef = new FieldDefinition("Setters", FieldAttributes.Public, listTypeRef);
             targetTypeDef.Fields.Add(observableImplFieldDef);
             targetTypeDef.Fields.Add(gettersFieldDef);
             targetTypeDef.Fields.Add(settersFieldDef);
 
             // Инжектим инициализацию полей в конструктор
             foreach (var constructor in targetTypeDef.GetConstructors()) {
-                InjectFieldInitialization(targetTypeDef, constructor);
+                InjectBaseFieldInitialization(targetTypeDef, constructor, observableImplFieldDef, gettersFieldDef, settersFieldDef);
             }
 
             MethodDefinition addObserverDef = targetTypeDef.AddInterfaceMethod(interfaceDef, "AddObserver");
-            ImplementAddObserverMethod(addObserverDef);
+            ImplementAddObserverMethod(addObserverDef, observableImplFieldDef);
 
             MethodDefinition removeObserverDef = targetTypeDef.AddInterfaceMethod(interfaceDef, "RemoveObserver");
-            ImplementRemoveObserverMethod(removeObserverDef);
+            ImplementRemoveObserverMethod(removeObserverDef, observableImplFieldDef);
 
             MethodDefinition notifyPropertyChangedDef = targetTypeDef.AddInterfaceMethod(interfaceDef, "NotifyPropertyChanged");
-            ImplementNotifyPropertyChangedMethod(notifyPropertyChangedDef);
+            ImplementNotifyPropertyChangedMethod(notifyPropertyChangedDef, observableImplFieldDef);
 
             MethodDefinition getGetterDelegateDef = targetTypeDef.AddInterfaceMethod(interfaceDef, "GetGetterDelegate");
-            ImplementGetGetterDelegatedMethod(getGetterDelegateDef);
+            ImplementGetGetterDelegatedMethod(getGetterDelegateDef, gettersFieldDef);
 
             MethodDefinition getSetterDelegateDef = targetTypeDef.AddInterfaceMethod(interfaceDef, "GetSetterDelegate");
-            ImplementGetSetterDelegatedMethod(getSetterDelegateDef);
+            ImplementGetSetterDelegatedMethod(getSetterDelegateDef, settersFieldDef);
 
+            //Инжектим нотификацию в сеттеры
             var npcRef = module.ImportReference(notifyPropertyChangedDef);
             for (int i = 0; i < targetTypeDef.Properties.Count; ++i) {
                 var property = targetTypeDef.Properties[i];
@@ -132,10 +128,38 @@ namespace Assets.UnityAOP.Editor.Injectors {
         }
 
         public void ProcessDerivedType(TypeDefinition targetTypeDef) {
-            
+            List<TypeDefinition> observableParents =
+                targetTypeDef.Parents().Where(x => x.HasAttributeOfType<ObservableAttribute>()).ToList();
+
+            //Выясняем базовый тип, у которого и находятся все поля
+            TypeDefinition baseObservableType = observableParents.Last();
+
+            //Находим нужные нам поля и методы
+            FieldDefinition observableImplFieldDef = baseObservableType.FindField("ObservableImpl");
+            FieldDefinition gettersFieldDef = baseObservableType.FindField("Getters");
+            FieldDefinition settersFieldDef = baseObservableType.FindField("Setters");
+            MethodDefinition notifyPropertyChangedDef = baseObservableType.FindMethodDefinition("NotifyPropertyChanged");
+
+            //Считаем с какого индекса нумеровать свойства
+            int numParentsProperties = observableParents.Sum(x => x.Properties.Count);
+            int commonNumProperties = numParentsProperties + targetTypeDef.Properties.Count;
+
+            // Инжектим инициализацию полей в конструктор
+            foreach (var constructor in targetTypeDef.GetConstructors()) {
+                InjectDerivedFieldInitialization(targetTypeDef, constructor, observableImplFieldDef, gettersFieldDef, settersFieldDef, commonNumProperties);
+            }
+
+            //Инжектим нотификацию в сеттеры
+            var npcRef = module.ImportReference(notifyPropertyChangedDef);
+            for (int i = 0; i < targetTypeDef.Properties.Count; ++i) {
+                var property = targetTypeDef.Properties[i];
+                int propertyIndex = numParentsProperties + i;
+                InjectPropertySetter(property.SetMethod, propertyIndex, npcRef);
+            }
         }
 
-        private void InjectFieldInitialization(TypeDefinition targetTypeDef, MethodDefinition constructor) {
+        private void InjectBaseFieldInitialization(TypeDefinition targetTypeDef, MethodDefinition constructor,
+            FieldDefinition observableImplFieldDef, FieldDefinition gettersFieldDef, FieldDefinition settersFieldDef) {
             var body = constructor.Body;
             body.SimplifyMacros();
             var proc = body.GetILProcessor();
@@ -162,30 +186,66 @@ namespace Assets.UnityAOP.Editor.Injectors {
             proc.InsertBefore(target, Instruction.Create(OpCodes.Stfld, settersFieldDef));
     
             //observableImpl.SetNumProperties(targetTypeDef.Properties.Count);
-            proc.InsertBefore(target, Instruction.Create(OpCodes.Ldarg_0));
-            proc.InsertBefore(target, Instruction.Create(OpCodes.Ldfld, observableImplFieldDef));
-            proc.InsertBefore(target, Instruction.Create(OpCodes.Ldc_I4, targetTypeDef.Properties.Count));
-            proc.InsertBefore(target, Instruction.Create(OpCodes.Callvirt, setNumPropertiesRef));
+            InjectSetNumProperties(targetTypeDef.Properties.Count, proc, target, observableImplFieldDef);
     
             //Добавляем сеттеры и геттеры
-            var properties = targetTypeDef.Properties;
+            InjectGettersSettersInitialization(targetTypeDef.Properties, proc, target, gettersFieldDef, settersFieldDef);
+            //////////////////////////////////
+    
+            body.OptimizeMacros();
+        }
+
+        private void InjectDerivedFieldInitialization(TypeDefinition targetTypeDef, MethodDefinition constructor,
+                                                      FieldDefinition observableImplFieldDef,
+                                                      FieldDefinition gettersFieldDef, FieldDefinition settersFieldDef, int commonNumProperties) {
+            var body = constructor.Body;
+            body.SimplifyMacros();
+            var proc = body.GetILProcessor();
+
+            //Ищем вызов базового констурктора и берем следующую инструкцию
+            int baseConstructorCallIdx = proc.Body.Instructions.IndexOf(x => x.OpCode == OpCodes.Call);
+            Assert.IsTrue(baseConstructorCallIdx >= 0, "Не найден вызов базового конструктора");
+            var target = proc.Body.Instructions[baseConstructorCallIdx + 1];
+
+            //////// Вставляем перед target все инструкции //////
+            //observableImpl.SetNumProperties(targetTypeDef.Properties.Count);
+            InjectSetNumProperties(commonNumProperties, proc, target, observableImplFieldDef);
+
+            //Добавляем сеттеры и геттеры
+            InjectGettersSettersInitialization(targetTypeDef.Properties, proc, target, gettersFieldDef, settersFieldDef);
+            //////////////////////////////////
+
+            body.OptimizeMacros();
+        }
+
+        private void InjectSetNumProperties(int numProperties, ILProcessor proc, Instruction target, FieldDefinition observableImplFieldDef) {
+            //observableImpl.SetNumProperties(targetTypeDef.Properties.Count);
+            proc.InsertBefore(target, Instruction.Create(OpCodes.Ldarg_0));
+            proc.InsertBefore(target, Instruction.Create(OpCodes.Ldfld, observableImplFieldDef));
+            proc.InsertBefore(target, Instruction.Create(OpCodes.Ldc_I4, numProperties));
+            proc.InsertBefore(target, Instruction.Create(OpCodes.Callvirt, setNumPropertiesRef));
+        } 
+
+        private void InjectGettersSettersInitialization(Collection<PropertyDefinition> properties, ILProcessor proc, Instruction target, 
+                                                        FieldDefinition gettersFieldDef, FieldDefinition settersFieldDef) {
+            //Добавляем сеттеры и геттеры
             for (int i = 0; i < properties.Count; ++i) {
                 var property = properties[i];
                 MethodDefinition getterMethodDef = property.GetMethod;
                 MethodDefinition setterMethodDef = property.SetMethod;
                 TypeDefinition propertyTypeDef = property.PropertyType.Resolve();
-    
-                TypeReference genericArg = null; 
+
+                TypeReference genericArg = null;
                 if (propertyTypeDef.HasAttributeOfType<ObservableAttribute>() || propertyTypeDef.HasInterface<IObservable>()) {
                     genericArg = iObservableTypeRef;
                 } else {
                     genericArg = property.PropertyType;
                 }
-    
+
                 // Добавляем геттер на преперти ////////////////////////
                 GenericInstanceType getterDelegateTypeRef = getterDelegateGenericTypeDef.MakeGenericInstanceType(genericArg);
                 MethodReference getterDelegateCtorRef = getterDelegateTypeRef.Resolve().GetConstructors().First().MakeHostInstanceGeneric(genericArg);
-    
+
                 proc.InsertBefore(target, Instruction.Create(OpCodes.Ldarg_0));
                 proc.InsertBefore(target, Instruction.Create(OpCodes.Ldfld, gettersFieldDef));
                 proc.InsertBefore(target, Instruction.Create(OpCodes.Ldarg_0));
@@ -205,15 +265,10 @@ namespace Assets.UnityAOP.Editor.Injectors {
                 proc.InsertBefore(target, Instruction.Create(OpCodes.Newobj, setterDelegateCtorRef));
                 proc.InsertBefore(target, Instruction.Create(OpCodes.Callvirt, listAddRef));
                 //////////////////////////////////
-
-
             }
-            //////////////////////////////////
-    
-            body.OptimizeMacros();
         }
-    
-        private void ImplementAddObserverMethod(MethodDefinition method) {
+
+        private void ImplementAddObserverMethod(MethodDefinition method, FieldDefinition observableImplFieldDef) {
             var body = method.Body;
     
             ///////////////////
@@ -225,8 +280,8 @@ namespace Assets.UnityAOP.Editor.Injectors {
             body.Instructions.Add(Instruction.Create(OpCodes.Ret));
             ////////////////////
         }
-    
-        private void ImplementRemoveObserverMethod(MethodDefinition method) {
+
+        private void ImplementRemoveObserverMethod(MethodDefinition method, FieldDefinition observableImplFieldDef) {
             var body = method.Body;
     
             ///////////////////
@@ -239,7 +294,7 @@ namespace Assets.UnityAOP.Editor.Injectors {
             ////////////////////
         }
     
-        private void ImplementNotifyPropertyChangedMethod(MethodDefinition method) {
+        private void ImplementNotifyPropertyChangedMethod(MethodDefinition method, FieldDefinition observableImplFieldDef) {
             var body = method.Body;
     
             ///////////////////
@@ -251,8 +306,8 @@ namespace Assets.UnityAOP.Editor.Injectors {
             body.Instructions.Add(Instruction.Create(OpCodes.Ret));
             ////////////////////
         }
-    
-        private void ImplementGetGetterDelegatedMethod(MethodDefinition method) {
+
+        private void ImplementGetGetterDelegatedMethod(MethodDefinition method, FieldDefinition gettersFieldDef) {
             var body = method.Body;
     
             ///////////////////
@@ -264,7 +319,7 @@ namespace Assets.UnityAOP.Editor.Injectors {
             ////////////////////
         }
     
-        private void ImplementGetSetterDelegatedMethod(MethodDefinition method) {
+        private void ImplementGetSetterDelegatedMethod(MethodDefinition method, FieldDefinition settersFieldDef) {
             var body = method.Body;
     
             ///////////////////

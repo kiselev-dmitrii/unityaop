@@ -6,7 +6,7 @@ namespace Assets.Model {
         public User Player { get; set; }
 
         public Application() {
-            Player = new User(1, "Player");
+            Player = new Player(1, "Player");
         }
     }
 }

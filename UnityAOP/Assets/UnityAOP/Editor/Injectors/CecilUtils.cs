@@ -26,6 +26,10 @@ namespace Assets.UnityAOP.Editor.Injectors {
             Type t = typeof(T);
             return method.CustomAttributes.FirstOrDefault(x => x.AttributeType.Resolve().BaseType.Name == t.Name);
         }
+
+        public static FieldDefinition FindField(this TypeDefinition typeDef, String fieldName) {
+            return typeDef.Fields.FirstOrDefault(x => x.Name == fieldName);
+        }
     
         public static void AddAttribute<T>(this AssemblyDefinition assemblyDef) {
             var module = assemblyDef.MainModule;
