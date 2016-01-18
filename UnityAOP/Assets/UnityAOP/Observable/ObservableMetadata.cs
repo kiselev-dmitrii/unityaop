@@ -39,7 +39,8 @@ namespace Assets.UnityAOP.Observable {
         public String Name;
         public Int32 Index;
         public Type Type;
-    
+
+        public bool IsObservable;
         public bool IsCollection;
         public Type ItemType;
     
@@ -47,6 +48,8 @@ namespace Assets.UnityAOP.Observable {
             Name = name;
             Index = index;
             Type = type;
+
+            IsObservable = type.GetInterface("IObservable") != null;
             IsCollection = type.GetInterface("IObservableCollection`1") != null;
             if (IsCollection) {
                 ItemType = type.GetGenericArguments()[0];

@@ -4,6 +4,8 @@ namespace Assets.UnityAOP.Observable.ChainedObservers {
     public class ChainedPropertyObserver<T> : BaseChainedObserver {
         private GetterDelegate<T> valueGetter;
         private SetterDelegate<T> valueSetter;
+        private GetterDelegate<IObservable> observableGetter;
+        private SetterDelegate<IObservable> observableSetter;
         private Action callback;
         private T lastValue;
 
@@ -15,25 +17,37 @@ namespace Assets.UnityAOP.Observable.ChainedObservers {
         public T GetValue() {
             if (valueGetter != null) {
                 return valueGetter();
-            } else {
-                return default(T);
             }
+            if (observableGetter != null) {
+                return (T)observableGetter();
+            }
+            return default(T);
         }
     
         public void SetValue(T value) {
             if (valueSetter != null) {
                 valueSetter(value);
-            }   
+            }  
+            else if (observableSetter != null) {
+                observableSetter((IObservable)value);
+            }
         }
 
         protected override void BindTarget(IObservable parent, PropertyMetadata targetMeta) {
-            valueGetter = (GetterDelegate<T>) parent.GetGetterDelegate(targetMeta.Index);
-            valueSetter = (SetterDelegate<T>) parent.GetSetterDelegate(targetMeta.Index);
+            if (!targetMeta.IsObservable) {
+                valueGetter = (GetterDelegate<T>) parent.GetGetterDelegate(targetMeta.Index);
+                valueSetter = (SetterDelegate<T>) parent.GetSetterDelegate(targetMeta.Index);
+            } else {
+                observableGetter = (GetterDelegate<IObservable>)parent.GetGetterDelegate(targetMeta.Index);
+                observableSetter = (SetterDelegate<IObservable>)parent.GetSetterDelegate(targetMeta.Index);
+            }
         }
 
         protected override void UnbindTarget() {
             valueGetter = null;
             valueSetter = null;
+            observableGetter = null;
+            observableSetter = null;
         }
 
         protected override void OnParentNodeChanged() {

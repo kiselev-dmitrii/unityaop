@@ -64,6 +64,18 @@ namespace Assets.UnityAOP.Editor.UnitTests {
         }
 
         [Test]
+        public void SetObservableField() {
+            Application = new Application();
+
+            ChainedPropertyObserver<User> userObserver = null;
+            userObserver = Application.Observe(x => x.Player, () => { });
+
+            var newUser = new User(10, "New user");
+            userObserver.SetValue(newUser);
+            Assert.IsTrue(Application.Player.Name == "New user");
+        }
+
+        [Test]
         public void ObserveCollectionItem() {
             var group = new Group(1);
 
