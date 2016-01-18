@@ -22,7 +22,7 @@ namespace Assets.UnityAOP.Observable {
         }
     
         public PropertyMetadata GetPropertyMetadata(String name) {
-            return Properties[name];
+            return Properties.Get(name);
         }
     
         public override string ToString() {
@@ -81,7 +81,7 @@ namespace Assets.UnityAOP.Observable {
         }
     
         public static TypeMetadata GetTypeMetadata(Type type) {
-            return typeToTypemeta[type];
+            return typeToTypemeta.Get(type);
         }
     
         public static IEnumerable<TypeMetadata> GetAllTypesMetadata() {

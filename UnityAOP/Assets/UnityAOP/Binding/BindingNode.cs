@@ -8,6 +8,8 @@ namespace Assets.UnityAOP.Binding {
         [ClassHasAttribute(typeof(ObservableAttribute))]
         public SerializableType Type;
 
+        [HideInInspector]
         public String Path;
+
     }
 }

@@ -117,6 +117,8 @@
     <Compile Include="Assets\UnityAOP\Editor\CodeProcessors\MethodBoundaryInjector.cs" />
     <Compile Include="Assets\UnityAOP\Editor\CodeProcessors\ObservableInjector.cs" />
     <Compile Include="Assets\UnityAOP\Editor\CompilerEventsHandler.cs" />
+    <Compile Include="Assets\UnityAOP\Editor\Inspector\PathAnylazer.cs" />
+    <Compile Include="Assets\UnityAOP\Editor\Inspector\BindingNodeInspector.cs" />
     <Compile Include="Assets\UnityAOP\Editor\Inspector\SerializableTypePropertyDrawer.cs" />
     <Compile Include="Assets\UnityAOP\Editor\UnitTests\SyncListObserverTest.cs" />
     <Compile Include="Assets\UnityAOP\Editor\UnitTests\ChainedPropertyObserverTest.cs" />
