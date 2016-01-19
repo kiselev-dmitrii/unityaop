@@ -5,12 +5,12 @@ using System.Text;
 using UnityEditor;
 
 namespace Assets.UnityAOP.Editor.InspectorWidgets {
-    public abstract class UIField<T> : UIWidget {
+    public abstract class XField<T> : XWidget {
         public String Name { get; private set; }
         public T Value { get; protected set; }
         public bool ReadOnly = false;
 
-        public UIField(String name, T value) {
+        public XField(String name, T value) {
             Name = name;
             Value = value;
         }
@@ -20,8 +20,8 @@ namespace Assets.UnityAOP.Editor.InspectorWidgets {
         }
     }
 
-    public class UIIntField : UIField<int> {
-        public UIIntField(String name, int value) : base(name, value) { }
+    public class XIntField : XField<int> {
+        public XIntField(String name, int value) : base(name, value) { }
 
         public override void Draw() {
             if (ReadOnly) {
@@ -32,8 +32,8 @@ namespace Assets.UnityAOP.Editor.InspectorWidgets {
         }
     }
 
-    public class UIFloatField : UIField<float> {
-        public UIFloatField(String name, float value) : base(name, value) { }
+    public class XFloatField : XField<float> {
+        public XFloatField(String name, float value) : base(name, value) { }
 
         public override void Draw() {
             if (ReadOnly) {
@@ -45,8 +45,8 @@ namespace Assets.UnityAOP.Editor.InspectorWidgets {
         }
     }
 
-    public class UIStringField : UIField<String> {
-        public UIStringField(String name, String value) : base(name, value) { }
+    public class XStringField : XField<String> {
+        public XStringField(String name, String value) : base(name, value) { }
 
         public override void Draw() {
             if (ReadOnly) {

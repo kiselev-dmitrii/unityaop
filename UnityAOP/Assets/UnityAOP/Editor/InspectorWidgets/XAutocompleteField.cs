@@ -8,7 +8,7 @@ using UnityEditor;
 using UnityEngine;
 
 namespace Assets.UnityAOP.Editor.InspectorWidgets {
-    public class UIAutocompleteField : UIField<String> {
+    public class XAutocompleteField : XField<String> {
         private static GUIStyle style;
         private readonly PathAnylazer pathAnylazer;
 
@@ -26,7 +26,7 @@ namespace Assets.UnityAOP.Editor.InspectorWidgets {
             get { return pathAnylazer.ResolvedType; }
         }
 
-        public UIAutocompleteField(string name, string value) : base(name, value) {
+        public XAutocompleteField(string name, string value) : base(name, value) {
             pathAnylazer = new PathAnylazer();
             if (Value == null) {
                 Value = "";

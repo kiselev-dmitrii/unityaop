@@ -2,14 +2,28 @@
 using UnityEngine.Assertions;
 
 namespace Assets.UnityAOP.Binding {
-    public class RootNode : Node {
+    public abstract class RootNode : Node {
         public IObservable Root { get; private set; }
 
-        public void SetRoot(IObservable root) {
+        protected void Awake() {
+            Initialize();
+        }
+
+        public abstract void Initialize();
+
+        public void SetRoot(object root) {
             Assert.IsTrue(root.GetType() == Type.Type, "Type mismatch");
-            Root = root;
+            Root = (IObservable)root;
         }
 
         public override void UpdateParentNode() { }
+
+        public override string GetFullPath() {
+            return "";
+        }
+
+        public override RootNode GetRootNode() {
+            return this;
+        }
     }
 }

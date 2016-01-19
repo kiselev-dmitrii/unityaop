@@ -1,13 +1,19 @@
-using System;
-using Assets.UnityAOP.Attributes;
-using Assets.UnityAOP.Utils;
+﻿using System;
 using UnityEngine;
 
 namespace Assets.UnityAOP.Binding {
-    public class RelativePath : Node {
+    public abstract class BindingNode : Node {
         [HideInInspector]
         public String Path;
         private String fullPath;
+
+        protected virtual void Awake() {
+            Bind();
+        }
+
+        protected virtual void OnDestroy() {
+            Unbind();
+        }
 
         public override string GetFullPath() {
             if (fullPath == null) {
@@ -19,5 +25,15 @@ namespace Assets.UnityAOP.Binding {
             }
             return fullPath;
         }
+
+        public void Rebind() {
+            Unbind();
+            Rebind();
+        }
+
+        public abstract void Bind();
+        public abstract void Unbind();
+    
+        
     }
 }

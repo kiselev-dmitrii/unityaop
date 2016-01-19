@@ -33,8 +33,10 @@ namespace Assets.UnityAOP.Editor.Injectors {
     
         public static void AddAttribute<T>(this AssemblyDefinition assemblyDef) {
             var module = assemblyDef.MainModule;
-            
-            MethodReference attributeConstructor = module.ImportReference(typeof(T).GetConstructor(Type.EmptyTypes));
+            var type = typeof (T);
+            var attributeDef = module.FindTypeDefinition(type);
+
+            MethodReference attributeConstructor = module.ImportReference(attributeDef.GetConstructors().First());
             CustomAttribute attribute = new CustomAttribute(attributeConstructor);
             assemblyDef.CustomAttributes.Add(attribute);
         }
