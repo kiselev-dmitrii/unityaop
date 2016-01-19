@@ -82,6 +82,14 @@ namespace Assets.UnityAOP.Editor.Inspector {
             get { return String.IsNullOrEmpty(Message); }
         }
 
+        public Type ResolvedType {
+            get {
+                if (!IsValid) return null;
+                if (Resolved.Count == 0) return RootType;
+                return Resolved[Resolved.Count - 1].ValueType;
+            }
+        }
+
         public PathAnylazer() {
             Resolved = new List<ResolvedSymbol>();
         }
