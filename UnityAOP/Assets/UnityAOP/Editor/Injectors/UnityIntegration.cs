@@ -54,7 +54,6 @@ namespace Assets.UnityAOP.Editor.Injectors {
 
         private static void OnEditorInitialized() {
             try {
-                // Lock assemblies while they may be altered
                 EditorApplication.LockReloadAssemblies();
 
                 String projectPath = Application.dataPath.Substring(0, Application.dataPath.Length - 7);
@@ -68,7 +67,6 @@ namespace Assets.UnityAOP.Editor.Injectors {
                     AssemblyInjector.ProcessAssembly(dllPath, mdbPath);
                 }
 
-                // Unlock now that we're done
                 EditorApplication.UnlockReloadAssemblies();
             } catch (Exception e) {
                 Debug.LogWarning(e);

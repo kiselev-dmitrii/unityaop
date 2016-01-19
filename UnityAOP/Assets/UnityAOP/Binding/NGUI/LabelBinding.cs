@@ -3,7 +3,7 @@ using Assets.UnityAOP.Observable.ChainedObservers;
 
 namespace Assets.UnityAOP.Binding.NGUI {
     public class LabelBinding : BindingNode {
-        private ChainedPropertyObserver<String> observer;
+        private UntypedValueObserver observer;
         private UILabel label;
 
         protected override void Awake() {
@@ -14,7 +14,8 @@ namespace Assets.UnityAOP.Binding.NGUI {
         public override void Bind() {
             var root = GetRootNode().Root;
             var path = GetFullPath();
-            observer = root.Observe<String>(path, OnValueChanged);
+            observer = root.Observe(path, OnValueChanged);
+            OnValueChanged();
         }
 
         public override void Unbind() {
@@ -25,7 +26,7 @@ namespace Assets.UnityAOP.Binding.NGUI {
         }
 
         private void OnValueChanged() {
-            label.text = observer.GetValue();
+            label.text = observer.GetStringValue();
         }
     }
 }

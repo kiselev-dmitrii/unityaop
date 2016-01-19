@@ -10,7 +10,12 @@ namespace Assets.UnityAOP.Observable.ChainedObservers {
             var props = CalculatePropertyPath(root.GetType(), path);
             return new ChainedPropertyObserver<TTarget>((IObservable)root, props, onChanged);
         }
-    
+
+        public static UntypedValueObserver Observe(this object root, String path, Action onChanged = null) {
+            var props = CalculatePropertyPath(root.GetType(), path);
+            return new UntypedValueObserver((IObservable)root, props, onChanged);
+        }
+
         public static ChainedPropertyObserver<TTarget> Observe<TRoot, TTarget>(this TRoot root,
             Expression<Func<TRoot, TTarget>> expression, Action onChanged) {
     

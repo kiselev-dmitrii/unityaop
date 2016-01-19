@@ -6,6 +6,10 @@ namespace Assets.UnityAOP.Observable.ChainedObservers {
         private readonly PropertyMetadata[] props;
         private readonly IObservable[] refs;
 
+        public PropertyMetadata TargetProperty {
+            get { return props[props.Length - 1]; }
+        }
+
         protected BaseChainedObserver(IObservable root, PropertyMetadata[] propertyPath) {
             props = propertyPath;
 

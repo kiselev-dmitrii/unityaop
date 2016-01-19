@@ -1,9 +1,8 @@
-﻿using System;
-using Assets.UnityAOP.Observable.ChainedObservers;
+﻿using Assets.UnityAOP.Observable.ChainedObservers;
 
 namespace Assets.UnityAOP.Binding.NGUI {
     public class InputBinding : BindingNode {
-        private ChainedPropertyObserver<String> observer;
+        private UntypedValueObserver observer;
         private UIInput input;
         private EventDelegate eventDelegate;
 
@@ -16,7 +15,9 @@ namespace Assets.UnityAOP.Binding.NGUI {
         public override void Bind() {
             var root = GetRootNode().Root;
             var path = GetFullPath();
-            observer = root.Observe<String>(path, OnValueChanged);
+
+            observer = root.Observe(path);
+            OnInputChanged();
 
             if (input != null) {
                 input.onChange.Add(eventDelegate);
@@ -28,17 +29,15 @@ namespace Assets.UnityAOP.Binding.NGUI {
                 observer.Dispose();
                 observer = null;
             }
+
             if (input != null) {
                 input.onChange.Remove(eventDelegate);
             }
         }
 
-        private void OnValueChanged() {
-        }
-
         private void OnInputChanged() {
             if (observer != null) {
-                observer.SetValue(input.value);
+                observer.SetStringValue(input.value);
             }
         }
     }

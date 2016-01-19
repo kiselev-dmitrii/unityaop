@@ -13,11 +13,13 @@
     <TargetFrameworkIdentifier>.NETFramework</TargetFrameworkIdentifier>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <TargetFrameworkProfile>Unity Subset v3.5</TargetFrameworkProfile>
-    <CompilerResponseFile></CompilerResponseFile>
+    <CompilerResponseFile>
+    </CompilerResponseFile>
     <UnityProjectType>Game:1</UnityProjectType>
     <UnityBuildTarget>WebGL:20</UnityBuildTarget>
     <UnityVersion>5.3.1f1</UnityVersion>
-    <RootNamespace></RootNamespace>
+    <RootNamespace>
+    </RootNamespace>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -219,6 +221,7 @@
     <Compile Include="Assets\UnityAOP\Documentation\InjectedModel.cs" />
     <Compile Include="Assets\UnityAOP\Observable\ChainedObservers\BaseChainedObserver.cs" />
     <Compile Include="Assets\UnityAOP\Observable\ChainedObservers\BaseListObserver.cs" />
+    <Compile Include="Assets\UnityAOP\Observable\ChainedObservers\UntypedValueObserver.cs" />
     <Compile Include="Assets\UnityAOP\Observable\ChainedObservers\ChainedPropertyObserver.cs" />
     <Compile Include="Assets\UnityAOP\Observable\ChainedObservers\ObserveExtensions.cs" />
     <Compile Include="Assets\UnityAOP\Observable\ChainedObservers\SyncListObserver.cs" />
