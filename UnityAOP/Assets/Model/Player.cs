@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Assets.UnityAOP.Attributes;
 using Assets.UnityAOP.Observable;
 
 namespace Assets.Model {

@@ -1,7 +1,6 @@
-﻿using System;
-using Assets.UnityAOP.Observable.ChainedObservers;
+﻿using Assets.UnityAOP.Observable.ChainedObservers;
 
-namespace Assets.UnityAOP.Binding.NGUI {
+namespace Assets.UnityAOP.Observable.Binding.NGUI {
     public class LabelBinding : BindingNode {
         private UntypedValueObserver observer;
         private UILabel label;

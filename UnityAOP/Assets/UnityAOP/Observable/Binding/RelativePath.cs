@@ -1,9 +1,7 @@
 using System;
-using Assets.UnityAOP.Attributes;
-using Assets.UnityAOP.Utils;
 using UnityEngine;
 
-namespace Assets.UnityAOP.Binding {
+namespace Assets.UnityAOP.Observable.Binding {
     public class RelativePath : Node {
         [HideInInspector]
         public String Path;

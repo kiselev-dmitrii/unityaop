@@ -1,5 +1,5 @@
-﻿using Assets.UnityAOP.Binding;
-using Assets.UnityAOP.Editor.InspectorWidgets;
+﻿using Assets.UnityAOP.Editor.InspectorWidgets;
+using Assets.UnityAOP.Observable.Binding;
 using UnityEditor;
 
 namespace Assets.UnityAOP.Editor.Inspector {

@@ -1,7 +1,6 @@
-﻿using Assets.UnityAOP.Observable;
-using UnityEngine.Assertions;
+﻿using UnityEngine.Assertions;
 
-namespace Assets.UnityAOP.Binding {
+namespace Assets.UnityAOP.Observable.Binding {
     public abstract class RootNode : Node {
         public IObservable Root { get; private set; }
 

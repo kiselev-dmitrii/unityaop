@@ -1,4 +1,4 @@
-﻿using Assets.UnityAOP.Binding;
+﻿using Assets.UnityAOP.Observable.Binding;
 
 namespace Assets.Model {
     class ApplicationContext : RootNode {

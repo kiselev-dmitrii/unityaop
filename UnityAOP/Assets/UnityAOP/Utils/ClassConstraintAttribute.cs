@@ -1,8 +1,7 @@
 ﻿using System;
-using Assets.UnityAOP.Utils;
 using UnityEngine;
 
-namespace Assets.UnityAOP.Attributes {
+namespace Assets.UnityAOP.Utils {
 	public enum ClassGrouping {
 		None,
 		ByNamespace,

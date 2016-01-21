@@ -1,7 +1,7 @@
 ﻿using System;
 using UnityEngine;
 
-namespace Assets.UnityAOP.Binding {
+namespace Assets.UnityAOP.Observable.Binding {
     public abstract class BindingNode : Node {
         [HideInInspector]
         public String Path;

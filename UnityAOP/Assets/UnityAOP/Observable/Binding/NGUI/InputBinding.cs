@@ -1,6 +1,6 @@
 ﻿using Assets.UnityAOP.Observable.ChainedObservers;
 
-namespace Assets.UnityAOP.Binding.NGUI {
+namespace Assets.UnityAOP.Observable.Binding.NGUI {
     public class InputBinding : BindingNode {
         private UntypedValueObserver observer;
         private UIInput input;

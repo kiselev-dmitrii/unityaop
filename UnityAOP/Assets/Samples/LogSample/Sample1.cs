@@ -1,5 +1,5 @@
 ﻿using System;
-using Assets.UnityAOP.Attributes;
+using Assets.UnityAOP.Aspect.BoundaryAspect;
 using UnityEngine;
 
 namespace Assets.Samples.LogSample {

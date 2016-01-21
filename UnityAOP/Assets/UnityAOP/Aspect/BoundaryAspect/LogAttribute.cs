@@ -1,10 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Reflection;
 using System.Text;
 using Debug = UnityEngine.Debug;
 
-namespace Assets.UnityAOP.Attributes {
+namespace Assets.UnityAOP.Aspect.BoundaryAspect {
 public class LogAttribute : MethodBoundaryAspectAttribute {
     public override void OnEnter(MethodBase method, Dictionary<string, object> parameters) {
         StringBuilder text = new StringBuilder();

@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Linq;
-using Assets.UnityAOP.Binding;
+using Assets.UnityAOP.Observable.Binding;
 using UnityEditor;
 using UnityEngine;
 

@@ -1,5 +1,5 @@
 using System;
-using Assets.UnityAOP.Attributes;
+using Assets.UnityAOP.Observable;
 
 namespace Assets.Model {
     [Observable]
