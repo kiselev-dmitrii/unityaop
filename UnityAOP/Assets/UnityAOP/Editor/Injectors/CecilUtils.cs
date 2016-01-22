@@ -30,6 +30,27 @@ namespace Assets.UnityAOP.Editor.Injectors {
         public static FieldDefinition FindField(this TypeDefinition typeDef, String fieldName) {
             return typeDef.Fields.FirstOrDefault(x => x.Name == fieldName);
         }
+
+        public static MethodDefinition FindMethod(this TypeDefinition typeDef, String methodName, List<TypeReference> parameters, bool isStatic) {
+            foreach (var method in typeDef.Methods) {
+                if (method.IsStatic != isStatic) continue;
+                if (method.Parameters.Count != parameters.Count) continue;
+                if (method.Name != methodName) continue;
+
+                bool mismatchParams = false;
+                for (int i = 0; i < method.Parameters.Count; ++i) {
+                    if (method.Parameters[i].ParameterType != parameters[i]) {
+                        mismatchParams = true;
+                        break;
+                    }
+                }
+                if (mismatchParams) continue;
+
+                return method;
+            }
+
+            return null;
+        }
     
         public static void AddAttribute<T>(this AssemblyDefinition assemblyDef) {
             var module = assemblyDef.MainModule;

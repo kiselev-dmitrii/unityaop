@@ -13,13 +13,11 @@
     <TargetFrameworkIdentifier>.NETFramework</TargetFrameworkIdentifier>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <TargetFrameworkProfile>Unity Subset v3.5</TargetFrameworkProfile>
-    <CompilerResponseFile>
-    </CompilerResponseFile>
+    <CompilerResponseFile></CompilerResponseFile>
     <UnityProjectType>Game:1</UnityProjectType>
     <UnityBuildTarget>WebGL:20</UnityBuildTarget>
     <UnityVersion>5.3.1f1</UnityVersion>
-    <RootNamespace>
-    </RootNamespace>
+    <RootNamespace></RootNamespace>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -205,9 +203,10 @@
     <Compile Include="Assets\Model\Player.cs" />
     <Compile Include="Assets\Model\User.cs" />
     <Compile Include="Assets\Samples\LogSample\Sample1.cs" />
+    <Compile Include="Assets\Samples\MethodAdviceSample\Sample1.cs" />
     <Compile Include="Assets\Samples\ObservableSample\Sample1.cs" />
+    <Compile Include="Assets\UnityAOP\Aspect\BoundaryAspect\BaseBoundaryAttribute.cs" />
     <Compile Include="Assets\UnityAOP\Aspect\BoundaryAspect\LogAttribute.cs" />
-    <Compile Include="Assets\UnityAOP\Aspect\BoundaryAspect\MethodBoundaryAspectAttribute.cs" />
     <Compile Include="Assets\UnityAOP\Aspect\MethodAdvice\MethodAdviceAttribute.cs" />
     <Compile Include="Assets\UnityAOP\Documentation\InjectedModel.cs" />
     <Compile Include="Assets\UnityAOP\Observable\Binding\BindingNode.cs" />
@@ -232,7 +231,7 @@
     <Compile Include="Assets\UnityAOP\Utils\AssemblyProcessedAttribute.cs" />
     <Compile Include="Assets\UnityAOP\Utils\ClassConstraintAttribute.cs" />
     <Compile Include="Assets\UnityAOP\Utils\CollectionUtils.cs" />
-    <Compile Include="Assets\UnityAOP\Utils\MultiKeyDictionary.cs" />
+    <Compile Include="Assets\UnityAOP\Utils\NestedDictionary.cs" />
     <Compile Include="Assets\UnityAOP\Utils\ReflectionUtils.cs" />
     <Compile Include="Assets\UnityAOP\Utils\SerializableType.cs" />
   </ItemGroup>

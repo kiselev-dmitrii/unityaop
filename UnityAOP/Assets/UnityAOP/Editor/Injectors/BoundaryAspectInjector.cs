@@ -5,7 +5,7 @@ using Mono.Cecil.Cil;
 using Mono.Cecil.Rocks;
 
 namespace Assets.UnityAOP.Editor.Injectors {
-    public class MethodBoundaryInjector {
+    public class BoundaryAspectInjector {
         private AssemblyDefinition assembly;
         private ModuleDefinition mainModule;
     
@@ -24,7 +24,7 @@ namespace Assets.UnityAOP.Editor.Injectors {
         private MethodReference dictAddMethodRef;           //Dictionary<String,Object>.Add();
         #endregion
     
-        public MethodBoundaryInjector(AssemblyDefinition assembly) {
+        public BoundaryAspectInjector(AssemblyDefinition assembly) {
             this.assembly = assembly;
             mainModule = assembly.MainModule;
     
@@ -33,7 +33,7 @@ namespace Assets.UnityAOP.Editor.Injectors {
             getTypeFromHandleRef = mainModule.ImportReference(typeof(Type).GetMethod("GetTypeFromHandle"));
             methodBaseRef = mainModule.ImportReference(typeof(System.Reflection.MethodBase));
     
-            var attributeTypeDef = mainModule.FindTypeDefinition<MethodBoundaryAspectAttribute>();
+            var attributeTypeDef = mainModule.FindTypeDefinition<BaseBoundaryAttribute>();
             var attributeOnEnterDef = attributeTypeDef.FindMethodDefinition("OnEnter");
             var attributeOnExitDef = attributeTypeDef.FindMethodDefinition("OnExit");
     
@@ -50,7 +50,7 @@ namespace Assets.UnityAOP.Editor.Injectors {
         public void Inject() {
             foreach (TypeDefinition type in mainModule.GetTypes()) {
                 foreach (MethodDefinition method in type.Methods) {
-                    var adviceAttribute = method.FindAtributeInheritedFrom<MethodBoundaryAspectAttribute>();
+                    var adviceAttribute = method.FindAtributeInheritedFrom<BaseBoundaryAttribute>();
                     if (adviceAttribute == null) continue;
     
                     InjectToMethod(method);

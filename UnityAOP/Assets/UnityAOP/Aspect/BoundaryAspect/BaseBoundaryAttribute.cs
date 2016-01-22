@@ -4,7 +4,7 @@ using System.Reflection;
 
 namespace Assets.UnityAOP.Aspect.BoundaryAspect {
 [AttributeUsage(AttributeTargets.Method)]
-public class MethodBoundaryAspectAttribute : Attribute {
+public class BaseBoundaryAttribute : Attribute {
     public virtual void OnEnter(MethodBase method, Dictionary<string, object> parameters) {
     }
 

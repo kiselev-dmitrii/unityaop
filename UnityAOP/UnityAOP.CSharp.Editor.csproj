@@ -197,8 +197,11 @@
     <Compile Include="Assets\External\NGUI\Scripts\Editor\UIWrapContentEditor.cs" />
     <Compile Include="Assets\UnityAOP\Editor\Injectors\AssemblyInjector.cs" />
     <Compile Include="Assets\UnityAOP\Editor\Injectors\CecilUtils.cs" />
+    <Compile Include="Assets\UnityAOP\Editor\Injectors\InjectionException.cs" />
+    <Compile Include="Assets\UnityAOP\Editor\Injectors\MethodAdviceInjector.cs" />
+    <Compile Include="Assets\UnityAOP\Editor\Injectors\TypeTree.cs" />
     <Compile Include="Assets\UnityAOP\Editor\Injectors\UnityIntegration.cs" />
-    <Compile Include="Assets\UnityAOP\Editor\Injectors\MethodBoundaryInjector.cs" />
+    <Compile Include="Assets\UnityAOP\Editor\Injectors\BoundaryAspectInjector.cs" />
     <Compile Include="Assets\UnityAOP\Editor\Injectors\ObservableInjector.cs" />
     <Compile Include="Assets\UnityAOP\Editor\InspectorWidgets\XAutocompleteField.cs" />
     <Compile Include="Assets\UnityAOP\Editor\InspectorWidgets\XButton.cs" />
