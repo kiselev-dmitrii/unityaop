@@ -198,7 +198,8 @@
     <Compile Include="Assets\UnityAOP\Editor\Injectors\AssemblyInjector.cs" />
     <Compile Include="Assets\UnityAOP\Editor\Injectors\CecilUtils.cs" />
     <Compile Include="Assets\UnityAOP\Editor\Injectors\InjectionException.cs" />
-    <Compile Include="Assets\UnityAOP\Editor\Injectors\MethodAdviceInjector.cs" />
+    <Compile Include="Assets\UnityAOP\Editor\Injectors\MethodAdvice\AdviceInfo.cs" />
+    <Compile Include="Assets\UnityAOP\Editor\Injectors\MethodAdvice\MethodAdviceInjector.cs" />
     <Compile Include="Assets\UnityAOP\Editor\Injectors\TypeTree.cs" />
     <Compile Include="Assets\UnityAOP\Editor\Injectors\UnityIntegration.cs" />
     <Compile Include="Assets\UnityAOP\Editor\Injectors\BoundaryAspectInjector.cs" />

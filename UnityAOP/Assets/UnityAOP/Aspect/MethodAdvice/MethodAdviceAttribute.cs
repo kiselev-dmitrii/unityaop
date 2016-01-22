@@ -40,13 +40,11 @@ namespace Assets.UnityAOP.Aspect.MethodAdvice {
         public Type TargetType { get; private set; }
         public String TargetMethod { get; private set; }
         public MethodAdvicePhase AdvicePhase { get; private set; }
-        public bool EnableForChild { get; private set; }
     
-        public MethodAdviceAttribute(Type targetType, String targetMethod, MethodAdvicePhase advicePhase, bool enableForChild) {
+        public MethodAdviceAttribute(Type targetType, String targetMethod, MethodAdvicePhase advicePhase) {
             TargetType = targetType;
             TargetMethod = targetMethod;
             AdvicePhase = advicePhase;
-            EnableForChild = enableForChild;
         }
     }
 }

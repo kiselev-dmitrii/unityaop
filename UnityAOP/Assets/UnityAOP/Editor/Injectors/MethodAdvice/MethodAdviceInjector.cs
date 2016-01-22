@@ -2,126 +2,75 @@
 using System.Collections.Generic;
 using System.Linq;
 using Assets.UnityAOP.Aspect.MethodAdvice;
-using Assets.UnityAOP.Observable;
-using Assets.UnityAOP.Utils;
 using Mono.Cecil;
 using Mono.Cecil.Cil;
 using Mono.Cecil.Rocks;
-using Mono.Collections.Generic;
 using UnityEngine.Assertions;
-using FieldAttributes = Mono.Cecil.FieldAttributes;
 
-namespace Assets.UnityAOP.Editor.Injectors {
-    public class AdviceMethod {
-        public TypeDefinition TypeDef;
-        public MethodDefinition MethodDef;
-
-        public TypeDefinition TargetType;
-        public String TargetMethodName;
-        public List<TypeReference> TargetParameters;
-        public bool IsStaticTarget;
-
-        public MethodAdvicePhase Phase;
-        public bool EnableForChild;
-
-        public AdviceMethod(TypeDefinition type, MethodDefinition method, CustomAttribute attribute) {
-            TypeDef = type;
-            MethodDef = method;
-
-            TargetType = (TypeDefinition)attribute.ConstructorArguments[0].Value;
-            TargetMethodName = (String)attribute.ConstructorArguments[1].Value;
-            Phase = (MethodAdvicePhase)attribute.ConstructorArguments[2].Value;
-            EnableForChild = (bool)attribute.ConstructorArguments[3].Value;
-            IsStaticTarget = false;
-            TargetParameters = new List<TypeReference>();
-
-
-            var parameters = MethodDef.Parameters;
-            if (parameters.Count == 0) {
-                IsStaticTarget = true;
-                return;
-            }
-
-            ParameterDefinition firstParam = parameters[0];
-            ParameterDefinition lastParam = parameters[parameters.Count - 1];
-            IsStaticTarget = firstParam.ParameterType.Resolve() != TargetType;
-            
-            int skipFirst = IsStaticTarget ? 0 : 1;
-            int skipLast = lastParam.Name == "returnValue" ? 1 : 0;
-            for (int i = skipFirst; i < parameters.Count - skipLast; ++i) {
-                TargetParameters.Add(parameters[i].ParameterType);
-            }
-        }
-
-        public override String ToString() {
-            return String.Format("{0}::{1}", TypeDef, MethodDef);
-        }
-    }
-
+namespace Assets.UnityAOP.Editor.Injectors.MethodAdvice {
     public class MethodAdviceInjector {
         private readonly ModuleDefinition module;
 
-        #region References
-        #endregion
-
         public MethodAdviceInjector(AssemblyDefinition assembly) {
             module = assembly.MainModule;
-
-            TypeDefinition typeDef;
         }
 
         public void Inject() {
-            // Собираем по всему проекту помеченные статические методы
-            List<AdviceMethod> adviceMethods = new List<AdviceMethod>();
-            foreach (var type in module.Types) {
-                foreach (var method in type.Methods) {
-                    if (!method.IsStatic) continue;
-
-                    var attribute = method.FindAttribute<MethodAdviceAttribute>();
-                    if (attribute == null) continue;
-                    
-                    adviceMethods.Add(new AdviceMethod(type, method, attribute));
-                }
-            }
-
             TypeTree typeTree = new TypeTree(module);
+            List<AdviceInfo> adviceMethods = FindAdvices(module);
 
             foreach (var advice in adviceMethods) {
                 var targetNode = typeTree.GetNode(advice.TargetType);
-                if (targetNode == null) {
-                    throw new InjectionException("Не найден тип для инъекции " + advice);
-                }
-                
-                var targetMethod = targetNode.Type.FindMethod(advice.TargetMethodName, advice.TargetParameters, advice.IsStaticTarget);
-                if (targetMethod == null) {
-                    throw new InjectionException("Не найден метод для инъекции " + advice);
-                }
 
-                if (targetNode.Type.IsInterface || targetMethod.IsAbstract) {
-                    advice.EnableForChild = true;
+                if (targetNode == null) {
+                    throw new InjectionException(advice + ": cannot find type for injection");
+                }
+                var targetMethod = FindMethodOrConstructor(targetNode, advice);
+                if (targetMethod == null) {
+                    throw new InjectionException(advice + ": cannot find method for injection");
                 }
 
                 InjectHierarchy(targetNode, targetMethod, advice);
             }
         }
 
-        public void InjectHierarchy(TypeNode node, MethodDefinition method, AdviceMethod advice) {
+        private static List<AdviceInfo> FindAdvices(ModuleDefinition module) {
+            var result = new List<AdviceInfo>();
+
+            foreach (var type in module.Types) {
+                foreach (var method in type.Methods) {
+                    var attribute = method.FindAttribute<MethodAdviceAttribute>();
+                    if (attribute == null) continue;
+
+                    var advice = new AdviceInfo(type, method, attribute);
+
+                    String conflicts = advice.Check();
+                    if (conflicts != null) {
+                        throw new InjectionException(advice + ": " + conflicts);
+                    }
+
+                    result.Add(advice);
+                }
+            }
+
+            return result;
+        }
+
+        private void InjectHierarchy(TypeNode node, MethodDefinition method, AdviceInfo advice) {
             if (!node.Type.IsInterface && !method.IsAbstract) {
                 InjectCode(method, advice);
             }
 
-            if (advice.EnableForChild) {
-                if (node.Type.IsInterface || method.IsAbstract || method.IsVirtual || method.IsReuseSlot) {
-                    foreach (var derivedNode in node.Derived) {
-                        var targetMethod = derivedNode.Type.FindMethod(advice.TargetMethodName, advice.TargetParameters, advice.IsStaticTarget);
-                        if (targetMethod == null) continue;
-                        InjectHierarchy(derivedNode, targetMethod, advice);
-                    }
+            if (node.Type.IsInterface || method.IsAbstract || method.IsVirtual || method.IsReuseSlot) {
+                foreach (var derivedNode in node.Derived) {
+                    var targetMethod = FindMethodOrConstructor(derivedNode, advice);
+                    if (targetMethod == null) continue;
+                    InjectHierarchy(derivedNode, targetMethod, advice);
                 }
             }
         }
 
-        public void InjectCode(MethodDefinition method, AdviceMethod advice) {
+        private void InjectCode(MethodDefinition method, AdviceInfo advice) {
             var body = method.Body;
             body.SimplifyMacros();
             var proc = body.GetILProcessor();
@@ -135,7 +84,7 @@ namespace Assets.UnityAOP.Editor.Injectors {
             body.OptimizeMacros();
         }
 
-        private void InjectOnEnter(MethodDefinition method, ILProcessor proc, AdviceMethod advice) {
+        private void InjectOnEnter(MethodDefinition method, ILProcessor proc, AdviceInfo advice) {
             Instruction target = null; 
 
             //Если это конструктор, то мы должны пропустить вызов базового конструктора
@@ -158,7 +107,7 @@ namespace Assets.UnityAOP.Editor.Injectors {
             proc.InsertBefore(target, Instruction.Create(OpCodes.Call, onEnterMethodRef));
         }
 
-        private void InjectOnSuccess(MethodDefinition method, ILProcessor proc, AdviceMethod advice) {
+        private void InjectOnSuccess(MethodDefinition method, ILProcessor proc, AdviceInfo advice) {
             var typeSystem = method.Module.TypeSystem;
             MethodReference onSuccessMethodRef = method.Module.ImportReference(advice.MethodDef);
 
@@ -225,6 +174,19 @@ namespace Assets.UnityAOP.Editor.Injectors {
 
             returnVariable = returnValue;
             return ldLock;
+        }
+
+        private static MethodDefinition FindMethodOrConstructor(TypeNode node, AdviceInfo advice) {
+            if (advice.IsConstructor) {
+                if (advice.IsStatic) {
+                    return node.Type.GetStaticConstructor();
+                } else {
+                    return node.Type.FindConstructor(advice.TargetParameters);
+                }
+
+            } else {
+                return node.Type.FindMethod(advice.TargetMethodName, advice.TargetParameters, advice.IsStatic);
+            } 
         }
     }
 }

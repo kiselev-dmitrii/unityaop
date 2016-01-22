@@ -51,6 +51,25 @@ namespace Assets.UnityAOP.Editor.Injectors {
 
             return null;
         }
+
+        public static MethodDefinition FindConstructor(this TypeDefinition typeDef, List<TypeReference> parameters) {
+            foreach (var method in typeDef.GetConstructors()) {
+                if (method.Parameters.Count != parameters.Count) continue;
+
+                bool mismatchParams = false;
+                for (int i = 0; i < method.Parameters.Count; ++i) {
+                    if (method.Parameters[i].ParameterType != parameters[i]) {
+                        mismatchParams = true;
+                        break;
+                    }
+                }
+                if (mismatchParams) continue;
+
+                return method;
+            }
+
+            return null;
+        }
     
         public static void AddAttribute<T>(this AssemblyDefinition assemblyDef) {
             var module = assemblyDef.MainModule;

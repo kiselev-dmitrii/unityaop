@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
+using Assets.UnityAOP.Editor.Injectors.MethodAdvice;
 using Assets.UnityAOP.Utils;
 using Mono.Cecil;
 using UnityEngine;
@@ -30,8 +31,8 @@ namespace Assets.UnityAOP.Editor.Injectors {
                 //targetTypeDef.OverrideMethod("BaseMethod");
                 //var interfaceInjector = new InterfaceInjector(assembly);
                 //interfaceInjector.Inject();
-            } catch (Exception ex) {
-                Debug.Log("assembly processing failed: " + ex);
+            } catch (InjectionException ex) {
+                Debug.LogError(ex.Message);
                 return false;
             }
 
