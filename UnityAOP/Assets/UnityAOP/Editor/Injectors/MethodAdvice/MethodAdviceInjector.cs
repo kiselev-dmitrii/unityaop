@@ -72,7 +72,6 @@ namespace Assets.UnityAOP.Editor.Injectors.MethodAdvice {
 
         private void InjectCode(MethodDefinition method, AdviceInfo advice) {
             var body = method.Body;
-            body.SimplifyMacros();
             var proc = body.GetILProcessor();
 
             if (advice.Phase == MethodAdvicePhase.OnEnter) {
@@ -80,8 +79,6 @@ namespace Assets.UnityAOP.Editor.Injectors.MethodAdvice {
             } else {
                 InjectOnSuccess(method, proc, advice);
             }
-
-            body.OptimizeMacros();
         }
 
         private void InjectOnEnter(MethodDefinition method, ILProcessor proc, AdviceInfo advice) {
@@ -140,7 +137,7 @@ namespace Assets.UnityAOP.Editor.Injectors.MethodAdvice {
             instructions.Add(nop);
             instructions.Add(ret);
 
-            for (var i = 0; i < instructions.Count - 1; i++) {
+            for (var i = 0; i < instructions.Count - 2; i++) {
                 var instruction = instructions[i];
                 if (instruction.OpCode == OpCodes.Ret) {
                     instructions[i] = Instruction.Create(OpCodes.Br, nop);
