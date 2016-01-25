@@ -69,7 +69,7 @@ namespace Assets.UnityAOP.Editor.Injectors {
 
                 EditorApplication.UnlockReloadAssemblies();
             } catch (Exception e) {
-                Debug.LogWarning(e);
+                Debug.LogError(e);
             }
         }
     }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using Mono.Cecil;
 using Mono.Cecil.Cil;
@@ -58,7 +59,7 @@ namespace Assets.UnityAOP.Editor.Injectors {
 
                 bool mismatchParams = false;
                 for (int i = 0; i < method.Parameters.Count; ++i) {
-                    if (method.Parameters[i].ParameterType != parameters[i]) {
+                    if (!method.Parameters[i].ParameterType.Equals(parameters[i])) {
                         mismatchParams = true;
                         break;
                     }
@@ -70,7 +71,7 @@ namespace Assets.UnityAOP.Editor.Injectors {
 
             return null;
         }
-    
+
         public static void AddAttribute<T>(this AssemblyDefinition assemblyDef) {
             var module = assemblyDef.MainModule;
             var type = typeof (T);

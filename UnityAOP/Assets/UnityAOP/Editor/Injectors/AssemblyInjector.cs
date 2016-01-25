@@ -22,7 +22,7 @@ namespace Assets.UnityAOP.Editor.Injectors {
             }
 
             try {
-                var injector = new MethodAdviceInjector(assembly);
+                var injector = new PartialMethodInjector(assembly);
                 injector.Inject();
                 //var targetTypeDef = mainModule.FindTypeDefinition(typeof (ObservableMetadata));
                 //MethodDefinition targetMethodDef = targetTypeDef.FindMethodDefinition("InitMetadata");
