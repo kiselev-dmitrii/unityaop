@@ -72,7 +72,7 @@ namespace Assets.UnityAOP.Editor.Inspector {
         public Type RootType { get; private set; }
         public List<ResolvedSymbol> Resolved { get; private set; }
         public String Unresolved { get; private set; }
-        public List<PropertyMetadata> Variants { get; private set; }
+        public List<MemberMetadata> Variants { get; private set; }
         public String Message { get; private set; }
 
         public int NumVariants {
@@ -138,14 +138,14 @@ namespace Assets.UnityAOP.Editor.Inspector {
             List<ResolvedSymbol> result = new List<ResolvedSymbol>();
 
             warning = null;
-            TypeMetadata lastType = OnApplicationStarted.GetTypeMetadata(rootType);
+            TypeMetadata lastType = CodeModel.GetType(rootType);
             ResolvedSymbol lastValueSymbol = null;
 
             for (int i = 0; i < tokens.Count; i++) {
                 var token = tokens[i];
 
                 if (token.Type == TokenType.Property) {
-                    var propMeta = lastType.GetPropertyMetadata(token.Property);
+                    var propMeta = lastType.GetProperty(token.Property);
                     if (propMeta == null) {
                         warning = "Cannot find property " + token.Property;
                         break;
@@ -163,7 +163,7 @@ namespace Assets.UnityAOP.Editor.Inspector {
 
                     if (i != tokens.Count - 1) {
                         if (symbol.SymType != SymbolType.CollectionProperty) {
-                            lastType = OnApplicationStarted.GetTypeMetadata(symbol.ValueType);
+                            lastType = CodeModel.GetType(symbol.ValueType);
                             if (lastType == null) {
                                 warning = symbol.Name + " is not observable";
                                 break;
@@ -186,7 +186,7 @@ namespace Assets.UnityAOP.Editor.Inspector {
                     result.Add(symbol);
 
                     lastValueSymbol = symbol;
-                    lastType = OnApplicationStarted.GetTypeMetadata(symbol.ValueType);
+                    lastType = CodeModel.GetType(symbol.ValueType);
 
                 } else if (token.Type == TokenType.Separator) {
 
@@ -199,27 +199,27 @@ namespace Assets.UnityAOP.Editor.Inspector {
             return result;
         }
 
-        public static List<PropertyMetadata> CalculateVariants(Type rootType, List<Token> tokens, List<ResolvedSymbol> resolved, String unresolved) {
-            var result = new List<PropertyMetadata>();
+        public static List<MemberMetadata> CalculateVariants(Type rootType, List<Token> tokens, List<ResolvedSymbol> resolved, String unresolved) {
+            var result = new List<MemberMetadata>();
 
             var lastValueSymbol = resolved.LastOrDefault(x => x.ValueType != null);
 
             //Ничего существенного не написано - ориентируемся на RootType
             if (lastValueSymbol == null) {
-                var meta = OnApplicationStarted.GetTypeMetadata(rootType);
-                return meta.Properties.Values.Where(x => x.Name.Contains(unresolved)).ToList();
+                var meta = CodeModel.GetType(rootType);
+                return meta.Members.Where(x => x.Name.Contains(unresolved)).ToList();
             } 
             
             // Есть последний значимый символ
             var lastResolvedSymbol = resolved.LastOrDefault();
             if (lastResolvedSymbol.SymType == SymbolType.Separator) {
                 if (lastValueSymbol.SymType == SymbolType.CollectionProperty) {
-                    result = new List<PropertyMetadata>() {
-                        new PropertyMetadata("index", 0, lastValueSymbol.GenericParameter)
+                    result = new List<MemberMetadata>() {
+                        new PropertyMetadata("index", lastValueSymbol.GenericParameter, 0)
                     };
                 } else {
-                    var meta = OnApplicationStarted.GetTypeMetadata(lastValueSymbol.ValueType);
-                    result = meta.Properties.Values.Where(x => x.Name.Contains(unresolved)).ToList();
+                    var meta = CodeModel.GetType(lastValueSymbol.ValueType);
+                    result = meta.Members.Where(x => x.Name.Contains(unresolved)).ToList();
                 }
                 
             }

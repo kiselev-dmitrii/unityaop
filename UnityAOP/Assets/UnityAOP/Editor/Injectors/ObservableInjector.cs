@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Assets.UnityAOP.Observable;
+using Assets.UnityAOP.Observable.Core;
 using Assets.UnityAOP.Utils;
 using Mono.Cecil;
 using Mono.Cecil.Cil;
@@ -40,7 +41,7 @@ namespace Assets.UnityAOP.Editor.Injectors {
     
             TypeDefinition typeDef;
     
-            typeDef = module.FindTypeDefinition(typeof(ObservableImpl));
+            typeDef = module.FindTypeDefinition(typeof(ObservableImplementation));
             observableImplTypeRef = module.ImportReference(typeDef);
             observableImplCtorRef = module.ImportReference(typeDef.GetConstructors().FirstOrDefault());
             setNumPropertiesRef = module.ImportReference(typeDef.FindMethodDefinition("SetNumProperties"));

@@ -1,4 +1,5 @@
 ﻿using Assets.UnityAOP.Observable.CodeObjectModel;
+using Assets.UnityAOP.Observable.Core;
 
 namespace Assets.UnityAOP.Observable.ChainedObservers {
 public abstract class BaseListObserver<T> : BaseChainedObserver, IListObserver<T> {
@@ -10,7 +11,7 @@ public abstract class BaseListObserver<T> : BaseChainedObserver, IListObserver<T
     }
 
     protected override void BindTarget(IObservable parent, PropertyMetadata targetMeta) {
-        var getter = (GetterDelegate<IObservable>)parent.GetGetterDelegate(targetMeta.Index);
+        var getter = (GetterDelegate<IObservable>)parent.GetGetterDelegate(targetMeta.Code);
         observableList = (ObservableList<T>) getter();
 
         if (observableList != null) {

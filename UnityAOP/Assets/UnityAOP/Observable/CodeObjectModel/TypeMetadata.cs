@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using Assets.UnityAOP.Observable.Core;
 using Assets.UnityAOP.Utils;
 using UnityEngine.Assertions;
 
@@ -8,18 +9,18 @@ namespace Assets.UnityAOP.Observable.CodeObjectModel {
     public class TypeMetadata {
         public String Name { get; private set; }
         public Type Type { get; private set; }
-        public Dictionary<String, PropertyMetadata> Properties { get; private set; }
-        public Dictionary<String, MethodMetadata> Methods { get; private set; } 
-        public Dictionary<String, MemberMetadata> Members { get; private set; } 
+        private readonly Dictionary<String, PropertyMetadata> properties;
+        private readonly Dictionary<String, MethodMetadata> methods;
+        private readonly Dictionary<String, MemberMetadata> members;
 
         public TypeMetadata(Type type) {
             Assert.IsTrue(type.HasAttribute<ObservableAttribute>(), "Тип должен иметь аттрибут Observable ");
 
             Name = type.Name;
             Type = type;
-            Properties = new Dictionary<string, PropertyMetadata>();
-            Members = new Dictionary<string, MemberMetadata>();
-            Members = new Dictionary<string, MemberMetadata>();
+            properties = new Dictionary<string, PropertyMetadata>();
+            methods = new Dictionary<string, MethodMetadata>();
+            members = new Dictionary<string, MemberMetadata>();
 
             // Записываем всю иерархию наблюдаемых типов
             Stack<Type> hierarchy = new Stack<Type>();
@@ -35,37 +36,43 @@ namespace Assets.UnityAOP.Observable.CodeObjectModel {
             while (hierarchy.Count > 0) {
                 var t = hierarchy.Pop();
 
-                var properties = t.GetProperties();
-                foreach (var p in properties) {
+                var typeProperties = t.GetProperties();
+                foreach (var p in typeProperties) {
                     var meta = new PropertyMetadata(p);
-                    Properties[meta.Name] = meta;
-                    Members[meta.Name] = meta;
+                    properties[meta.Name] = meta;
+                    members[meta.Name] = meta;
                 }
 
-                var methods = t.GetMethods();
-                foreach (var m in methods) {
+                var typeMethods = t.GetMethods();
+                foreach (var m in typeMethods) {
                     var meta = new MethodMetadata(m);
-                    Methods[meta.Name] = meta;
-                    Members[meta.Name] = meta;
+                    methods[meta.Name] = meta;
+                    members[meta.Name] = meta;
                 }
             }
         }
+    
+        public PropertyMetadata GetProperty(String name) {
+            return properties.Get(name);
+        }
 
-        public TypeMetadata(Type type, Dictionary<String, PropertyMetadata> properties) {
-            Name = type.Name;
-            Type = type;
-            Properties = properties;
+        public MethodMetadata GetMethod(String name) {
+            return methods.Get(name);
         }
-    
-        public PropertyMetadata GetPropertyMetadata(String name) {
-            return Properties.Get(name);
+
+        public MemberMetadata GetMember(String name) {
+            return members.Get(name);
         }
-    
+
+        public IEnumerable<MemberMetadata> Members {
+            get { return members.Values; }
+        } 
+
         public override string ToString() {
             StringBuilder builder = new StringBuilder();
             builder.Append(Name + '\n');
-            foreach (var property in Properties.Values) {
-                builder.Append(property.ToString() + '\n');
+            foreach (var pair in members) {
+                builder.Append('\t' + pair.Value.ToString() + '\n');
             }
             return builder.ToString();
         }

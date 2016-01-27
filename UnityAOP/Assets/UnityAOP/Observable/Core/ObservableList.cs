@@ -1,10 +1,8 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using Assets.UnityAOP.Utils;
 
-namespace Assets.UnityAOP.Observable {
+namespace Assets.UnityAOP.Observable.Core {
     public class ObservableList<T> : IObservableCollection<T>, IObservable,  IList<T> {
         private readonly List<T> list;
         private readonly List<List<IObserver>> indexToObservers;
@@ -31,7 +29,7 @@ namespace Assets.UnityAOP.Observable {
             int index = list.Count;
             list.Add(item);
 
-            NotifyPropertyChanged(index);
+            NotifyMemberChanged(index);
             NotifyItemInserted(index, item);
         }
 
@@ -45,7 +43,7 @@ namespace Assets.UnityAOP.Observable {
             list.Clear();
 
             for (int i = 0; i < indexToObservers.Count; ++i) {
-                NotifyPropertyChanged(i);
+                NotifyMemberChanged(i);
             }
             NotifyListCleared();
         }
@@ -81,7 +79,7 @@ namespace Assets.UnityAOP.Observable {
             list.Insert(index, item);
 
             for (int i = index; i < list.Count; ++i) {
-                NotifyPropertyChanged(i);
+                NotifyMemberChanged(i);
             }
             NotifyItemInserted(index, item);
         }
@@ -91,7 +89,7 @@ namespace Assets.UnityAOP.Observable {
             list.RemoveAt(index);
 
             for (int i = index; i < list.Count+1; ++i) {
-                NotifyPropertyChanged(i);
+                NotifyMemberChanged(i);
             }
             NotifyItemRemoved(index, item);
         }
@@ -100,53 +98,57 @@ namespace Assets.UnityAOP.Observable {
             get { return list[index]; }
             set {
                 list[index] = value;
-                NotifyPropertyChanged(index);
+                NotifyMemberChanged(index);
             }
         }
         #endregion
 
         #region IObservable
-        public void AddObserver(int fieldIndex, IObserver observer) {
-            if (fieldIndex >= indexToObservers.Count) {
-                int delta = fieldIndex - indexToObservers.Count + 1;
+        public void AddMemberObserver(int memberCode, IObserver observer) {
+            if (memberCode >= indexToObservers.Count) {
+                int delta = memberCode - indexToObservers.Count + 1;
                 for (int i = 0; i < delta; ++i) {
                     indexToObservers.Add(new List<IObserver>());
                 }
             }
-            indexToObservers[fieldIndex].Add(observer);
+            indexToObservers[memberCode].Add(observer);
         }
 
-        public void RemoveObserver(int fieldIndex, IObserver observer) {
-            if (fieldIndex >= indexToObservers.Count) {
+        public void RemoveMemberObserver(int memberCode, IObserver observer) {
+            if (memberCode >= indexToObservers.Count) {
                 return;
             }
-            indexToObservers[fieldIndex].Remove(observer);
+            indexToObservers[memberCode].Remove(observer);
         }
 
-        public void NotifyPropertyChanged(int fieldIndex) {
-            if (fieldIndex >= indexToObservers.Count) {
+        public void NotifyMemberChanged(int memberCode) {
+            if (memberCode >= indexToObservers.Count) {
                 return;
             }
-            var observers = indexToObservers[fieldIndex];
+            var observers = indexToObservers[memberCode];
             foreach (var observer in observers) {
-                observer.OnNodeChanged(this, fieldIndex);
+                observer.OnNodeChanged(this, memberCode);
             }
         }
 
-        public object GetGetterDelegate(int propertyIndex) {
+        public object GetGetterDelegate(int propertyCode) {
             if (hasObservableItems) {
-                return new GetterDelegate<IObservable>(delegate { return (IObservable)TryGet(propertyIndex); });
+                return new GetterDelegate<IObservable>(delegate { return (IObservable)TryGet(propertyCode); });
             } else {
-                return new GetterDelegate<T>(delegate { return TryGet(propertyIndex); });
+                return new GetterDelegate<T>(delegate { return TryGet(propertyCode); });
             }
         }
 
-        public object GetSetterDelegate(int propertyIndex) {
+        public object GetSetterDelegate(int propertyCode) {
             if (hasObservableItems) {
-                return new SetterDelegate<IObservable>(delegate(IObservable value) { list[propertyIndex] = (T)value; });
+                return new SetterDelegate<IObservable>(delegate(IObservable value) { list[propertyCode] = (T)value; });
             } else {
-                return new SetterDelegate<T>(delegate(T value) { list[propertyIndex] = value; });
+                return new SetterDelegate<T>(delegate(T value) { list[propertyCode] = value; });
             }
+        }
+
+        public object GetMethodDelegate(int methodCode) {
+            return null;
         }
         #endregion
 

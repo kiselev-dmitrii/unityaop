@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Assets.UnityAOP.Observable.CodeObjectModel;
+using Assets.UnityAOP.Observable.Core;
 using UnityEngine;
 
 namespace Assets.UnityAOP.Observable.ChainedObservers {
@@ -255,36 +256,36 @@ namespace Assets.UnityAOP.Observable.ChainedObservers {
             PropertyType type = GetPropertyType();
             switch (type) {
                 case PropertyType.Bool:
-                    boolGetter = (GetterDelegate<bool>) parent.GetGetterDelegate(targetProperty.Index);
-                    boolSetter = (SetterDelegate<bool>) parent.GetSetterDelegate(targetProperty.Index);
+                    boolGetter = (GetterDelegate<bool>)parent.GetGetterDelegate(targetProperty.Code);
+                    boolSetter = (SetterDelegate<bool>)parent.GetSetterDelegate(targetProperty.Code);
                     break;
                 case PropertyType.Int:
-                    intGetter = (GetterDelegate<int>) parent.GetGetterDelegate(targetProperty.Index);
-                    intSetter = (SetterDelegate<int>) parent.GetSetterDelegate(targetProperty.Index);
+                    intGetter = (GetterDelegate<int>)parent.GetGetterDelegate(targetProperty.Code);
+                    intSetter = (SetterDelegate<int>)parent.GetSetterDelegate(targetProperty.Code);
                     break;
                 case PropertyType.Float:
-                    floatGetter = (GetterDelegate<float>) parent.GetGetterDelegate(targetProperty.Index);
-                    floatSetter = (SetterDelegate<float>)parent.GetSetterDelegate(targetProperty.Index);
+                    floatGetter = (GetterDelegate<float>)parent.GetGetterDelegate(targetProperty.Code);
+                    floatSetter = (SetterDelegate<float>)parent.GetSetterDelegate(targetProperty.Code);
                     break;
                 case PropertyType.Double:
-                    doubleGetter = (GetterDelegate<double>) parent.GetGetterDelegate(targetProperty.Index);
-                    doubleSetter = (SetterDelegate<double>)parent.GetSetterDelegate(targetProperty.Index);
+                    doubleGetter = (GetterDelegate<double>)parent.GetGetterDelegate(targetProperty.Code);
+                    doubleSetter = (SetterDelegate<double>)parent.GetSetterDelegate(targetProperty.Code);
                     break;
                 case PropertyType.String:
-                    stringGetter = (GetterDelegate<string>) parent.GetGetterDelegate(targetProperty.Index);
-                    stringSetter = (SetterDelegate<string>)parent.GetSetterDelegate(targetProperty.Index);
+                    stringGetter = (GetterDelegate<string>)parent.GetGetterDelegate(targetProperty.Code);
+                    stringSetter = (SetterDelegate<string>)parent.GetSetterDelegate(targetProperty.Code);
                     break;
                 case PropertyType.Vector2:
-                    vector2Getter = (GetterDelegate<Vector2>) parent.GetGetterDelegate(targetProperty.Index);
-                    vector2Setter = (SetterDelegate<Vector2>)parent.GetSetterDelegate(targetProperty.Index);
+                    vector2Getter = (GetterDelegate<Vector2>)parent.GetGetterDelegate(targetProperty.Code);
+                    vector2Setter = (SetterDelegate<Vector2>)parent.GetSetterDelegate(targetProperty.Code);
                     break;
                 case PropertyType.Vector3:
-                    vector3Getter = (GetterDelegate<Vector3>) parent.GetGetterDelegate(targetProperty.Index);
-                    vector3Setter = (SetterDelegate<Vector3>)parent.GetSetterDelegate(targetProperty.Index);
+                    vector3Getter = (GetterDelegate<Vector3>)parent.GetGetterDelegate(targetProperty.Code);
+                    vector3Setter = (SetterDelegate<Vector3>)parent.GetSetterDelegate(targetProperty.Code);
                     break;
                 case PropertyType.Vector4:
-                    vector4Getter = (GetterDelegate<Vector4>) parent.GetGetterDelegate(targetProperty.Index);
-                    vector4Setter = (SetterDelegate<Vector4>)parent.GetSetterDelegate(targetProperty.Index);
+                    vector4Getter = (GetterDelegate<Vector4>)parent.GetGetterDelegate(targetProperty.Code);
+                    vector4Setter = (SetterDelegate<Vector4>)parent.GetSetterDelegate(targetProperty.Code);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException("Unsupported format");

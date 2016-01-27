@@ -3,8 +3,7 @@ using System;
 namespace Assets.UnityAOP.Observable.CodeObjectModel {
     public enum MemberType {
         Method,
-        Property,
-        Item
+        Property
     }
 
     public class MemberMetadata {

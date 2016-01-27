@@ -1,4 +1,5 @@
-﻿using UnityEngine.Assertions;
+﻿using Assets.UnityAOP.Observable.Core;
+using UnityEngine.Assertions;
 
 namespace Assets.UnityAOP.Observable.Binding {
     public abstract class RootNode : Node {

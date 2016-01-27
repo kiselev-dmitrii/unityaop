@@ -234,12 +234,11 @@
     <Compile Include="Assets\UnityAOP\Observable\CodeObjectModel\MethodMetadata.cs" />
     <Compile Include="Assets\UnityAOP\Observable\CodeObjectModel\PropertyMetadata.cs" />
     <Compile Include="Assets\UnityAOP\Observable\CodeObjectModel\TypeMetadata.cs" />
-    <Compile Include="Assets\UnityAOP\Observable\IListObserver.cs" />
-    <Compile Include="Assets\UnityAOP\Observable\IObservable.cs" />
-    <Compile Include="Assets\UnityAOP\Observable\IObserver.cs" />
-    <Compile Include="Assets\UnityAOP\Observable\ObservableAttribute.cs" />
-    <Compile Include="Assets\UnityAOP\Observable\ObservableImpl.cs" />
-    <Compile Include="Assets\UnityAOP\Observable\ObservableList.cs" />
+    <Compile Include="Assets\UnityAOP\Observable\Core\IObservable.cs" />
+    <Compile Include="Assets\UnityAOP\Observable\Core\IObserver.cs" />
+    <Compile Include="Assets\UnityAOP\Observable\Core\ObservableAttribute.cs" />
+    <Compile Include="Assets\UnityAOP\Observable\Core\ObservableImplementation.cs" />
+    <Compile Include="Assets\UnityAOP\Observable\Core\ObservableList.cs" />
     <Compile Include="Assets\UnityAOP\Observable\CodeObjectModel\OnApplicationStarted.cs" />
     <Compile Include="Assets\UnityAOP\Utils\AssemblyProcessedAttribute.cs" />
     <Compile Include="Assets\UnityAOP\Utils\ClassConstraintAttribute.cs" />

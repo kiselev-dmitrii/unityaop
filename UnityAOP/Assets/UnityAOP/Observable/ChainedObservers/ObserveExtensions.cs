@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using Assets.UnityAOP.Observable.CodeObjectModel;
+using Assets.UnityAOP.Observable.Core;
 using UnityEngine.Assertions;
 
 namespace Assets.UnityAOP.Observable.ChainedObservers {
@@ -42,31 +43,30 @@ namespace Assets.UnityAOP.Observable.ChainedObservers {
             String[] fieldsName = path.Split('.');
             return CalculatePropertyPath(rootType, fieldsName);
         }
+
+        private static PropertyMetadata[] CalculatePropertyPath(Type rootType, String[] propertyNames) {
+            PropertyMetadata[] result = new PropertyMetadata[propertyNames.Length];
     
-        private static PropertyMetadata[] CalculatePropertyPath(Type rootType, String[] path) {
-            PropertyMetadata[] props = new PropertyMetadata[path.Length];
+            TypeMetadata typeMeta = CodeModel.GetType(rootType);
+            for (int i = 0; i < propertyNames.Length; ++i) {
+                var propertyName = propertyNames[i];
+                var propertyMeta = typeMeta.GetProperty(propertyName);
+                Assert.IsTrue(propertyMeta != null, "Property not found");
     
-            TypeMetadata typeMeta = OnApplicationStarted.GetTypeMetadata(rootType);
-            for (int i = 0; i < path.Length; ++i) {
-                var propName = path[i];
-                var propMeta = typeMeta.GetPropertyMetadata(propName);
+                result[i] = propertyMeta;
     
-                Assert.IsTrue(propMeta != null, "Property not found");
-    
-                props[i] = propMeta;
-    
-                if (i != path.Length - 1) {
-                    if (propMeta.IsCollection) {
+                if (i != propertyNames.Length - 1) {
+                    if (propertyMeta.IsCollection) {
                         ++i;
-                        propName = path[i];
-                        propMeta = new PropertyMetadata(propName, int.Parse(propName), propMeta.ItemType);
-                        props[i] = propMeta;  
+                        propertyName = propertyNames[i];
+                        propertyMeta = new PropertyMetadata(propertyName, propertyMeta.ItemType, int.Parse(propertyName));
+                        result[i] = propertyMeta;  
                     }
-                    typeMeta = OnApplicationStarted.GetTypeMetadata(propMeta.Type);
+                    typeMeta = CodeModel.GetType(propertyMeta.Type);
                 }
             }
     
-            return props;
+            return result;
         }
     }
 }

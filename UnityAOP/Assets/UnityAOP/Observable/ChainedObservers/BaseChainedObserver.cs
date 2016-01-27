@@ -1,5 +1,6 @@
 ﻿using System;
 using Assets.UnityAOP.Observable.CodeObjectModel;
+using Assets.UnityAOP.Observable.Core;
 using UnityEngine.Assertions;
 
 namespace Assets.UnityAOP.Observable.ChainedObservers {
@@ -24,10 +25,10 @@ namespace Assets.UnityAOP.Observable.ChainedObservers {
                 if (cur == null) break;
 
                 PropertyMetadata prop = props[i];
-                cur.AddObserver(prop.Index, this);
+                cur.AddMemberObserver(prop.Code, this);
 
                 if (i != props.Length - 1) {
-                    var getter = (GetterDelegate<IObservable>)cur.GetGetterDelegate(prop.Index);
+                    var getter = (GetterDelegate<IObservable>)cur.GetGetterDelegate(prop.Code);
                     refs[i + 1] = getter();
                 } else {
                     BindTarget(cur, prop);
@@ -40,7 +41,7 @@ namespace Assets.UnityAOP.Observable.ChainedObservers {
                 IObservable cur = refs[i];
                 if (cur != null) {
                     PropertyMetadata prop = props[i];
-                    cur.RemoveObserver(prop.Index, this);
+                    cur.RemoveMemberObserver(prop.Code, this);
 
                     refs[i] = null;
                 }
@@ -49,7 +50,7 @@ namespace Assets.UnityAOP.Observable.ChainedObservers {
             UnbindTarget();
         }
 
-        public void OnNodeChanged(IObservable parent, int index) {
+        public void OnNodeChanged(IObservable parent, int propertyCode) {
             if (parent == refs[refs.Length - 1]) {
                 OnParentNodeChanged();
 
@@ -62,7 +63,7 @@ namespace Assets.UnityAOP.Observable.ChainedObservers {
 
                 //Обновляем следущую ссылку
                 var prop = props[parentIndex];
-                var getter = (GetterDelegate<IObservable>)parent.GetGetterDelegate(prop.Index);
+                var getter = (GetterDelegate<IObservable>)parent.GetGetterDelegate(prop.Code);
                 refs[parentIndex + 1] = getter();
 
                 //Подписываемся

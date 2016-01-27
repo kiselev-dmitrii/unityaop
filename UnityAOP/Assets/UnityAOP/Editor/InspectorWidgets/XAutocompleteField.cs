@@ -92,18 +92,18 @@ namespace Assets.UnityAOP.Editor.InspectorWidgets {
             return builder.ToString();
         }
 
-        private static String VariantToString(String unresolved, PropertyMetadata property) {
+        private static String VariantToString(String unresolved, MemberMetadata member) {
             const String typeColor = "#7e7e7e";
             const String nameColor = "#000000";
             const String selectionColor = "#ff0000";
 
-            String name = String.Format("<color={0}>{1}</color>", nameColor, property.Name);
+            String name = String.Format("<color={0}>{1}</color>", nameColor, member.Name);
             if (!String.IsNullOrEmpty(unresolved)) {
                 String replacement = String.Format("<color={0}>{1}</color>", selectionColor, unresolved);
                 name = name.Replace(unresolved, replacement);
             }
 
-            String type = String.Format("<color={0}>{1}{2}</color>", typeColor, property.Type.Name, property.IsCollection ? "[]" : "");
+            String type = String.Format("<color={0}>{1}</color>", typeColor, member.Type.Name);
 
             return String.Format("<b>{0} {1}</b>", name, type);
         }

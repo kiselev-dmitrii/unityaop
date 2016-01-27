@@ -1,5 +1,6 @@
 ﻿using System;
 using Assets.UnityAOP.Observable.CodeObjectModel;
+using Assets.UnityAOP.Observable.Core;
 
 namespace Assets.UnityAOP.Observable.ChainedObservers {
     public class ChainedPropertyObserver<T> : BaseChainedObserver {
@@ -36,11 +37,11 @@ namespace Assets.UnityAOP.Observable.ChainedObservers {
 
         protected override void BindTarget(IObservable parent, PropertyMetadata targetMeta) {
             if (!targetMeta.IsObservable) {
-                valueGetter = (GetterDelegate<T>) parent.GetGetterDelegate(targetMeta.Index);
-                valueSetter = (SetterDelegate<T>) parent.GetSetterDelegate(targetMeta.Index);
+                valueGetter = (GetterDelegate<T>) parent.GetGetterDelegate(targetMeta.Code);
+                valueSetter = (SetterDelegate<T>)parent.GetSetterDelegate(targetMeta.Code);
             } else {
-                observableGetter = (GetterDelegate<IObservable>)parent.GetGetterDelegate(targetMeta.Index);
-                observableSetter = (SetterDelegate<IObservable>)parent.GetSetterDelegate(targetMeta.Index);
+                observableGetter = (GetterDelegate<IObservable>)parent.GetGetterDelegate(targetMeta.Code);
+                observableSetter = (SetterDelegate<IObservable>)parent.GetSetterDelegate(targetMeta.Code);
             }
         }
 
