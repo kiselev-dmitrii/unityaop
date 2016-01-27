@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Assets.UnityAOP.Observable.CodeObjectModel;
 
 namespace Assets.UnityAOP.Observable.ChainedObservers {
     public class SyncListObserver<TSource, TDestination> : BaseListObserver<TSource> where TSource : class {

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Assets.UnityAOP.Observable.CodeObjectModel;
 using UnityEngine;
 
 namespace Assets.UnityAOP.Observable.ChainedObservers {

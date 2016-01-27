@@ -1,4 +1,6 @@
-﻿namespace Assets.UnityAOP.Observable.ChainedObservers {
+﻿using Assets.UnityAOP.Observable.CodeObjectModel;
+
+namespace Assets.UnityAOP.Observable.ChainedObservers {
 public abstract class BaseListObserver<T> : BaseChainedObserver, IListObserver<T> {
     private ObservableList<T> observableList; 
 

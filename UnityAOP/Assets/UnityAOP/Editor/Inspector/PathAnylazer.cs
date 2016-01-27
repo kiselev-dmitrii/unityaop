@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using Assets.UnityAOP.Observable;
+using Assets.UnityAOP.Observable.CodeObjectModel;
 using UnityEngine.Assertions;
 
 namespace Assets.UnityAOP.Editor.Inspector {
@@ -137,7 +138,7 @@ namespace Assets.UnityAOP.Editor.Inspector {
             List<ResolvedSymbol> result = new List<ResolvedSymbol>();
 
             warning = null;
-            TypeMetadata lastType = ObservableMetadata.GetTypeMetadata(rootType);
+            TypeMetadata lastType = OnApplicationStarted.GetTypeMetadata(rootType);
             ResolvedSymbol lastValueSymbol = null;
 
             for (int i = 0; i < tokens.Count; i++) {
@@ -162,7 +163,7 @@ namespace Assets.UnityAOP.Editor.Inspector {
 
                     if (i != tokens.Count - 1) {
                         if (symbol.SymType != SymbolType.CollectionProperty) {
-                            lastType = ObservableMetadata.GetTypeMetadata(symbol.ValueType);
+                            lastType = OnApplicationStarted.GetTypeMetadata(symbol.ValueType);
                             if (lastType == null) {
                                 warning = symbol.Name + " is not observable";
                                 break;
@@ -185,7 +186,7 @@ namespace Assets.UnityAOP.Editor.Inspector {
                     result.Add(symbol);
 
                     lastValueSymbol = symbol;
-                    lastType = ObservableMetadata.GetTypeMetadata(symbol.ValueType);
+                    lastType = OnApplicationStarted.GetTypeMetadata(symbol.ValueType);
 
                 } else if (token.Type == TokenType.Separator) {
 
@@ -205,7 +206,7 @@ namespace Assets.UnityAOP.Editor.Inspector {
 
             //Ничего существенного не написано - ориентируемся на RootType
             if (lastValueSymbol == null) {
-                var meta = ObservableMetadata.GetTypeMetadata(rootType);
+                var meta = OnApplicationStarted.GetTypeMetadata(rootType);
                 return meta.Properties.Values.Where(x => x.Name.Contains(unresolved)).ToList();
             } 
             
@@ -217,7 +218,7 @@ namespace Assets.UnityAOP.Editor.Inspector {
                         new PropertyMetadata("index", 0, lastValueSymbol.GenericParameter)
                     };
                 } else {
-                    var meta = ObservableMetadata.GetTypeMetadata(lastValueSymbol.ValueType);
+                    var meta = OnApplicationStarted.GetTypeMetadata(lastValueSymbol.ValueType);
                     result = meta.Properties.Values.Where(x => x.Name.Contains(unresolved)).ToList();
                 }
                 

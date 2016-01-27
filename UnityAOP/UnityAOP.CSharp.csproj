@@ -13,11 +13,13 @@
     <TargetFrameworkIdentifier>.NETFramework</TargetFrameworkIdentifier>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <TargetFrameworkProfile>Unity Subset v3.5</TargetFrameworkProfile>
-    <CompilerResponseFile></CompilerResponseFile>
+    <CompilerResponseFile>
+    </CompilerResponseFile>
     <UnityProjectType>Game:1</UnityProjectType>
     <UnityBuildTarget>WebGL:20</UnityBuildTarget>
     <UnityVersion>5.3.1f1</UnityVersion>
-    <RootNamespace></RootNamespace>
+    <RootNamespace>
+    </RootNamespace>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -227,13 +229,18 @@
     <Compile Include="Assets\UnityAOP\Observable\ChainedObservers\ObserveExtensions.cs" />
     <Compile Include="Assets\UnityAOP\Observable\ChainedObservers\SyncListObserver.cs" />
     <Compile Include="Assets\UnityAOP\Observable\ChainedObservers\UntypedValueObserver.cs" />
+    <Compile Include="Assets\UnityAOP\Observable\CodeObjectModel\CodeModel.cs" />
+    <Compile Include="Assets\UnityAOP\Observable\CodeObjectModel\MemberMetadata.cs" />
+    <Compile Include="Assets\UnityAOP\Observable\CodeObjectModel\MethodMetadata.cs" />
+    <Compile Include="Assets\UnityAOP\Observable\CodeObjectModel\PropertyMetadata.cs" />
+    <Compile Include="Assets\UnityAOP\Observable\CodeObjectModel\TypeMetadata.cs" />
     <Compile Include="Assets\UnityAOP\Observable\IListObserver.cs" />
     <Compile Include="Assets\UnityAOP\Observable\IObservable.cs" />
     <Compile Include="Assets\UnityAOP\Observable\IObserver.cs" />
     <Compile Include="Assets\UnityAOP\Observable\ObservableAttribute.cs" />
     <Compile Include="Assets\UnityAOP\Observable\ObservableImpl.cs" />
     <Compile Include="Assets\UnityAOP\Observable\ObservableList.cs" />
-    <Compile Include="Assets\UnityAOP\Observable\ObservableMetadata.cs" />
+    <Compile Include="Assets\UnityAOP\Observable\CodeObjectModel\OnApplicationStarted.cs" />
     <Compile Include="Assets\UnityAOP\Utils\AssemblyProcessedAttribute.cs" />
     <Compile Include="Assets\UnityAOP\Utils\ClassConstraintAttribute.cs" />
     <Compile Include="Assets\UnityAOP\Utils\CollectionUtils.cs" />
@@ -280,5 +287,6 @@
     <None Include="Assets\External\NGUI\Resources\Shaders\Unlit - Transparent Packed 3.shader" />
     <None Include="Assets\External\NGUI\Resources\Shaders\Unlit - Transparent Packed.shader" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildExtensionsPath)\SyntaxTree\UnityVS\2013\UnityVS.CSharp.targets" />
 </Project>

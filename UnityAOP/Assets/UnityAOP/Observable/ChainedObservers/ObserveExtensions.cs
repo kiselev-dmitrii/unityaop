@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using Assets.UnityAOP.Observable.CodeObjectModel;
 using UnityEngine.Assertions;
 
 namespace Assets.UnityAOP.Observable.ChainedObservers {
@@ -45,7 +46,7 @@ namespace Assets.UnityAOP.Observable.ChainedObservers {
         private static PropertyMetadata[] CalculatePropertyPath(Type rootType, String[] path) {
             PropertyMetadata[] props = new PropertyMetadata[path.Length];
     
-            TypeMetadata typeMeta = ObservableMetadata.GetTypeMetadata(rootType);
+            TypeMetadata typeMeta = OnApplicationStarted.GetTypeMetadata(rootType);
             for (int i = 0; i < path.Length; ++i) {
                 var propName = path[i];
                 var propMeta = typeMeta.GetPropertyMetadata(propName);
@@ -61,7 +62,7 @@ namespace Assets.UnityAOP.Observable.ChainedObservers {
                         propMeta = new PropertyMetadata(propName, int.Parse(propName), propMeta.ItemType);
                         props[i] = propMeta;  
                     }
-                    typeMeta = ObservableMetadata.GetTypeMetadata(propMeta.Type);
+                    typeMeta = OnApplicationStarted.GetTypeMetadata(propMeta.Type);
                 }
             }
     

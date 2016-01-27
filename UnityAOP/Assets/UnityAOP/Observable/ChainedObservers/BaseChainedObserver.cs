@@ -1,4 +1,5 @@
 ﻿using System;
+using Assets.UnityAOP.Observable.CodeObjectModel;
 using UnityEngine.Assertions;
 
 namespace Assets.UnityAOP.Observable.ChainedObservers {

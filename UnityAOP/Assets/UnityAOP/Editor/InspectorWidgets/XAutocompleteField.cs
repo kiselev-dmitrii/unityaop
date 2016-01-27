@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using Assets.UnityAOP.Editor.Inspector;
 using Assets.UnityAOP.Observable;
+using Assets.UnityAOP.Observable.CodeObjectModel;
 using UnityEditor;
 using UnityEngine;
 
