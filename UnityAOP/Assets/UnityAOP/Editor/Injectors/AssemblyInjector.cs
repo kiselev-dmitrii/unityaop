@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using Assets.UnityAOP.Editor.Injectors.MethodAdvice;
+using Assets.UnityAOP.Editor.Injectors.Observable;
 using Assets.UnityAOP.Utils;
 using Mono.Cecil;
 using UnityEngine;
@@ -22,7 +23,7 @@ namespace Assets.UnityAOP.Editor.Injectors {
             }
 
             try {
-                var injector = new PartialMethodInjector(assembly);
+                var injector = new ObservableInjector(assembly);
                 injector.Inject();
                 //var targetTypeDef = mainModule.FindTypeDefinition(typeof (ObservableMetadata));
                 //MethodDefinition targetMethodDef = targetTypeDef.FindMethodDefinition("InitMetadata");

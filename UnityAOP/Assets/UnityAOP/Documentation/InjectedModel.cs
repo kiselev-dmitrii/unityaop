@@ -1,6 +1,6 @@
-﻿using System;
+﻿/*
+using System;
 using System.Collections.Generic;
-using Assets.UnityAOP.Observable.CodeObjectModel;
 using Assets.UnityAOP.Observable.Core;
 
 namespace Assets.UnityAOP.Documentation {
@@ -257,3 +257,4 @@ namespace Assets.UnityAOP.Documentation {
         }
     }
 }
+*/

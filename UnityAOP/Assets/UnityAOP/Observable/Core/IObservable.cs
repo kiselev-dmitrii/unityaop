@@ -6,12 +6,11 @@ namespace Assets.UnityAOP.Observable.Core {
     public interface IObservable {
         void AddMemberObserver(int memberCode, IObserver observer);
         void RemoveMemberObserver(int memberCode, IObserver observer);
+        void NotifyMemberChanged(int memberCode);
 
         object GetGetterDelegate(int propertyCode);
         object GetSetterDelegate(int propertyCode);
         object GetMethodDelegate(int methodCode);
-
-        void NotifyMemberChanged(int memberCode);
     }
     
     public interface IObservableCollection<T> {

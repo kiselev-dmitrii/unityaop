@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Text;
 using Mono.Cecil;
 using Mono.Cecil.Cil;
 using Mono.Cecil.Rocks;
@@ -176,6 +177,36 @@ namespace Assets.UnityAOP.Editor.Injectors {
                 cur = cur.BaseType.Resolve();
                 yield return cur;
             }
+        }
+
+        public static GenericInstanceType GetFuncDelegateType(ModuleDefinition module, TypeReference outputType, TypeReference[] inputTypes, out MethodReference ctor) {
+            List<TypeReference> genericArgs = new List<TypeReference>();
+            genericArgs.Add(outputType);
+            genericArgs.AddRange(inputTypes);
+
+            int numArguments = genericArgs.Count();
+            Type genericType = Type.GetType("System.Func`" + numArguments);
+
+            TypeReference genericTypeRef = module.ImportReference(genericType);
+
+            GenericInstanceType instancedTypeRef = genericTypeRef.MakeGenericInstanceType(genericArgs.ToArray());
+            MethodDefinition ctorDef = instancedTypeRef.Resolve().GetConstructors().First();
+            ctor = module.ImportReference(ctorDef);
+
+            return instancedTypeRef;
+        }
+
+        public static GenericInstanceType GetActionDelegateType(ModuleDefinition module, TypeReference[] inputTypes, out MethodReference ctor) {
+            int numArguments = inputTypes.Count();
+            Type genericType = Type.GetType("System.Action`" + numArguments);
+
+            TypeReference genericTypeRef = module.ImportReference(genericType);
+
+            GenericInstanceType instancedTypeRef = genericTypeRef.MakeGenericInstanceType(inputTypes);
+            MethodDefinition ctorDef = instancedTypeRef.Resolve().GetConstructors().First();
+            ctor = module.ImportReference(ctorDef);
+
+            return instancedTypeRef;
         }
     }
 }

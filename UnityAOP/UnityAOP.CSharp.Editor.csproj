@@ -13,13 +13,11 @@
     <TargetFrameworkIdentifier>.NETFramework</TargetFrameworkIdentifier>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <TargetFrameworkProfile>Unity Full v3.5</TargetFrameworkProfile>
-    <CompilerResponseFile>
-    </CompilerResponseFile>
+    <CompilerResponseFile></CompilerResponseFile>
     <UnityProjectType>Editor:5</UnityProjectType>
     <UnityBuildTarget>WebGL:20</UnityBuildTarget>
     <UnityVersion>5.3.1f1</UnityVersion>
-    <RootNamespace>
-    </RootNamespace>
+    <RootNamespace></RootNamespace>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -196,24 +194,24 @@
     <Compile Include="Assets\External\NGUI\Scripts\Editor\UIWidgetInspector.cs" />
     <Compile Include="Assets\External\NGUI\Scripts\Editor\UIWrapContentEditor.cs" />
     <Compile Include="Assets\UnityAOP\Editor\Injectors\AssemblyInjector.cs" />
+    <Compile Include="Assets\UnityAOP\Editor\Injectors\BoundaryAspectInjector.cs" />
     <Compile Include="Assets\UnityAOP\Editor\Injectors\CecilUtils.cs" />
     <Compile Include="Assets\UnityAOP\Editor\Injectors\InjectionException.cs" />
     <Compile Include="Assets\UnityAOP\Editor\Injectors\MethodAdvice\AdviceInfo.cs" />
-    <Compile Include="Assets\UnityAOP\Editor\Injectors\MethodAdvice\PartialMethodInjector.cs" />
     <Compile Include="Assets\UnityAOP\Editor\Injectors\MethodAdvice\MethodAdviceInjector.cs" />
+    <Compile Include="Assets\UnityAOP\Editor\Injectors\MethodAdvice\PartialMethodInjector.cs" />
+    <Compile Include="Assets\UnityAOP\Editor\Injectors\Observable\ObservableInjector.cs" />
     <Compile Include="Assets\UnityAOP\Editor\Injectors\TypeTree.cs" />
     <Compile Include="Assets\UnityAOP\Editor\Injectors\UnityIntegration.cs" />
-    <Compile Include="Assets\UnityAOP\Editor\Injectors\BoundaryAspectInjector.cs" />
-    <Compile Include="Assets\UnityAOP\Editor\Injectors\ObservableInjector.cs" />
+    <Compile Include="Assets\UnityAOP\Editor\Inspector\BindingNodeInspector.cs" />
+    <Compile Include="Assets\UnityAOP\Editor\Inspector\NodeInspector.cs" />
+    <Compile Include="Assets\UnityAOP\Editor\Inspector\PathAnylazer.cs" />
+    <Compile Include="Assets\UnityAOP\Editor\Inspector\RelativePathInspector.cs" />
+    <Compile Include="Assets\UnityAOP\Editor\Inspector\SerializableTypePropertyDrawer.cs" />
     <Compile Include="Assets\UnityAOP\Editor\InspectorWidgets\XAutocompleteField.cs" />
     <Compile Include="Assets\UnityAOP\Editor\InspectorWidgets\XButton.cs" />
     <Compile Include="Assets\UnityAOP\Editor\InspectorWidgets\XField.cs" />
     <Compile Include="Assets\UnityAOP\Editor\InspectorWidgets\XWidget.cs" />
-    <Compile Include="Assets\UnityAOP\Editor\Inspector\BindingNodeInspector.cs" />
-    <Compile Include="Assets\UnityAOP\Editor\Inspector\RelativePathInspector.cs" />
-    <Compile Include="Assets\UnityAOP\Editor\Inspector\NodeInspector.cs" />
-    <Compile Include="Assets\UnityAOP\Editor\Inspector\PathAnylazer.cs" />
-    <Compile Include="Assets\UnityAOP\Editor\Inspector\SerializableTypePropertyDrawer.cs" />
     <Compile Include="Assets\UnityAOP\Editor\UnitTests\ChainedPropertyObserverTest.cs" />
     <Compile Include="Assets\UnityAOP\Editor\UnitTests\SyncListObserverTest.cs" />
   </ItemGroup>
@@ -256,6 +254,5 @@
     <None Include="Assets\External\NGUI\Resources\Shaders\Unlit - Transparent Packed 3.shader" />
     <None Include="Assets\External\NGUI\Resources\Shaders\Unlit - Transparent Packed.shader" />
   </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildExtensionsPath)\SyntaxTree\UnityVS\2013\UnityVS.CSharp.targets" />
 </Project>
