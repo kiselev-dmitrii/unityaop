@@ -10,13 +10,13 @@ namespace Assets.UnityAOP.Editor.Inspector {
     public class PathAnylazer {
         public enum TokenType {
             Separator,
-            Property,
-            Index
+            Member,
+            Index,
         }
 
         public class Token {
             public TokenType Type;
-            public String Property;
+            public String Member;
             public int Index;
 
             public Token(TokenType type) {
@@ -28,9 +28,9 @@ namespace Assets.UnityAOP.Editor.Inspector {
                 Index = index;
             }
 
-            public Token(String property) {
-                Type = TokenType.Property;
-                Property = property;
+            public Token(String member) {
+                Type = TokenType.Member;
+                Member = member;
             }
 
             public override string ToString() {
@@ -38,8 +38,8 @@ namespace Assets.UnityAOP.Editor.Inspector {
                     case TokenType.Separator:
                         return ".";
                         break;
-                    case TokenType.Property:
-                        return Property;
+                    case TokenType.Member:
+                        return Member;
                         break;
                     case TokenType.Index:
                         return Index.ToString();
@@ -53,6 +53,7 @@ namespace Assets.UnityAOP.Editor.Inspector {
         public enum SymbolType {
             Property,
             CollectionProperty,
+            Method,
             Index,
             Separator,
         }
@@ -63,6 +64,30 @@ namespace Assets.UnityAOP.Editor.Inspector {
             public Type GenericParameter;
             public String Name;
             public int Index;
+
+            public ResolvedSymbol(MemberMetadata memberMeta) {
+                ValueType = memberMeta.Type;
+                Name = memberMeta.Name;
+
+                if (memberMeta is PropertyMetadata) {
+                    var propMeta = (PropertyMetadata) memberMeta;
+                    SymType = propMeta.IsCollection ? SymbolType.CollectionProperty : SymbolType.Property;
+                    GenericParameter = propMeta.IsCollection ? propMeta.ItemType : null;
+                } else {
+                    SymType = SymbolType.Method;
+                    GenericParameter = null;
+                }
+            }
+
+            public ResolvedSymbol(int index, Type type) {
+                SymType = SymbolType.Index;
+                ValueType = type;
+                Index = index;
+            }
+
+            public ResolvedSymbol(SymbolType symType) {
+                SymType = symType;
+            }
         }
 
         public class InvalidPathException : Exception {
@@ -144,19 +169,19 @@ namespace Assets.UnityAOP.Editor.Inspector {
             for (int i = 0; i < tokens.Count; i++) {
                 var token = tokens[i];
 
-                if (token.Type == TokenType.Property) {
-                    var propMeta = lastType.GetProperty(token.Property);
-                    if (propMeta == null) {
-                        warning = "Cannot find property " + token.Property;
+                if (token.Type == TokenType.Member) {
+                    if (lastValueSymbol != null &&  !(lastValueSymbol.SymType == SymbolType.Index || lastValueSymbol.SymType == SymbolType.Property)) {
+                        warning = lastValueSymbol.Name + " is not property or index";
                         break;
                     }
 
-                    var symbol = new ResolvedSymbol() {
-                        SymType = propMeta.IsCollection ? SymbolType.CollectionProperty : SymbolType.Property,
-                        ValueType = propMeta.Type,
-                        Name = propMeta.Name,
-                        GenericParameter = propMeta.IsCollection ? propMeta.ItemType : null
-                    };
+                    var memberMeta = lastType.GetMember(token.Member);
+                    if (memberMeta == null) {
+                        warning = "Cannot find member " + token.Member;
+                        break;
+                    }
+
+                    var symbol = new ResolvedSymbol(memberMeta);
                     result.Add(symbol);
 
                     lastValueSymbol = symbol;
@@ -177,22 +202,14 @@ namespace Assets.UnityAOP.Editor.Inspector {
                         break;
                     }
 
-                    var symbol = new ResolvedSymbol() {
-                        SymType = SymbolType.Index,
-                        ValueType = lastValueSymbol.GenericParameter,
-                        Index = token.Index
-                    };
-
+                    var symbol = new ResolvedSymbol(token.Index, lastValueSymbol.GenericParameter);
                     result.Add(symbol);
 
                     lastValueSymbol = symbol;
                     lastType = CodeModel.GetType(symbol.ValueType);
 
                 } else if (token.Type == TokenType.Separator) {
-
-                    result.Add(new ResolvedSymbol() {
-                        SymType = SymbolType.Separator
-                    });
+                    result.Add(new ResolvedSymbol(SymbolType.Separator));
                 }
             }
 
