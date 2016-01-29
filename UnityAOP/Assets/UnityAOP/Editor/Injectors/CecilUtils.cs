@@ -179,16 +179,20 @@ namespace Assets.UnityAOP.Editor.Injectors {
             }
         }
 
-        public static GenericInstanceType GetFuncDelegateType(ModuleDefinition module, TypeReference outputType, TypeReference[] inputTypes, out MethodReference ctor) {
+        private static readonly Dictionary<int, Type> FuncMap = new Dictionary<int, Type>{
+            { 1, typeof(Func<>) },
+            { 2, typeof(Func<,>) },
+            { 3, typeof(Func<,,>) },
+            { 4, typeof(Func<,,,>) },
+            { 5, typeof(Func<,,,,>) },
+        };
+        public static TypeReference GetFuncDelegateType(ModuleDefinition module, TypeReference outputType, TypeReference[] inputTypes, out MethodReference ctor) {
             List<TypeReference> genericArgs = new List<TypeReference>();
             genericArgs.Add(outputType);
             genericArgs.AddRange(inputTypes);
-
-            int numArguments = genericArgs.Count();
-            Type genericType = Type.GetType("System.Func`" + numArguments);
+            Type genericType = FuncMap[genericArgs.Count];
 
             TypeReference genericTypeRef = module.ImportReference(genericType);
-
             GenericInstanceType instancedTypeRef = genericTypeRef.MakeGenericInstanceType(genericArgs.ToArray());
             MethodDefinition ctorDef = instancedTypeRef.Resolve().GetConstructors().First();
             ctor = module.ImportReference(ctorDef);
@@ -196,27 +200,22 @@ namespace Assets.UnityAOP.Editor.Injectors {
             return instancedTypeRef;
         }
 
+        private static readonly Dictionary<int, Type> ActionMap = new Dictionary<int, Type>{
+            { 0, typeof(Action) },
+            { 1, typeof(Action<>) },
+            { 2, typeof(Action<,>) },
+            { 3, typeof(Action<,,>) },
+            { 4, typeof(Action<,,,>) },
+        };
         public static TypeReference GetActionDelegateType(ModuleDefinition module, TypeReference[] inputTypes, out MethodReference ctor) {
-            if (inputTypes.Length == 0) {
-                Type type = typeof(Action);
-                TypeReference typeRef = module.ImportReference(type);
-                MethodDefinition ctorDef = typeRef.Resolve().GetConstructors().FirstOrDefault();
-                ctor = module.ImportReference(ctorDef);
+            Type genericType = ActionMap[inputTypes.Length];
+            TypeReference genericTypeRef = module.ImportReference(genericType);
 
-                return typeRef;
-            } else {
-                int numArguments = inputTypes.Count();
-                Type genericType = Type.GetType("System.Action`" + numArguments);
-                TypeReference genericTypeRef = module.ImportReference(genericType);
+            GenericInstanceType instancedTypeRef = genericTypeRef.MakeGenericInstanceType(inputTypes);
+            MethodDefinition ctorDef = instancedTypeRef.Resolve().GetConstructors().First();
+            ctor = module.ImportReference(ctorDef);
 
-                GenericInstanceType instancedTypeRef = genericTypeRef.MakeGenericInstanceType(inputTypes);
-                MethodDefinition ctorDef = instancedTypeRef.Resolve().GetConstructors().First();
-                ctor = module.ImportReference(ctorDef);
-
-                return instancedTypeRef;
-            }
-
-            
+            return instancedTypeRef;
         }
     }
 }

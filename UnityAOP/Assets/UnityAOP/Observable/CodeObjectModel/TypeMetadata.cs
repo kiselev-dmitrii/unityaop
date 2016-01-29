@@ -45,6 +45,8 @@ namespace Assets.UnityAOP.Observable.CodeObjectModel {
 
                 var typeMethods = t.GetMethods();
                 foreach (var m in typeMethods) {
+                    if (m.IsConstructor || m.IsSpecialName || m.IsAbstract) continue;
+
                     var meta = new MethodMetadata(m);
                     methods[meta.Name] = meta;
                     members[meta.Name] = meta;
