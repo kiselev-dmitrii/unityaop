@@ -99,6 +99,7 @@ namespace Assets.UnityAOP.Editor.Injectors.Observable {
 
             // Инжектим инициализацию полей в конструктор
             foreach (var constructor in targetTypeDef.GetConstructors()) {
+                if (constructor.IsStatic) continue;
                 InjectBaseFieldInitialization(targetTypeDef, constructor, observableImplFieldDef, gettersFieldDef, settersFieldDef, methodsFieldDef);
             }
 

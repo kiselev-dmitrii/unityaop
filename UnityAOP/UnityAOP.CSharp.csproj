@@ -216,6 +216,7 @@
     <Compile Include="Assets\UnityAOP\Aspect\PartialAdvice\BeforeMethodAttribute.cs" />
     <Compile Include="Assets\UnityAOP\Documentation\InjectedModel.cs" />
     <Compile Include="Assets\UnityAOP\Observable\Binding\BindingNode.cs" />
+    <Compile Include="Assets\UnityAOP\Observable\Binding\NGUI\ButtonBinding.cs" />
     <Compile Include="Assets\UnityAOP\Observable\Binding\NGUI\InputBinding.cs" />
     <Compile Include="Assets\UnityAOP\Observable\Binding\NGUI\LabelBinding.cs" />
     <Compile Include="Assets\UnityAOP\Observable\Binding\Node.cs" />

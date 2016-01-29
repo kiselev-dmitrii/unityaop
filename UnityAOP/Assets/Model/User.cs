@@ -15,5 +15,12 @@ namespace Assets.Model {
             Name = name;
             Avatar = null;
         }
+
+        private static String[] names = new[] {
+            "Dick", "John", "Bill", "Steave", "Kate"
+        };
+        public void RandomName() {
+            Name = names[UnityEngine.Random.Range(0, names.Length - 1)];
+        }
     }
 }
