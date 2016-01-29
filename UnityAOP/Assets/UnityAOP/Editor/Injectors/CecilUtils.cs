@@ -208,14 +208,22 @@ namespace Assets.UnityAOP.Editor.Injectors {
             { 4, typeof(Action<,,,>) },
         };
         public static TypeReference GetActionDelegateType(ModuleDefinition module, TypeReference[] inputTypes, out MethodReference ctor) {
-            Type genericType = ActionMap[inputTypes.Length];
-            TypeReference genericTypeRef = module.ImportReference(genericType);
+            Type type = ActionMap[inputTypes.Length];
+            
+            if (inputTypes.Length == 0) {
+                TypeReference typeRef = module.ImportReference(type);
+                MethodDefinition ctorDef = typeRef.Resolve().GetConstructors().FirstOrDefault();
+                ctor = module.ImportReference(ctorDef);
 
-            GenericInstanceType instancedTypeRef = genericTypeRef.MakeGenericInstanceType(inputTypes);
-            MethodDefinition ctorDef = instancedTypeRef.Resolve().GetConstructors().First();
-            ctor = module.ImportReference(ctorDef);
+                return typeRef;
+            } else {
+                TypeReference genericTypeRef = module.ImportReference(type);
+                GenericInstanceType instancedTypeRef = genericTypeRef.MakeGenericInstanceType(inputTypes);
+                MethodDefinition ctorDef = instancedTypeRef.Resolve().GetConstructors().First();
+                ctor = module.ImportReference(ctorDef);
 
-            return instancedTypeRef;
+                return instancedTypeRef;
+            }
         }
     }
 }
