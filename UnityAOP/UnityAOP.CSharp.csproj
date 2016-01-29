@@ -202,14 +202,6 @@
     <Compile Include="Assets\Model\Group.cs" />
     <Compile Include="Assets\Model\Player.cs" />
     <Compile Include="Assets\Model\User.cs" />
-    <Compile Include="Assets\NewBehaviourScript.cs" />
-    <Compile Include="Assets\NewBehaviourScript1.cs" />
-    <Compile Include="Assets\NewBehaviourScript2.cs" />
-    <Compile Include="Assets\NewBehaviourScript3.cs" />
-    <Compile Include="Assets\NewBehaviourScript4.cs" />
-    <Compile Include="Assets\NewBehaviourScript5.cs" />
-    <Compile Include="Assets\NewBehaviourScript6.cs" />
-    <Compile Include="Assets\NewBehaviourScript7.cs" />
     <Compile Include="Assets\Samples\LogSample\Sample1.cs" />
     <Compile Include="Assets\Samples\MethodAdviceSample\Sample1.cs" />
     <Compile Include="Assets\Samples\MethodAdviceSample\Sample2.cs" />

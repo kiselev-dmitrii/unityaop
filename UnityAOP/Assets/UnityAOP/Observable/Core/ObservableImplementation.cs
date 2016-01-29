@@ -9,9 +9,11 @@ namespace Assets.UnityAOP.Observable.Core {
         }
 
         public void NotifyPropertyChanged(IObservable self, int memberCode) {
-            var observers = propObservers[memberCode];
-            for (var i = 0; i < observers.Count; ++i) {
-                observers[i].OnNodeChanged(self, memberCode);
+            List<IObserver> observers = null;
+            if (propObservers.TryGetValue(memberCode, out observers)) {
+                for (var i = 0; i < observers.Count; ++i) {
+                    observers[i].OnNodeChanged(self, memberCode);
+                } 
             }
         }
     
