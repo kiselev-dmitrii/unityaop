@@ -15,5 +15,9 @@ namespace Assets.Model {
             Friends = new ObservableList<User>();
             Rating = 0;
         }
+
+        public void IncreaseRating() {
+            Rating++;
+        }
     }
 }

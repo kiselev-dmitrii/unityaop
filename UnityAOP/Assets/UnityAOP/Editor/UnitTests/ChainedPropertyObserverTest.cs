@@ -8,6 +8,20 @@ namespace Assets.UnityAOP.Editor.UnitTests {
         public Application Application;
 
         [Test]
+        public void MethodCall() {
+            Application = new Application();
+
+            ChainedPropertyObserver<User> userObserver = null;
+            userObserver = Application.Observe(x => x.Player, () => { });
+
+            var player = (Player)Application.Player;
+
+            Assert.IsTrue(player.Rating == 0);
+            userObserver.CallMethod("IncreaseRating");
+            Assert.IsTrue(player.Rating == 1);
+        }
+
+        [Test]
         public void ObserveBrokenField() {
             Application = new Application();
 

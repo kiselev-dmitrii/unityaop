@@ -196,17 +196,27 @@ namespace Assets.UnityAOP.Editor.Injectors {
             return instancedTypeRef;
         }
 
-        public static GenericInstanceType GetActionDelegateType(ModuleDefinition module, TypeReference[] inputTypes, out MethodReference ctor) {
-            int numArguments = inputTypes.Count();
-            Type genericType = Type.GetType("System.Action`" + numArguments);
+        public static TypeReference GetActionDelegateType(ModuleDefinition module, TypeReference[] inputTypes, out MethodReference ctor) {
+            if (inputTypes.Length == 0) {
+                Type type = typeof(Action);
+                TypeReference typeRef = module.ImportReference(type);
+                MethodDefinition ctorDef = typeRef.Resolve().GetConstructors().FirstOrDefault();
+                ctor = module.ImportReference(ctorDef);
 
-            TypeReference genericTypeRef = module.ImportReference(genericType);
+                return typeRef;
+            } else {
+                int numArguments = inputTypes.Count();
+                Type genericType = Type.GetType("System.Action`" + numArguments);
+                TypeReference genericTypeRef = module.ImportReference(genericType);
 
-            GenericInstanceType instancedTypeRef = genericTypeRef.MakeGenericInstanceType(inputTypes);
-            MethodDefinition ctorDef = instancedTypeRef.Resolve().GetConstructors().First();
-            ctor = module.ImportReference(ctorDef);
+                GenericInstanceType instancedTypeRef = genericTypeRef.MakeGenericInstanceType(inputTypes);
+                MethodDefinition ctorDef = instancedTypeRef.Resolve().GetConstructors().First();
+                ctor = module.ImportReference(ctorDef);
 
-            return instancedTypeRef;
+                return instancedTypeRef;
+            }
+
+            
         }
     }
 }

@@ -35,6 +35,17 @@ namespace Assets.UnityAOP.Observable.ChainedObservers {
             }
         }
 
+        public void CallMethod(String methodName) {
+            var obj = GetValue();
+            if (obj is IObservable) {
+                IObservable observable = (IObservable) obj;
+                var methodDelegate = (Action)observable.GetMethodDelegate(methodName.GetHashCode());
+                if (methodDelegate != null) {
+                    methodDelegate();
+                }
+            }
+        }
+
         protected override void BindTarget(IObservable parent, PropertyMetadata targetMeta) {
             if (!targetMeta.IsObservable) {
                 valueGetter = (GetterDelegate<T>) parent.GetGetterDelegate(targetMeta.Code);
