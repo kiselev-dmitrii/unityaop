@@ -5,59 +5,27 @@ namespace Assets.UnityAOP.Utils {
 	[Serializable]
 	public sealed class SerializableType : ISerializationCallbackReceiver {
         [SerializeField]
-        private string _classRef;
-        private Type _type;
-
-        public Type Type {
-            get { return _type; }
-            set {
-                if (value != null && !value.IsClass)
-                    throw new ArgumentException(string.Format("'{0}' is not a class type.", value.FullName), "value");
-
-                _type = value;
-                _classRef = GetClassRef(value);
-            }
-        }
-
-		public static string GetClassRef(Type type) {
-			return type != null
-				? type.FullName + ", " + type.Assembly.GetName().Name
-				: "";
-		}
-
-		public SerializableType() {
-		}
-
-		public SerializableType(string assemblyQualifiedClassName) {
-			Type = !string.IsNullOrEmpty(assemblyQualifiedClassName)
-				? Type.GetType(assemblyQualifiedClassName)
-				: null;
-		}
+        private String fullTypeName;
+        public Type Type;
 
 		public SerializableType(Type type) {
-			Type = type;
+		    Type = type;
 		}
 
-        void ISerializationCallbackReceiver.OnAfterDeserialize() {
-            if (!string.IsNullOrEmpty(_classRef)) {
-                _type = System.Type.GetType(_classRef);
+	    public void OnBeforeSerialize() {
+	        if (Type != null) {
+	            fullTypeName = Type.FullName;
+	        } else {
+	            fullTypeName = "";
+	        }
+	    }
 
-                if (_type == null)
-                    Debug.LogWarning(string.Format("'{0}' was referenced but class type was not found.", _classRef));
-            } else {
-                _type = null;
-            }
+	    public void OnAfterDeserialize() {
+            Type = Type.GetType(fullTypeName);
         }
 
-        void ISerializationCallbackReceiver.OnBeforeSerialize() {
-        }
-
-		public static implicit operator string(SerializableType typeReference) {
-			return typeReference._classRef;
-		}
-
-		public static implicit operator Type(SerializableType typeReference) {
-			return typeReference.Type;
+		public static implicit operator Type(SerializableType serializableType) {
+			return serializableType.Type;
 		}
 
 		public static implicit operator SerializableType(Type type) {
@@ -65,9 +33,7 @@ namespace Assets.UnityAOP.Utils {
 		}
 
 		public override string ToString() {
-			return Type != null ? Type.FullName : "(None)";
+            return Type != null ? Type.FullName : "Empty";
 		}
-
 	}
-
 }

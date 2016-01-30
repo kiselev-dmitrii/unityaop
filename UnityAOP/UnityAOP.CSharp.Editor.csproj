@@ -209,7 +209,6 @@
     <Compile Include="Assets\UnityAOP\Editor\Inspector\NodeInspector.cs" />
     <Compile Include="Assets\UnityAOP\Editor\Inspector\PathAnylazer.cs" />
     <Compile Include="Assets\UnityAOP\Editor\Inspector\RelativePathInspector.cs" />
-    <Compile Include="Assets\UnityAOP\Editor\Inspector\SerializableTypePropertyDrawer.cs" />
     <Compile Include="Assets\UnityAOP\Editor\InspectorWidgets\XAutocompleteField.cs" />
     <Compile Include="Assets\UnityAOP\Editor\InspectorWidgets\XButton.cs" />
     <Compile Include="Assets\UnityAOP\Editor\InspectorWidgets\XField.cs" />

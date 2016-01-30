@@ -13,11 +13,13 @@
     <TargetFrameworkIdentifier>.NETFramework</TargetFrameworkIdentifier>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <TargetFrameworkProfile>Unity Subset v3.5</TargetFrameworkProfile>
-    <CompilerResponseFile></CompilerResponseFile>
+    <CompilerResponseFile>
+    </CompilerResponseFile>
     <UnityProjectType>Game:1</UnityProjectType>
     <UnityBuildTarget>WebGL:20</UnityBuildTarget>
     <UnityVersion>5.3.1f1</UnityVersion>
-    <RootNamespace></RootNamespace>
+    <RootNamespace>
+    </RootNamespace>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -215,13 +217,13 @@
     <Compile Include="Assets\UnityAOP\Aspect\PartialAdvice\BeforeConstructorAttribute.cs" />
     <Compile Include="Assets\UnityAOP\Aspect\PartialAdvice\BeforeMethodAttribute.cs" />
     <Compile Include="Assets\UnityAOP\Documentation\InjectedModel.cs" />
-    <Compile Include="Assets\UnityAOP\Observable\Binding\BindingNode.cs" />
+    <Compile Include="Assets\UnityAOP\Observable\Binding\Core\BindingContext.cs" />
+    <Compile Include="Assets\UnityAOP\Observable\Binding\Core\ExternalLink.cs" />
+    <Compile Include="Assets\UnityAOP\Observable\Binding\Core\BindingNode.cs" />
+    <Compile Include="Assets\UnityAOP\Observable\Binding\Core\RelativePath.cs" />
     <Compile Include="Assets\UnityAOP\Observable\Binding\NGUI\ButtonBinding.cs" />
     <Compile Include="Assets\UnityAOP\Observable\Binding\NGUI\InputBinding.cs" />
     <Compile Include="Assets\UnityAOP\Observable\Binding\NGUI\LabelBinding.cs" />
-    <Compile Include="Assets\UnityAOP\Observable\Binding\Node.cs" />
-    <Compile Include="Assets\UnityAOP\Observable\Binding\RelativePath.cs" />
-    <Compile Include="Assets\UnityAOP\Observable\Binding\RootNode.cs" />
     <Compile Include="Assets\UnityAOP\Observable\ChainedObservers\BaseChainedObserver.cs" />
     <Compile Include="Assets\UnityAOP\Observable\ChainedObservers\BaseListObserver.cs" />
     <Compile Include="Assets\UnityAOP\Observable\ChainedObservers\ChainedPropertyObserver.cs" />
@@ -240,7 +242,6 @@
     <Compile Include="Assets\UnityAOP\Observable\Core\ObservableImplementation.cs" />
     <Compile Include="Assets\UnityAOP\Observable\Core\ObservableList.cs" />
     <Compile Include="Assets\UnityAOP\Utils\AssemblyProcessedAttribute.cs" />
-    <Compile Include="Assets\UnityAOP\Utils\ClassConstraintAttribute.cs" />
     <Compile Include="Assets\UnityAOP\Utils\CollectionUtils.cs" />
     <Compile Include="Assets\UnityAOP\Utils\NestedDictionary.cs" />
     <Compile Include="Assets\UnityAOP\Utils\ReflectionUtils.cs" />
@@ -285,5 +286,6 @@
     <None Include="Assets\External\NGUI\Resources\Shaders\Unlit - Transparent Packed 3.shader" />
     <None Include="Assets\External\NGUI\Resources\Shaders\Unlit - Transparent Packed.shader" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildExtensionsPath)\SyntaxTree\UnityVS\2013\UnityVS.CSharp.targets" />
 </Project>
