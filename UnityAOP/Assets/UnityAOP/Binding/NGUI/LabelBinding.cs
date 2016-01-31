@@ -1,19 +1,21 @@
-﻿using Assets.UnityAOP.Observable.ChainedObservers;
+﻿using System;
+using System.Collections.Generic;
+using Assets.UnityAOP.Binding.Core;
+using Assets.UnityAOP.Observable.ChainedObservers;
 
-namespace Assets.UnityAOP.Observable.Binding.NGUI {
+namespace Assets.UnityAOP.Binding.NGUI {
     public class LabelBinding : BindingNode {
+        public BindingPath Path;
         private UntypedValueObserver observer;
         private UILabel label;
 
-        protected override void Awake() {
+        protected void Awake() {
             label = GetComponent<UILabel>();
-            base.Awake();
         }
 
         public override void Bind() {
-            var root = GetRootNode().Root;
-            var path = GetFullPath();
-            observer = root.Observe(path, OnValueChanged);
+            var root = Context.Model;
+            observer = root.Observe(Path.ToArray(), OnValueChanged);
             OnValueChanged();
         }
 

@@ -1,24 +1,22 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using Assets.UnityAOP.Binding.Core;
 using Assets.UnityAOP.Observable.ChainedObservers;
 using Assets.UnityAOP.Observable.Core;
-using UnityEngine;
 
-namespace Assets.UnityAOP.Observable.Binding.NGUI {
+namespace Assets.UnityAOP.Binding.NGUI {
     public class ButtonBinding : BindingNode {
+        public BindingPath Path; 
         private ChainedPropertyObserver<IObservable> observer;
         private String methodName;
 
         public override void Bind() {
-            var root = GetRootNode().Root;
-            var path = GetFullPath();
+            var root = Context.Model;
+            String[] propertyPath = Path.Slice(0, Path.Length()- 1);
+            methodName = Path.Last();
 
-            int lastPoint = path.LastIndexOf('.');
-            String propertyPath = path.Substring(0, lastPoint);
-            Debug.Log(propertyPath);
-            methodName = path.Substring(lastPoint + 1, path.Length - lastPoint - 1);
-            Debug.Log(methodName);
-
-            observer = root.Observe<IObservable>(propertyPath, () => { });
+            observer = root.Observe<IObservable>(propertyPath);
         }
 
         public override void Unbind() {

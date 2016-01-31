@@ -8,7 +8,7 @@ using UnityEngine.Assertions;
 
 namespace Assets.UnityAOP.Observable.ChainedObservers {
     public static class ObserverUtils {
-        public static ChainedPropertyObserver<TTarget> Observe<TTarget>(this object root, String path, Action onChanged) {
+        public static ChainedPropertyObserver<TTarget> Observe<TTarget>(this object root, String path, Action onChanged = null) {
             var props = CalculatePropertyPath(root.GetType(), path);
             return new ChainedPropertyObserver<TTarget>((IObservable)root, props, onChanged);
         }
@@ -18,12 +18,22 @@ namespace Assets.UnityAOP.Observable.ChainedObservers {
             return new UntypedValueObserver((IObservable)root, props, onChanged);
         }
 
+        public static ChainedPropertyObserver<TTarget> Observe<TTarget>(this object root, String[] path, Action onChanged = null) {
+            var props = CalculatePropertyPath(root.GetType(), path);
+            return new ChainedPropertyObserver<TTarget>((IObservable)root, props, onChanged);
+        }
+
+        public static UntypedValueObserver Observe(this object root, String[] path, Action onChanged = null) {
+            var props = CalculatePropertyPath(root.GetType(), path);
+            return new UntypedValueObserver((IObservable)root, props, onChanged);
+        }
+
         public static ChainedPropertyObserver<TTarget> Observe<TRoot, TTarget>(this TRoot root,
             Expression<Func<TRoot, TTarget>> expression, Action onChanged) {
     
             String path = expression.ToString().Replace("get_Item(", "").Replace(")", "");
-            String[] fieldsName = path.Split('.').Skip(1).ToArray();
-            var props = CalculatePropertyPath(root.GetType(), fieldsName);
+            String[] memberNames = path.Split('.').Skip(1).ToArray();
+            var props = CalculatePropertyPath(root.GetType(), memberNames);
             return new ChainedPropertyObserver<TTarget>((IObservable)root, props, onChanged);
         }
 

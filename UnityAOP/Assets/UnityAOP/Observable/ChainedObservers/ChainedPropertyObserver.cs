@@ -66,7 +66,9 @@ namespace Assets.UnityAOP.Observable.ChainedObservers {
         protected override void OnParentNodeChanged() {
             T newValue = GetValue();
             if (!Equals(newValue, lastValue)) {
-                callback();
+                if (callback != null) {
+                    callback();
+                }
                 lastValue = newValue;
             }
         }

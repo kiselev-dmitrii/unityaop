@@ -1,22 +1,24 @@
-﻿using Assets.UnityAOP.Observable.ChainedObservers;
+﻿using System;
+using System.Collections.Generic;
+using Assets.UnityAOP.Binding.Core;
+using Assets.UnityAOP.Observable.ChainedObservers;
 
-namespace Assets.UnityAOP.Observable.Binding.NGUI {
+namespace Assets.UnityAOP.Binding.NGUI {
     public class InputBinding : BindingNode {
+        public BindingPath Path; 
         private UntypedValueObserver observer;
         private UIInput input;
         private EventDelegate eventDelegate;
 
-        protected override void Awake() {
+        protected void Awake() {
             input = GetComponent<UIInput>();
             eventDelegate = new EventDelegate(OnInputChanged);
-            base.Awake();
         }
 
         public override void Bind() {
-            var root = GetRootNode().Root;
-            var path = GetFullPath();
+            var root = Context.Model;
 
-            observer = root.Observe(path);
+            observer = root.Observe(Path.ToArray());
             OnInputChanged();
 
             if (input != null) {
