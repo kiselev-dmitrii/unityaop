@@ -36,7 +36,6 @@ namespace Assets.UnityAOP.Editor.Inspector {
         }
 
         public override void OnInspectorGUI() {
-            DrawDefaultInspector();
             foreach (var prop in GetProperties(serializedObject)) {
                 PathField pathField = null;
                 if (pathFields.TryGetValue(prop.propertyPath, out pathField)) {
@@ -49,6 +48,8 @@ namespace Assets.UnityAOP.Editor.Inspector {
                     EditorGUILayout.PropertyField(prop, true);
                 }
             }
+
+            serializedObject.ApplyModifiedProperties();
         }
 
         private static void UpdateBindingContext(BindingNode node) {
