@@ -14,7 +14,7 @@ namespace Assets.Samples.BindingSamples.SimpleWindow {
         public bool IsLoggedIn { get; private set; }
 
         public SimpleWindow() {
-            this.Observe(x => x.IsValid, OnUsernameChanged);
+            this.ObserveProperty(x => x.IsValid, OnUsernameChanged);
         }
 
         public void OnLoginButtonClick() {

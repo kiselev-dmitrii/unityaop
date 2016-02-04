@@ -6,7 +6,7 @@ using Assets.UnityAOP.Observable.ChainedObservers;
 namespace Assets.UnityAOP.Binding.NGUI {
     public class InputBinding : BindingNode {
         public BindingPath Path; 
-        private UntypedValueObserver observer;
+        private UntypedPropertyObserver observer;
         private UIInput input;
         private EventDelegate eventDelegate;
 
@@ -18,7 +18,7 @@ namespace Assets.UnityAOP.Binding.NGUI {
         public override void Bind() {
             var root = Context.Model;
 
-            observer = root.Observe(Path.ToArray());
+            observer = root.ObserveProperty(Path.ToArray());
             OnInputChanged();
 
             if (input != null) {

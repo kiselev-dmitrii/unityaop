@@ -16,7 +16,7 @@ namespace Assets.UnityAOP.Binding.NGUI {
             String[] propertyPath = Path.Slice(0, Path.Length()- 1);
             methodName = Path.Last();
 
-            observer = root.Observe<IObservable>(propertyPath);
+            observer = root.ObserveProperty<IObservable>(propertyPath);
         }
 
         public override void Unbind() {

@@ -5,7 +5,7 @@ using Assets.UnityAOP.Observable.Core;
 using UnityEngine;
 
 namespace Assets.UnityAOP.Observable.ChainedObservers {
-    public class UntypedValueObserver : BaseChainedObserver {
+    public class UntypedPropertyObserver : BaseChainedObserver {
         public enum PropertyType {
             Bool,
             Int,
@@ -52,7 +52,7 @@ namespace Assets.UnityAOP.Observable.ChainedObservers {
         private bool isCompleteBound;
         private Action callback;
 
-        public UntypedValueObserver(IObservable root, PropertyMetadata[] propertyPath, Action onValueChanged = null) : base(root, propertyPath) {
+        public UntypedPropertyObserver(IObservable root, PropertyMetadata[] propertyPath, Action onValueChanged = null) : base(root, propertyPath) {
             targetProperty = TargetProperty;
             isCompleteBound = false;
             callback = onValueChanged;

@@ -12,7 +12,7 @@ namespace Assets.UnityAOP.Editor.UnitTests {
             Application = new Application();
 
             ChainedPropertyObserver<User> userObserver = null;
-            userObserver = Application.Observe(x => x.Player, () => { });
+            userObserver = Application.ObserveProperty(x => x.Player, () => { });
 
             var player = (Player)Application.Player;
 
@@ -28,7 +28,7 @@ namespace Assets.UnityAOP.Editor.UnitTests {
             int numMembers = 0;
 
             ChainedPropertyObserver<int> observer = null;
-            observer = Application.Observe(x => x.Player.Group.NumMembers, () => {
+            observer = Application.ObserveProperty(x => x.Player.Group.NumMembers, () => {
                 numMembers = observer.GetValue();
             });
             Assert.IsTrue(numMembers == 0);
@@ -58,7 +58,7 @@ namespace Assets.UnityAOP.Editor.UnitTests {
             Application = new Application();
 
             ChainedPropertyObserver<int> idObserver = null;
-            idObserver = Application.Observe(x => x.Player.Id, () => {});
+            idObserver = Application.ObserveProperty(x => x.Player.Id, () => {});
 
             Application.Player.Id = 10;
             Assert.IsTrue(idObserver.GetValue() == 10);
@@ -72,7 +72,7 @@ namespace Assets.UnityAOP.Editor.UnitTests {
             Application = new Application();
 
             ChainedPropertyObserver<User> userObserver = null;
-            userObserver = Application.Observe(x => x.Player, () => { });
+            userObserver = Application.ObserveProperty(x => x.Player, () => { });
 
             Assert.IsTrue(userObserver.GetValue() == Application.Player);
         }
@@ -82,7 +82,7 @@ namespace Assets.UnityAOP.Editor.UnitTests {
             Application = new Application();
 
             ChainedPropertyObserver<User> userObserver = null;
-            userObserver = Application.Observe(x => x.Player, () => { });
+            userObserver = Application.ObserveProperty(x => x.Player, () => { });
 
             var newUser = new User(10, "New user");
             userObserver.SetValue(newUser);
@@ -96,7 +96,7 @@ namespace Assets.UnityAOP.Editor.UnitTests {
             String secondMemberName = null;
 
             ChainedPropertyObserver<String> observer = null;
-            observer = group.Observe(x => x.Members[2].Name, () => secondMemberName = observer.GetValue());
+            observer = group.ObserveProperty(x => x.Members[2].Name, () => secondMemberName = observer.GetValue());
             Assert.IsTrue(secondMemberName == null);
 
             group.Members.Add(new User(1, "First user"));
@@ -147,7 +147,7 @@ namespace Assets.UnityAOP.Editor.UnitTests {
 
             String secondMemberName = null;
             ChainedPropertyObserver<String> observer = null;
-            observer = Application.Observe(x => x.Player.Group.Members[2].Name, () => secondMemberName = observer.GetValue());
+            observer = Application.ObserveProperty(x => x.Player.Group.Members[2].Name, () => secondMemberName = observer.GetValue());
 
             Assert.IsTrue(secondMemberName == null);
 

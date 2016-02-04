@@ -6,7 +6,7 @@ using Assets.UnityAOP.Observable.ChainedObservers;
 namespace Assets.UnityAOP.Binding.NGUI {
     public class LabelBinding : BindingNode {
         public BindingPath Path;
-        private UntypedValueObserver observer;
+        private UntypedPropertyObserver observer;
         private UILabel label;
 
         protected void Awake() {
@@ -15,7 +15,7 @@ namespace Assets.UnityAOP.Binding.NGUI {
 
         public override void Bind() {
             var root = Context.Model;
-            observer = root.Observe(Path.ToArray(), OnValueChanged);
+            observer = root.ObserveProperty(Path.ToArray(), OnValueChanged);
             OnValueChanged();
         }
 

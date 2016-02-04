@@ -3,16 +3,18 @@ using System.Collections.Generic;
 using Assets.UnityAOP.Utils;
 
 namespace Assets.UnityAOP.Observable.Core {
-    public class ObservableList<T> : IObservableCollection<T>, IObservable,  IList<T> {
+    public class ObservableList<T> : IList<T>, IObservable, IObservableList<T>, IObservableList {
         private readonly List<T> list;
         private readonly List<List<IObserver>> indexToObservers;
-        private readonly List<IListObserver<T>> listObservers; 
+        private readonly List<IListObserver<T>> typedListObservers;
+        private readonly List<IListObserver> untypedListObservers; 
         private readonly bool hasObservableItems;
     
         public ObservableList() {
             list = new List<T>();
             indexToObservers = new List<List<IObserver>>();
-            listObservers = new List<IListObserver<T>>();
+            typedListObservers = new List<IListObserver<T>>();
+            untypedListObservers = new List<IListObserver>();
             hasObservableItems = typeof (T).HasAttribute<ObservableAttribute>();
         }
         
@@ -31,6 +33,7 @@ namespace Assets.UnityAOP.Observable.Core {
 
             NotifyMemberChanged(index);
             NotifyItemInserted(index, item);
+            NotifyItemInserted(index, (object)item);
         }
 
         public void AddRange(IEnumerable<T> collection) {
@@ -82,6 +85,7 @@ namespace Assets.UnityAOP.Observable.Core {
                 NotifyMemberChanged(i);
             }
             NotifyItemInserted(index, item);
+            NotifyItemInserted(index, (object)item);
         }
 
         public void RemoveAt(int index) {
@@ -92,6 +96,7 @@ namespace Assets.UnityAOP.Observable.Core {
                 NotifyMemberChanged(i);
             }
             NotifyItemRemoved(index, item);
+            NotifyItemRemoved(index, (object)item);
         }
 
         public T this[int index] {
@@ -152,33 +157,62 @@ namespace Assets.UnityAOP.Observable.Core {
         }
         #endregion
 
-        #region IObservableCollection
-        public void AddCollectionObserver(IListObserver<T> observer) {
-            listObservers.Add(observer);
+        #region IObservableList<T>
+        public void AddListObserver(IListObserver<T> observer) {
+            typedListObservers.Add(observer);
         }
 
-        public void RemoveCollectionObserver(IListObserver<T> observer) {
-            listObservers.Remove(observer);
+        public void RemoveListObserver(IListObserver<T> observer) {
+            typedListObservers.Remove(observer);
         }
 
         public void NotifyItemInserted(int index, T item) {
-            foreach (var observer in listObservers) {
+            foreach (var observer in typedListObservers) {
                 observer.OnItemInserted(index, item);
             }
         }
 
         public void NotifyItemRemoved(int index, T item) {
-            foreach (var observer in listObservers) {
+            foreach (var observer in typedListObservers) {
+                observer.OnItemRemoved(index, item);
+            }
+        }
+
+        public object ItemAt(int index) {
+            return this[index];
+        }
+
+        public void AddListObserver(IListObserver observer) {
+            untypedListObservers.Add(observer);
+        }
+
+        public void RemoveListObserver(IListObserver observer) {
+            untypedListObservers.Remove(observer);
+        }
+
+        public void NotifyItemInserted(int index, object item) {
+            foreach (var observer in untypedListObservers) {
+                observer.OnItemInserted(index, item);
+            }
+        }
+
+        public void NotifyItemRemoved(int index, object item) {
+            foreach (var observer in untypedListObservers) {
                 observer.OnItemRemoved(index, item);
             }
         }
 
         public void NotifyListCleared() {
-            foreach (var observer in listObservers) {
+            foreach (var observer in typedListObservers) {
+                observer.OnListCleared();
+            }
+
+            foreach (var observer in untypedListObservers) {
                 observer.OnListCleared();
             }
         }
-    
+        #endregion
+
         private T TryGet(int index) {
             if (index < list.Count) {
                 return list[index];
@@ -186,8 +220,5 @@ namespace Assets.UnityAOP.Observable.Core {
                 return default(T);
             }
         }
-        #endregion
-
-
     }
 }

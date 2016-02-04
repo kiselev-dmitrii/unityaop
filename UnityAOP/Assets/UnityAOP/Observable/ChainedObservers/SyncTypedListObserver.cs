@@ -6,7 +6,7 @@ using Assets.UnityAOP.Observable.CodeObjectModel;
 using Assets.UnityAOP.Observable.Core;
 
 namespace Assets.UnityAOP.Observable.ChainedObservers {
-    public class SyncListObserver<TSource, TDestination> : BaseListObserver<TSource> where TSource : class {
+    public class SyncListObserver<TSource, TDestination> : TypedListObserver<TSource> where TSource : class {
         public delegate TDestination ConstructorFunc(int index, TSource srcItem);
 
         private readonly IList<TDestination> dstList;

@@ -200,16 +200,16 @@
     <Compile Include="Assets\External\NGUI\Scripts\UI\UITooltip.cs" />
     <Compile Include="Assets\External\NGUI\Scripts\UI\UIViewport.cs" />
     <Compile Include="Assets\Model\Application.cs" />
+    <Compile Include="Assets\Model\ApplicationContext.cs" />
     <Compile Include="Assets\Model\Group.cs" />
     <Compile Include="Assets\Model\Player.cs" />
     <Compile Include="Assets\Model\User.cs" />
-    <Compile Include="Assets\Samples\BindingSamples\SimpleWindow\ApplicationContext.cs" />
     <Compile Include="Assets\Samples\BindingSamples\SimpleWindow\Model.cs" />
+    <Compile Include="Assets\Samples\BindingSamples\SimpleWindow\SimpleWindowContext.cs" />
     <Compile Include="Assets\Samples\LogSample\Sample1.cs" />
     <Compile Include="Assets\Samples\MethodAdviceSample\Sample1.cs" />
     <Compile Include="Assets\Samples\MethodAdviceSample\Sample2.cs" />
     <Compile Include="Assets\Samples\ObservableSample\Sample1.cs" />
-    <Compile Include="Assets\Test.cs" />
     <Compile Include="Assets\UnityAOP\Aspect\BoundaryAspect\BaseBoundaryAttribute.cs" />
     <Compile Include="Assets\UnityAOP\Aspect\BoundaryAspect\LogAttribute.cs" />
     <Compile Include="Assets\UnityAOP\Aspect\MethodAdvice\MethodAdviceAttribute.cs" />
@@ -217,19 +217,21 @@
     <Compile Include="Assets\UnityAOP\Aspect\PartialAdvice\AfterMethodAttribute.cs" />
     <Compile Include="Assets\UnityAOP\Aspect\PartialAdvice\BeforeConstructorAttribute.cs" />
     <Compile Include="Assets\UnityAOP\Aspect\PartialAdvice\BeforeMethodAttribute.cs" />
-    <Compile Include="Assets\UnityAOP\Binding\Core\BindingPath.cs" />
-    <Compile Include="Assets\UnityAOP\Documentation\InjectedModel.cs" />
     <Compile Include="Assets\UnityAOP\Binding\Core\BindingContext.cs" />
     <Compile Include="Assets\UnityAOP\Binding\Core\BindingNode.cs" />
+    <Compile Include="Assets\UnityAOP\Binding\Core\BindingPath.cs" />
     <Compile Include="Assets\UnityAOP\Binding\NGUI\ButtonBinding.cs" />
+    <Compile Include="Assets\UnityAOP\Binding\NGUI\GridBinding.cs" />
     <Compile Include="Assets\UnityAOP\Binding\NGUI\InputBinding.cs" />
     <Compile Include="Assets\UnityAOP\Binding\NGUI\LabelBinding.cs" />
+    <Compile Include="Assets\UnityAOP\Documentation\InjectedModel.cs" />
     <Compile Include="Assets\UnityAOP\Observable\ChainedObservers\BaseChainedObserver.cs" />
-    <Compile Include="Assets\UnityAOP\Observable\ChainedObservers\BaseListObserver.cs" />
+    <Compile Include="Assets\UnityAOP\Observable\ChainedObservers\BaseTypedListObserver.cs" />
     <Compile Include="Assets\UnityAOP\Observable\ChainedObservers\ChainedPropertyObserver.cs" />
-    <Compile Include="Assets\UnityAOP\Observable\ChainedObservers\ObserveExtensions.cs" />
-    <Compile Include="Assets\UnityAOP\Observable\ChainedObservers\SyncListObserver.cs" />
-    <Compile Include="Assets\UnityAOP\Observable\ChainedObservers\UntypedValueObserver.cs" />
+    <Compile Include="Assets\UnityAOP\Observable\ChainedObservers\ObserverUtils.cs" />
+    <Compile Include="Assets\UnityAOP\Observable\ChainedObservers\SyncTypedListObserver.cs" />
+    <Compile Include="Assets\UnityAOP\Observable\ChainedObservers\UntypedListObserver.cs" />
+    <Compile Include="Assets\UnityAOP\Observable\ChainedObservers\UntypedPropertyObserver.cs" />
     <Compile Include="Assets\UnityAOP\Observable\CodeObjectModel\CodeModel.cs" />
     <Compile Include="Assets\UnityAOP\Observable\CodeObjectModel\MemberMetadata.cs" />
     <Compile Include="Assets\UnityAOP\Observable\CodeObjectModel\MethodMetadata.cs" />
@@ -286,6 +288,5 @@
     <None Include="Assets\External\NGUI\Resources\Shaders\Unlit - Transparent Packed 3.shader" />
     <None Include="Assets\External\NGUI\Resources\Shaders\Unlit - Transparent Packed.shader" />
   </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildExtensionsPath)\SyntaxTree\UnityVS\2013\UnityVS.CSharp.targets" />
 </Project>

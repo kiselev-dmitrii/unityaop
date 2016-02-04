@@ -7,7 +7,7 @@ using Assets.UnityAOP.Utils;
 using NUnit.Framework;
 
 namespace Assets.UnityAOP.Editor.UnitTests {
-    public class SyncListObserverTest {
+    public class ListObserverTest {
         public class GroupMemberItem {
             public User Member { get; private set; }
             public String Name { get; private set; }
@@ -75,6 +75,33 @@ namespace Assets.UnityAOP.Editor.UnitTests {
 
             player.Group.Members.Add(new User(9, "Elvis Presley"));
             Assert.IsTrue(dstList.Count == 1);
+        }
+
+        [Test]
+        public void ObserveListOfObservable() {
+            var player = new User(1, "Player");
+            player.Group = new Group(1);
+
+            List<int> ids = new List<int>();
+
+            var untypedListObserver = player.ObserveList("Group.Members");
+            untypedListObserver.OnInserted += (index, item) => {
+                var user = (User)item;
+                ids.Add(user.Id);
+            };
+            untypedListObserver.OnRemoved += (index, item) => {
+                ids.RemoveAt(index);
+            };
+            untypedListObserver.OnCleared += () => {
+                ids.Clear();
+            };
+
+            player.Group.AddMember(new User(2, "User1"));
+            Assert.IsTrue(ids[0] == 2);
+
+            player.Group.AddMember(new User(3, "User1"));
+            Assert.IsTrue(ids[1] == 3);
+            Assert.IsTrue(ids.Count == 2);
         }
     }
 }

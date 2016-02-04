@@ -15,7 +15,7 @@ public class Sample1 : MonoBehaviour {
 
     public void OnGUI() {
         if (GUI.Button(new Rect(10, 10, 100, 30), "Bind")) {
-            observer = application.Observe(x => x.Player.Group.Members[0].Id, OnValueChanged);
+            observer = application.ObserveProperty(x => x.Player.Group.Members[0].Id, OnValueChanged);
         }
         if (GUI.Button(new Rect(10, 40, 100, 30), "Unbind")) {
             observer.Dispose();

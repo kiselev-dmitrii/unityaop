@@ -6,7 +6,7 @@ using Assets.UnityAOP.Binding.Core;
 using UnityEngine;
 
 namespace Assets.Samples.BindingSamples.SimpleWindow {
-    public class ApplicationContext : MonoBehaviour {
+    public class SimpleWindowContext : MonoBehaviour {
         public BindingContext RootContext;
 
         public void Awake() {

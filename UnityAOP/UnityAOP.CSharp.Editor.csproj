@@ -212,7 +212,7 @@
     <Compile Include="Assets\UnityAOP\Editor\InspectorWidgets\XField.cs" />
     <Compile Include="Assets\UnityAOP\Editor\InspectorWidgets\XWidget.cs" />
     <Compile Include="Assets\UnityAOP\Editor\UnitTests\ChainedPropertyObserverTest.cs" />
-    <Compile Include="Assets\UnityAOP\Editor\UnitTests\SyncListObserverTest.cs" />
+    <Compile Include="Assets\UnityAOP\Editor\UnitTests\ListObserverTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\External\NGUI\Examples\Atlases\Fantasy\Fantasy Font - Normal.txt" />

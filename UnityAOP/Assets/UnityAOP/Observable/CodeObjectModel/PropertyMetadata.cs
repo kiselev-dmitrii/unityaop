@@ -9,7 +9,7 @@ namespace Assets.UnityAOP.Observable.CodeObjectModel {
 
         public PropertyMetadata(PropertyInfo propertyInfo) : base(propertyInfo.Name, propertyInfo.PropertyType, MemberType.Property) {
             IsObservable = Type.GetInterface("IObservable") != null;
-            IsCollection = Type.GetInterface("IObservableCollection`1") != null;
+            IsCollection = Type.GetInterface("IObservableList`1") != null;
             if (IsCollection) {
                 ItemType = Type.GetGenericArguments()[0];
             }
@@ -17,7 +17,7 @@ namespace Assets.UnityAOP.Observable.CodeObjectModel {
 
         public PropertyMetadata(String name, Type type, int code) : base(name, type, code, MemberType.Property) {
             IsObservable = Type.GetInterface("IObservable") != null;
-            IsCollection = Type.GetInterface("IObservableCollection`1") != null;
+            IsCollection = Type.GetInterface("IObservableList`1") != null;
             if (IsCollection) {
                 ItemType = Type.GetGenericArguments()[0];
             }

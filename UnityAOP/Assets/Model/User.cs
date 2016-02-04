@@ -14,6 +14,7 @@ namespace Assets.Model {
             Id = id;
             Name = name;
             Avatar = null;
+            Group = new Group(1);
         }
 
         private static String[] names = new[] {

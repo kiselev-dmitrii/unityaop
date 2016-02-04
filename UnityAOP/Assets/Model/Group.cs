@@ -1,5 +1,4 @@
 using System;
-using Assets.UnityAOP.Observable;
 using Assets.UnityAOP.Observable.Core;
 
 namespace Assets.Model {
@@ -33,6 +32,11 @@ namespace Assets.Model {
         public void RemoveMember(User member) {
             Members.Remove(member);
             NumMembers--;
+        }
+
+        public void AddRandomMember() {
+            Members.Add(new User(NumMembers+1, ""));
+            NumMembers++;
         }
     }
 }
