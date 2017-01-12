@@ -1,0 +1,1 @@
+Unity AOP is an experimental library that allows injecting code to Unity assembly as postprocessing. Also, the library contains features for binding properties of POCO objects. It can be useful in UI development.
