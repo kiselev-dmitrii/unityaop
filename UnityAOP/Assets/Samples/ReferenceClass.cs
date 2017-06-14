@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Assets.TestTask {
+namespace Assets.Samples {
     public class ReferenceClass : BaseClass {
         public String Field;
         public List<String> Array;

@@ -1,23 +1,31 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using Mono.Cecil;
 using Mono.Cecil.Rocks;
 using UnityEditor;
 
 
 namespace Assets.UnityAOP.Editor.Injectors {
-    public class TestTaskInjector {
+    public class GenericInstanceInjector {
         private readonly ModuleDefinition module;
 
-        public TestTaskInjector(AssemblyDefinition assembly) {
+        public const String TargetClassName = "DerivedClass`1";
+        public readonly Type[] GenericArguments = {
+            typeof (String),
+            typeof (float),
+            typeof (int)
+        };
+
+        public GenericInstanceInjector(AssemblyDefinition assembly) {
             module = assembly.MainModule;
         }
 
         public void Inject() {
-            var genericTypeDef = module.FindTypeDefinition("DerivedClass`1");
-            var typeDef = CreateInstanceTypeDef(genericTypeDef, typeof (String));
-            module.Types.Add(typeDef);
+            var genericTypeDef = module.FindTypeDefinition(TargetClassName);
+            foreach (var argument in GenericArguments) {
+                var typeDef = CreateInstanceTypeDef(genericTypeDef, argument);
+                module.Types.Add(typeDef);
+            }
         }
 
         private TypeDefinition CreateInstanceTypeDef(TypeDefinition genericTypeDef, Type argType) {

@@ -2,45 +2,16 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
-using Assets.UnityAOP.Editor.Injectors.MethodAdvice;
-using Assets.UnityAOP.Editor.Injectors.Observable;
 using Assets.UnityAOP.Utils;
 using Mono.Cecil;
 using UnityEngine;
 
 namespace Assets.UnityAOP.Editor.Injectors {
     public class AssemblyInjector {
-        private AssemblyDefinition assembly;
+        private readonly AssemblyDefinition assembly;
     
         public AssemblyInjector(AssemblyDefinition assembly) {
             this.assembly = assembly;
-        }
-    
-        public bool Process() {
-            if (assembly.HasAttributeOfType<AssemblyProcessedAttribute>()) {
-                Debug.Log("Assembly already processed");
-                return false;
-            }
-
-            try {
-                var injector = new TestTaskInjector(assembly);
-                injector.Inject();
-                //var targetTypeDef = mainModule.FindTypeDefinition(typeof (ObservableMetadata));
-                //MethodDefinition targetMethodDef = targetTypeDef.FindMethodDefinition("InitMetadata");
-    
-                //var targetTypeDef = mainModule.FindTypeDefinition<EmptyClass>();
-                //targetTypeDef.OverrideMethod("BaseMethod");
-                //var interfaceInjector = new InterfaceInjector(assembly);
-                //interfaceInjector.Inject();
-            } catch (InjectionException ex) {
-                Debug.LogError(ex.Message);
-                return false;
-            }
-
-            assembly.AddAttribute<AssemblyProcessedAttribute>();
-
-            Debug.Log("assembly processed");
-            return true;
         }
 
         public static void ProcessAssembly(String dllPath, String mdbPath) {
@@ -75,5 +46,27 @@ namespace Assets.UnityAOP.Editor.Injectors {
                 assemblyDefinition.Write(dllPath, writerParameters);
             }
         }
+
+        private bool Process() {
+            if (assembly.HasAttributeOfType<AssemblyProcessedAttribute>()) {
+                Debug.Log("Assembly already processed");
+                return false;
+            }
+
+            try {
+                var injector = new GenericInstanceInjector(assembly);
+                injector.Inject();
+            } catch (InjectionException ex) {
+                Debug.LogError(ex.Message);
+                return false;
+            }
+
+            assembly.AddAttribute<AssemblyProcessedAttribute>();
+
+            Debug.Log("assembly processed");
+            return true;
+        }
+
+
     }
 }
